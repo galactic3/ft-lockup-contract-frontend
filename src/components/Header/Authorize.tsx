@@ -28,7 +28,7 @@ const Authorize = ({ near, setNear }: { near: INearProps | null, setNear: Dispat
     return (
       <Auth open={false}>
         <div>{signedAccountId}</div>
-        <button onClick={handleSignOut} />
+        <button onClick={handleSignOut}>Log out</button>
       </Auth>
     )
   }
