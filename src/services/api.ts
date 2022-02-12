@@ -46,6 +46,7 @@ class NearApi {
       const b = await account.getAccountBalance();
       balance = fromNear(b.total);
     } catch (e) {
+      // eslint-disable-next-line
       console.error('Account not exist');
     }
     return balance;

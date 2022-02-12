@@ -28,7 +28,8 @@ function Authorize(
   if (signedIn) {
     return (
       <Auth>
-        <div>{signedAccountId}</div>
+        <span>{signedAccountId}</span>
+        {' '}
         <button type="button" onClick={handleSignOut}>Log out</button>
       </Auth>
     );

@@ -5,6 +5,8 @@ import { render } from 'react-dom';
 import App from './components/App';
 import { NearContext, connectNear, INearProps } from './services/near';
 
+import './index.css';
+
 function NearApp() {
   const [near, setNear] = useState<INearProps | null>(null);
 
