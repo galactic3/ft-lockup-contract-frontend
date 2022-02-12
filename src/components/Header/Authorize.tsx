@@ -1,44 +1,43 @@
-import {Dispatch, ReactNode} from 'react'
-import {INearProps} from "../../services/near";
+import { Dispatch, ReactNode } from 'react';
+import { INearProps } from '../../services/near';
 
-function Auth(props: { open: boolean, children: ReactNode }) {
-  return <div>{props.children}</div>;
+function Auth({ children }: { children: ReactNode }) {
+  return <div>{children}</div>;
 }
 
-const Authorize = ({ near, setNear }: { near: INearProps | null, setNear: Dispatch<INearProps | null> }) => {
-  
+function Authorize(
+  { near, setNear }: { near: INearProps | null, setNear: Dispatch<INearProps | null> },
+) {
   if (!near) return null;
 
-  const { api, signedIn, signedAccountId } = near
-  
+  const { api, signedIn, signedAccountId } = near;
+
   const handleSignIn = async () => {
-    api.signIn()
-  }
+    api.signIn();
+  };
 
   const handleSignOut = async () => {
-    api.signOut()
+    api.signOut();
     setNear({
       ...near,
-      signedIn: false, 
-      signedAccountId: null
-    })
-  }
+      signedIn: false,
+      signedAccountId: null,
+    });
+  };
 
   if (signedIn) {
     return (
-      <Auth open={false}>
+      <Auth>
         <div>{signedAccountId}</div>
-        <button onClick={handleSignOut}>Log out</button>
+        <button type="button" onClick={handleSignOut}>Log out</button>
       </Auth>
-    )
+    );
   }
 
   return (
-    <Auth open={false}>
-      <button onClick={handleSignIn}>Sign In</button>
+    <Auth>
+      <button type="button" onClick={handleSignIn}>Sign In</button>
     </Auth>
-  )
-
+  );
 }
-export default Authorize
-
+export default Authorize;

@@ -7,15 +7,12 @@ export interface INearConfig {
   explorerUrl: string,
 }
 
-const CONTRACT_NAME = process.env.REACT_APP_CONTRACT_NAME || 'ft-lockup.dev000.g3ftl.testnet'
-
-export const config = getConfig()
+const CONTRACT_NAME = process.env.REACT_APP_CONTRACT_NAME || 'ft-lockup.dev000.g3ftl.testnet';
 
 // TODO: move these data to envs
 function getConfig(): INearConfig {
   const env = process.env.REACT_APP_ENVIRONMENT || 'development';
   switch (env) {
-
     case 'production':
     case 'mainnet':
       return {
@@ -25,7 +22,7 @@ function getConfig(): INearConfig {
         walletUrl: 'https://wallet.near.org',
         helperUrl: 'https://helper.mainnet.near.org',
         explorerUrl: 'https://explorer.mainnet.near.org',
-      }
+      };
     case 'development':
     case 'testnet':
       return {
@@ -35,7 +32,7 @@ function getConfig(): INearConfig {
         walletUrl: 'https://wallet.testnet.near.org',
         helperUrl: 'https://helper.testnet.near.org',
         explorerUrl: 'https://explorer.testnet.near.org',
-      }
+      };
     case 'betanet':
       return {
         networkId: 'betanet',
@@ -44,31 +41,38 @@ function getConfig(): INearConfig {
         walletUrl: 'https://wallet.betanet.near.org',
         helperUrl: 'https://helper.betanet.near.org',
         explorerUrl: 'https://explorer.betanet.near.org',
-      }
+      };
     case 'local':
       return {
-        explorerUrl: "", helperUrl: "",
+        explorerUrl: '',
+        helperUrl: '',
         networkId: 'local',
         nodeUrl: 'http://localhost:3030',
         walletUrl: 'http://localhost:4000/wallet',
-        contractName: CONTRACT_NAME
-      }
+        contractName: CONTRACT_NAME,
+      };
     case 'test':
     case 'ci':
       return {
-        explorerUrl: "", helperUrl: "", walletUrl: "",
+        explorerUrl: '',
+        helperUrl: '',
+        walletUrl: '',
         networkId: 'shared-test',
         nodeUrl: 'https://rpc.ci-testnet.near.org',
         contractName: CONTRACT_NAME,
-      }
+      };
     case 'ci-betanet':
       return {
-        explorerUrl: "", helperUrl: "", walletUrl: "",
+        explorerUrl: '',
+        helperUrl: '',
+        walletUrl: '',
         networkId: 'shared-test-staging',
         nodeUrl: 'https://rpc.ci-betanet.near.org',
         contractName: CONTRACT_NAME,
-      }
+      };
     default:
-      throw Error(`Unconfigured environment '${env}'. Can be configured in src/config.js.`)
+      throw Error(`Unconfigured environment '${env}'. Can be configured in src/config.js.`);
   }
 }
+
+export const config = getConfig();
