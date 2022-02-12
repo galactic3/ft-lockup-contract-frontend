@@ -1,17 +1,16 @@
-import { useContext, useEffect, useState } from 'react'
-import {INearProps, NearContext} from "../../services/near";
+import { useContext, useEffect } from 'react';
+import { INearProps, NearContext } from '../../services/near';
 
-export const Users = () => {
+export default function Users() {
+  const { near }: { near: INearProps | null } = useContext(NearContext);
 
-    const { near }: { near: INearProps | null } = useContext(NearContext)
+  useEffect(() => {
 
-    useEffect(() => {
+  }, [near]);
 
-    }, [near])
+  if (!near) return null;
 
-    if (!near) return null
-
-    return (
-        <div>Users</div>
-    )
+  return (
+    <div>Users</div>
+  );
 }

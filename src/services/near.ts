@@ -15,14 +15,14 @@ export const NearContext = createContext<any>(null);
 
 export const connectNear = async (): Promise<INearProps> => {
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
-  const near = await nearAPI.connect({headers: {}, keyStore, ...config});
+  const near = await nearAPI.connect({ headers: {}, keyStore, ...config });
   const api = new NearApi(near);
 
   return {
     connected: true,
-    config: config,
-    api: api,
+    config,
+    api,
     signedIn: false,
-    signedAccountId: null
-  }
-}
+    signedAccountId: null,
+  };
+};
