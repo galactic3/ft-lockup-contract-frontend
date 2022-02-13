@@ -1,7 +1,12 @@
 import { useParams } from 'react-router-dom';
 
-export default function UserLockups() {
+export default function UserLockups({ lockups: allLockups }: { lockups: any[] }) {
   const { userId } = useParams();
+
+  const lockups = allLockups.filter((x) => x.account_id === userId);
+
+  console.log('user lockups', userId, lockups);
+
   return (
     <div>
       <h1>User Lockups Page</h1>
@@ -14,15 +19,23 @@ export default function UserLockups() {
       </h2>
 
       Lockups:
-      <ul>
-        {[2, 3, 5, 7, 11].map((idx) => (
-          <li>
-            #
-            {idx}
-            , amount: 100500
-          </li>
+      <div>
+        {lockups.map((lockup) => (
+          <div key={lockup.id} className="lockup-row">
+            <div>
+              {`
+                id: ${lockup.id},
+                total amount: ${lockup.total_balance},
+                claimed amount: ${lockup.claimed_balance},
+                available amount: ${lockup.unclaimed_balance}
+              `}
+            </div>
+            <div>
+              {`Schedule: ${JSON.stringify(lockup.schedule, null, 2)}`}
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

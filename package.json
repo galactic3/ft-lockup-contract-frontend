@@ -40,6 +40,50 @@
       "airbnb-typescript",
       "plugin:react/jsx-runtime"
     ],
+    "rules": {
+      "no-console": "off",
+      "no-debugger": "off",
+      "@typescript-eslint/naming-convention": [
+        "error",
+        {
+          "selector": "variable",
+          "format": [
+            "camelCase",
+            "PascalCase",
+            "UPPER_CASE"
+          ]
+        },
+        {
+          "selector": "function",
+          "format": [
+            "camelCase",
+            "PascalCase"
+          ]
+        },
+        {
+          "selector": "typeLike",
+          "format": [
+            "PascalCase"
+          ]
+        },
+        {
+          "selector": "variable",
+          "modifiers": ["unused"],
+          "format": [
+            "camelCase",
+            "PascalCase",
+            "UPPER_CASE"
+          ],
+          "leadingUnderscore": "require"
+        }
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_"
+        }
+      ]
+    },
     "parserOptions": {
       "project": "./tsconfig.json"
     }
