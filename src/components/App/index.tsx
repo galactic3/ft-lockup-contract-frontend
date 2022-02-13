@@ -37,7 +37,7 @@ export default function App() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<About />} />
+        <Route path="/" element={<About lockups={lockups} />} />
         <Route path="/users" element={<Users lockups={lockups} />} />
         <Route path="/users/:userId" element={<UserLockups lockups={lockups} />} />
       </Routes>

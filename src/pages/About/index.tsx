@@ -1,6 +1,8 @@
 import { config } from '../../config';
 
-export default function About() {
+export default function About(
+  { lockups }: { lockups: any[] },
+) {
   return (
     <div>
       <h1>About Page</h1>
@@ -8,11 +10,11 @@ export default function About() {
       <pre>
         {`
           This page should render all useful info about contract,
-          at least ft-lockup name, token name, contract ft balance.
+          at least ft-lockup name, token name, contract ft balance,
 
           ft-lockup account id: ${config.contractName}
 
-          TODO: expose token name in ft-lockup contract
+          Total number of lockups: ${lockups.length}
         `}
       </pre>
 
