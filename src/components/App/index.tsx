@@ -20,7 +20,7 @@ export default function App() {
         if (!active) {
           return;
         }
-        setContractState({ name: 'name', lockups });
+        setContractState({ lockups, name: 'name' });
       };
 
       load();
@@ -29,7 +29,7 @@ export default function App() {
     return () => { active = false; };
   }, [near]);
 
-  if (!near) return null;
+  if (Object.keys(contractState).length === 0) return null;
 
   return (
     <BrowserRouter>
