@@ -19,20 +19,23 @@ export default function UserLockups({ lockups: allLockups }: { lockups: any[] })
       </h2>
 
       Lockups:
-      <ul>
+      <div>
         {lockups.map((lockup) => (
-          <li key={lockup.id}>
-            id:
-            {lockup.id}
-            , total amount:
-            {lockup.total_balance}
-            , claimed amount:
-            {lockup.claimed_balance}
-            , available amount:
-            {lockup.unclaimed_balance}
-          </li>
+          <div key={lockup.id} className="lockup-row">
+            <div>
+              {`
+                id: ${lockup.id},
+                total amount: ${lockup.total_balance},
+                claimed amount: ${lockup.claimed_balance},
+                available amount: ${lockup.unclaimed_balance}
+              `}
+            </div>
+            <div>
+              {`Schedule: ${JSON.stringify(lockup.schedule, null, 2)}`}
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
