@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { INearProps, NearContext } from '../../services/near';
 import About from '../../pages/About';
@@ -10,15 +10,26 @@ export default function App() {
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [contractState, setContractState] = useState({});
 
+  useEffect(() => {
+    let active = true;
+
+    if (near) {
+      const load = async () => {
+        console.log('LOADING DATA');
+        const lockups = await near.api.loadAllLockups();
+        if (!active) {
+          return;
+        }
+        setContractState({ name: 'name', lockups });
+      };
+
+      load();
+    }
+
+    return () => { active = false; };
+  }, [near]);
+
   if (!near) return null;
-
-  // console.log(near);
-
-  (async () => {
-    const lockups = await near.api.loadAllLockups();
-
-    setContractState({ name: 'name', lockups });
-  })();
 
   return (
     <BrowserRouter>
