@@ -31,12 +31,14 @@ export default function App() {
 
   if (Object.keys(contractState).length === 0) return null;
 
+  const { lockups }: any = contractState as any;
+
   return (
     <BrowserRouter>
       <Header />
       <Routes>
         <Route path="/" element={<About contractState={contractState} />} />
-        <Route path="/users" element={<Users />} />
+        <Route path="/users" element={<Users lockups={lockups} />} />
         <Route path="/users/:userId" element={<UserLockups />} />
       </Routes>
     </BrowserRouter>

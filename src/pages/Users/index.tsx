@@ -1,15 +1,9 @@
-import { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { INearProps, NearContext } from '../../services/near';
 
-export default function Users() {
-  const { near }: { near: INearProps | null } = useContext(NearContext);
+export default function Users({ lockups }: { lockups: any[] }) {
+  const uniqueUsers = Array.from(new Set(lockups.map((x) => x.account_id)));
 
-  useEffect(() => {
-
-  }, [near]);
-
-  if (!near) return null;
+  console.log('unique users', uniqueUsers);
 
   return (
     <div>
@@ -18,11 +12,10 @@ export default function Users() {
       This page should render list of all users that have lockups.
 
       <ul>
-        {['alice', 'bob', 'charlie'].map((name) => (
-          <li>
-            <Link to={`/users/${name}.testnet`}>
+        {uniqueUsers.map((name) => (
+          <li key={name}>
+            <Link to={`/users/${name}`}>
               {name}
-              .testnet
             </Link>
           </li>
         ))}
