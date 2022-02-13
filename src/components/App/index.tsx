@@ -39,7 +39,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<About contractState={contractState} />} />
         <Route path="/users" element={<Users lockups={lockups} />} />
-        <Route path="/users/:userId" element={<UserLockups />} />
+        <Route path="/users/:userId" element={<UserLockups lockups={lockups} />} />
       </Routes>
     </BrowserRouter>
   );
