@@ -41,6 +41,8 @@
       "plugin:react/jsx-runtime"
     ],
     "rules": {
+      "no-console": "off",
+      "no-debugger": "off",
       "@typescript-eslint/naming-convention": [
         "error",
         {
