@@ -24,7 +24,20 @@ function NearApp() {
     connect();
   }, []);
 
-  const value = useMemo(() => ({ near, setNear }), [near, setNear]);
+  const value = useMemo(() => ({
+    near,
+    signIn: () => { near?.api?.signIn(); },
+    signOut: () => {
+      if (!near) return;
+
+      near.api.signOut();
+      setNear({
+        ...near,
+        signedIn: false,
+        signedAccountId: null,
+      });
+    },
+  }), [near]);
 
   return (
     <StrictMode>
