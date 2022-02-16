@@ -1,13 +1,17 @@
-import { Dispatch, ReactNode } from 'react';
-import { INearProps } from '../../services/near';
+import { Dispatch, ReactNode, useContext } from 'react';
+import { INearProps, NearContext } from '../../services/near';
 
 function Auth({ children }: { children: ReactNode }) {
   return <div>{children}</div>;
 }
 
-function Authorize(
-  { near, setNear }: { near: INearProps | null, setNear: Dispatch<INearProps | null> },
-) {
+function Authorize() {
+  const {
+    near, setNear,
+  }: {
+    near: INearProps | null, setNear: Dispatch<INearProps | null>,
+  } = useContext(NearContext);
+
   if (!near) return null;
 
   const { api, signedIn, signedAccountId } = near;
