@@ -4,7 +4,6 @@ import { config, INearConfig } from '../config';
 import NearApi from './api';
 
 export interface INearProps {
-  connected: boolean;
   config: INearConfig;
   api: NearApi;
   signedIn: boolean;
@@ -21,7 +20,6 @@ export const connectNear = async (): Promise<INearProps> => {
   const signedAccountId = walletConnection.getAccountId();
 
   return {
-    connected: true,
     config,
     api,
     signedIn: !!signedAccountId,
