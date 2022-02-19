@@ -13,12 +13,7 @@ function NearApp() {
   useEffect(() => {
     async function connect() {
       const nearConn: INearProps = await connectNear();
-      const accountId = await nearConn.api.get_account_id();
-      setNear({
-        ...nearConn,
-        signedIn: !!accountId,
-        signedAccountId: accountId,
-      });
+      setNear(nearConn);
     }
 
     connect();

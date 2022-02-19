@@ -46,7 +46,7 @@ class NearApi {
     this.walletConnection.signOut();
   }
 
-  async get_account_id(): Promise<string> {
+  get_account_id(): string {
     return this.walletConnection.getAccountId();
   }
 

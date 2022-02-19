@@ -16,13 +16,15 @@ export const NearContext = createContext<any>(null);
 export const connectNear = async (): Promise<INearProps> => {
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
   const near = await nearAPI.connect({ headers: {}, keyStore, ...config });
+  const walletConnection = new nearAPI.WalletConnection(near, config.contractName);
   const api = new NearApi(near);
+  const signedAccountId = walletConnection.getAccountId();
 
   return {
     connected: true,
     config,
     api,
-    signedIn: false,
-    signedAccountId: null,
+    signedIn: !!signedAccountId,
+    signedAccountId,
   };
 };
