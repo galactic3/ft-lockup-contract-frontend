@@ -11,6 +11,21 @@ type TViewMethods = {
   'get_token_account_id': any,
 };
 
+type TCheckpoint = {
+  timestamp: number,
+  balance: string,
+};
+
+type TLockupView = {
+  id: number,
+  account_id: string,
+  claimed_balance: string,
+  schedule: TCheckpoint[],
+  timestamp: number,
+  total_balance: string,
+  unclaimed_balance: string,
+};
+
 class NearApi {
   private near: Near;
 
@@ -24,14 +39,14 @@ class NearApi {
     this.contract = new Contract(this.walletConnection.account(), config.contractName, {
       viewMethods: ['get_lockups_paged', 'get_token_account_id'],
       changeMethods: [],
-    });
+    }) as (Contract & TViewMethods);
   }
 
   getTokenAccountId(): Promise<string> {
     return (this.contract as Contract & TViewMethods).get_token_account_id();
   }
 
-  loadAllLockups(): Promise<any[]> {
+  loadAllLockups(): Promise<TLockupView[]> {
     return (this.contract as Contract & TViewMethods).get_lockups_paged().then(
       (response: any) => response.map(([id, data]: [number, any]) => Object.assign(data, { id })),
     );

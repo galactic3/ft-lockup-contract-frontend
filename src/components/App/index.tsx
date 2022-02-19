@@ -20,7 +20,6 @@ export default function App() {
 
     if (near) {
       const load = async () => {
-        console.log('LOADING DATA');
         const lockups = await near.api.loadAllLockups();
         if (!active) {
           return;
@@ -39,7 +38,6 @@ export default function App() {
 
     if (near) {
       const load = async () => {
-        console.log('LOADING DATA');
         const response = await near.api.getTokenAccountId();
         if (!active) {
           return;
