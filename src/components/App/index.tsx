@@ -6,7 +6,7 @@ import {
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { INearProps, NearContext } from '../../services/near';
 import About from '../../pages/About';
-import Users from '../../pages/Users';
+import Lockups from '../../pages/Lockups';
 import UserLockups from '../../pages/UserLockups';
 import Header from '../Header';
 
@@ -60,8 +60,8 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/" element={<About lockups={lockups} token_account_id={token} />} />
-        <Route path="/users" element={<Users lockups={lockups} />} />
-        <Route path="/users/:userId" element={<UserLockups lockups={lockups} />} />
+        <Route path="/lockups" element={<Lockups lockups={lockups} />} />
+        <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} />} />
       </Routes>
     </BrowserRouter>
   );

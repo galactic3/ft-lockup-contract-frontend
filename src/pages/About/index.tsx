@@ -4,7 +4,7 @@ export default function About(
   { lockups, token_account_id }: { lockups: any[], token_account_id: string | null },
 ) {
   return (
-    <div>
+    <div className="container">
       <h1>About Page</h1>
 
       <pre>

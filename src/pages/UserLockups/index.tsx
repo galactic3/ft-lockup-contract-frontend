@@ -25,6 +25,7 @@ export default function UserLockups({ lockups: allLockups }: { lockups: any[] })
             <div>
               {`
                 id: ${lockup.id},
+                account_id: ${lockup.account_id},
                 total amount: ${lockup.total_balance},
                 claimed amount: ${lockup.claimed_balance},
                 available amount: ${lockup.unclaimed_balance}
