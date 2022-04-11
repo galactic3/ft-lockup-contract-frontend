@@ -1,5 +1,5 @@
 import {
-  TTokenContract, TLockup, TCheckpoint,
+  TTokenContract, TCheckpoint,
 } from './api';
 
 const MAX_GAS = 300_000_000_000_000;
@@ -8,7 +8,7 @@ const ONE_YOKTO = 1;
 type TLockupMessage = {
   account_id: string,
   schedule: Array<TCheckpoint>,
-  claimed_balance: string
+  claimed_balance: string,
 };
 
 class CreateLockupService {
@@ -16,27 +16,41 @@ class CreateLockupService {
 
   private tokenContract: TTokenContract;
 
-  private lockupView: TLockup;
+  private schedule: Array<TCheckpoint>;
 
   private lockupTotalAmount: string;
 
+  private userAccountId: string;
+
+  private claimedBalance: string;
+
   constructor(
-    lockupContractId: string,
     tokenContract: TTokenContract,
-    lockupView: TLockup,
+    schedule: Array<TCheckpoint>,
+    lockupContractId: string,
+    userAccountId: string,
     lockupTotalAmount: string,
+    claimedBalance: string,
   ) {
     this.lockupContractId = lockupContractId;
     this.tokenContract = tokenContract;
-    this.lockupView = lockupView;
     this.lockupTotalAmount = lockupTotalAmount;
+    this.schedule = schedule;
+    this.userAccountId = userAccountId;
+    this.claimedBalance = claimedBalance;
   }
 
   async call() {
+    const msg: TLockupMessage = {
+      account_id: this.userAccountId,
+      schedule: this.schedule,
+      claimed_balance: this.claimedBalance,
+    };
+
     const meta = {
       receiver_id: this.lockupContractId,
       amount: this.lockupTotalAmount,
-      msg: JSON.stringify(this.lockupView as TLockupMessage),
+      msg: JSON.stringify(msg),
     };
 
     await this.tokenContract.ft_transfer_call(meta, MAX_GAS, ONE_YOKTO);
