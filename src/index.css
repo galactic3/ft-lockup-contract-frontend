@@ -164,3 +164,16 @@ code {
   background: #F4A700;
   border-radius: 0 14px 14px 0;
 }
+
+.button {
+  margin: 20px 20px 0 auto;
+  background: #00B988;
+  height: 36px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #fff;
+  border: unset;
+  padding: 8px;
+  cursor: pointer;
+}

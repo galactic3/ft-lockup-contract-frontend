@@ -1,10 +1,6 @@
-import { ReactNode, useContext } from 'react';
+import { useContext } from 'react';
 import { INearProps, NearContext } from '../../services/near';
 import CreateLockupService from '../../services/CreateLockupService';
-
-function Butt({ children }: { children: ReactNode }) {
-  return <div>{children}</div>;
-}
 
 function CreateLockup() {
   const {
@@ -49,9 +45,7 @@ function CreateLockup() {
   };
 
   return (
-    <Butt>
-      <button type="button" onClick={handleCreateLockup}>Create Lockup</button>
-    </Butt>
+    <button className="button" type="button" onClick={handleCreateLockup}>Create Lockup</button>
   );
 }
 

@@ -1,4 +1,14 @@
 import { useParams } from 'react-router-dom';
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material';
+import Row from '../../components/table/row';
 
 export default function UserLockups({ lockups: allLockups }: { lockups: any[] }) {
   const { userId } = useParams();
@@ -8,35 +18,29 @@ export default function UserLockups({ lockups: allLockups }: { lockups: any[] })
   console.log('user lockups', userId, lockups);
 
   return (
-    <div>
-      <h1>User Lockups Page</h1>
-      This page should render all active lockups for specific user.
+    <div className="container">
 
-      <h2>
-        User:
-        {' '}
-        {userId}
-      </h2>
+      <TableContainer sx={{ boxShadow: 'unset' }} component={Paper}>
+        <Table className="main-table" aria-label="collapsible table">
+          <TableHead className="table-head">
+            <TableRow>
+              <TableCell />
+              <TableCell align="left">ID</TableCell>
+              <TableCell align="left">Account ID</TableCell>
+              <TableCell align="right">Start&nbsp;date</TableCell>
+              <TableCell align="right">End&nbsp;date</TableCell>
+              <TableCell align="right">Total&nbsp;amount</TableCell>
+              <TableCell align="center">Progress</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {lockups.map((lockup) => (
+              <Row key={lockup.id} row={lockup} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-      Lockups:
-      <div>
-        {lockups.map((lockup) => (
-          <div key={lockup.id} className="lockup-row">
-            <div>
-              {`
-                id: ${lockup.id},
-                account_id: ${lockup.account_id},
-                total amount: ${lockup.total_balance},
-                claimed amount: ${lockup.claimed_balance},
-                available amount: ${lockup.unclaimed_balance}
-              `}
-            </div>
-            <div>
-              {`Schedule: ${JSON.stringify(lockup.schedule, null, 2)}`}
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
