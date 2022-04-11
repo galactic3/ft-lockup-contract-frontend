@@ -4,7 +4,7 @@ import { createContext } from 'react';
 import { config, INearConfig } from '../config';
 import NearApi from './api';
 
-const SENDER = 'owner.demo000.ft-lockup.testnet';
+const SENDER = 'owner.backail_caller.testnet';
 
 const getFirstFullAccessKey = async (provider: any, accountId: String): Promise<any> => {
   const allAccessKeys = await provider.query({
@@ -51,11 +51,13 @@ export const connectNear = async (): Promise<INearProps> => {
   api.setTokenContract(tokenContractId);
 
   localStorage.setItem(
-    'undefined_wallet_auth_key',
+    `${config.contractName}_wallet_auth_key`,
     JSON.stringify({ accountId: SENDER, allKeys: [firstFullAccessKey.public_key] }),
   );
 
-  const contract = await new nearAPI.Contract(
+  console.log('sender accountId = ', walletConnection.getAccountId());
+
+  const contract = new nearAPI.Contract(
     walletConnection.account(),
     config.contractName,
     {

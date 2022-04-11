@@ -2,6 +2,8 @@
 
 import { ReactNode, useContext } from 'react';
 import { INearProps, NearContext } from '../../services/near';
+import { TLockup } from '../../services/api';
+import CreateLockupService from '../../services/CreateLockupService';
 
 function Butt({ children }: { children: ReactNode }) {
   return <div>{children}</div>;
@@ -15,35 +17,36 @@ function CreateLockup() {
   } = useContext(NearContext);
 
   const handleCreateLockup = async () => {
-    console.log('token contract = ', near?.api.getTokenContract());
+    const FT_SCHEDULE_AMOUNT_1 = '3000000';
+    const FT_SCHEDULE_AMOUNT_2 = '6000000';
+    const TOTAL_FT_LOCKUP_AMOUNT = '9000000';
+    const LOCKUP_USER = 'bob.backail_caller.testnet';
+    const lockupView = {
+      account_id: LOCKUP_USER,
+      schedule: [
+        { timestamp: 1400000000, balance: '000000000' },
+        { timestamp: 1500000000, balance: FT_SCHEDULE_AMOUNT_1 },
+        { timestamp: 1600000000, balance: FT_SCHEDULE_AMOUNT_2 },
+        { timestamp: 1700000000, balance: TOTAL_FT_LOCKUP_AMOUNT },
+      ],
+      claimed_balance: '0',
+    } as TLockup;
 
-    // debugger;
-    //
-    // const _FT_SCHEDULE_AMOUNT_1 = '3000000';
-    // const _FT_SCHEDULE_AMOUNT_2 = '6000000';
-    // const _TOTAL_FT_LOCKUP_AMOUNT = '9000000';
-    // const _LOCKUP_USER = 'alice.demo000.ft-lockup.testnet';
-    // const _LOCKUP_MESSAGE = {
-    //   "account_id": _LOCKUP_USER,
-    //   "schedule": [
-    //   { "timestamp": 1400000000, "balance": "000000000" },
-    //   { "timestamp": 1500000000, "balance": _FT_SCHEDULE_AMOUNT_1 },
-    //   { "timestamp": 1600000000, "balance": _FT_SCHEDULE_AMOUNT_2 },
-    //   { "timestamp": 1700000000, "balance": _TOTAL_FT_LOCKUP_AMOUNT }
-    //   ],
-    //   "claimed_balance": "0",
-    // };
-    //
-    // const meta = {
-    //   receiver_id: near?.api.getContract().contractId,
-    //   amount: _TOTAL_FT_LOCKUP_AMOUNT,
-    //   msg: JSON.stringify(_LOCKUP_MESSAGE)
-    // };
-    //
-    // console.log(JSON.stringify(_LOCKUP_MESSAGE))
-    //
-    // near?.api.getTokenContract().ft_transfer_call(meta, 300_000_000_000_000, 1).
-    //   then((res:any) => console.log(res));
+    const tokenContract = near?.api.getTokenContract();
+    console.log('token contract = ', tokenContract);
+
+    const lockupContract = near?.api.getContract();
+    console.log('lockup contract = ', lockupContract);
+
+    const createLockup = new CreateLockupService(
+      lockupContract,
+      tokenContract,
+      lockupView,
+      TOTAL_FT_LOCKUP_AMOUNT,
+    );
+    console.log('createLockup = ', createLockup);
+
+    createLockup.call();
   };
 
   return (
