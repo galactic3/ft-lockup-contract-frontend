@@ -9,6 +9,7 @@ export const toYoctoNear = (amount: number): string => utils.format.parseNearAmo
 type TViewMethods = {
   'get_lockups_paged': any,
   'get_token_account_id': any,
+  'get_deposit_whitelist': any,
 };
 
 type TNearAmount = string;
@@ -50,7 +51,7 @@ class NearApi {
     this.near = near;
     this.walletConnection = new WalletConnection(near, config.contractName);
     this.contract = new Contract(this.walletConnection.account(), config.contractName, {
-      viewMethods: ['get_lockups_paged', 'get_token_account_id'],
+      viewMethods: ['get_lockups_paged', 'get_token_account_id', 'get_deposit_whitelist'],
       changeMethods: [],
     }) as TLockupContract;
     this.tokenContract = null;
@@ -68,8 +69,8 @@ class NearApi {
     return this.tokenContract as TTokenContract;
   }
 
-  getContract(): Contract {
-    return this.contract as Contract;
+  getContract(): TLockupContract {
+    return this.contract as TLockupContract;
   }
 
   getTokenAccountId(): Promise<string> {

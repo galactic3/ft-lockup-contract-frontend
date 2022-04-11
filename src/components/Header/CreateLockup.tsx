@@ -26,20 +26,15 @@ function CreateLockup() {
     ];
     const userAccountId = 'bob.demo000.ft-lockup.testnet';
     const claimedBalance = '0';
-    const senderAccountId = 'owner.demo000.ft-lockup.testnet';
-    const provider = near?.provider;
 
     const createLockup = new CreateLockupService(
       tokenContract,
       schedule,
       lockupContractId,
       userAccountId,
-      senderAccountId,
       lockupTotalAmount,
       claimedBalance,
-      provider,
     );
-    console.log('createLockup = ', createLockup);
 
     createLockup.call();
   };
