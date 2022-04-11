@@ -16,8 +16,6 @@ const getFirstFullAccessKey = async (provider: any, accountId: String): Promise<
     return {};
   }
 
-  // nearAPI.providers.Provider['AccessKeyInfoView']
-
   const allFullAccessKeys = allAccessKeys.keys.filter((key: any) => (typeof key?.access_key?.permission === 'string') && key?.access_key?.permission === 'FullAccess');
 
   if (!allFullAccessKeys?.length) {

@@ -1,5 +1,3 @@
-// import * as BN from 'bn.js';
-
 import { ReactNode, useContext } from 'react';
 import { INearProps, NearContext } from '../../services/near';
 import CreateLockupService from '../../services/CreateLockupService';
