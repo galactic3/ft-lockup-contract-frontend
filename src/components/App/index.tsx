@@ -34,21 +34,11 @@ export default function App() {
   }, [near]);
 
   useEffect(() => {
-    let active = true;
-
     if (near) {
-      const load = async () => {
-        const response = await near.api.getTokenAccountId();
-        if (!active) {
-          return;
-        }
-        setToken(response);
-      };
-
-      load();
+      setToken(near.api.getTokenContract().contractId);
     }
 
-    return () => { active = false; };
+    return () => { };
   }, [near]);
 
   if (Object.keys(contractState).length === 0) return null;

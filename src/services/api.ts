@@ -63,6 +63,7 @@ class NearApi {
       viewMethods: [],
       changeMethods: ['ft_transfer_call'],
     }) as TTokenContract;
+    console.log('tokenContract = ', this.tokenContract);
   }
 
   getTokenContract(): TTokenContract {
