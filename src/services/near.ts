@@ -4,7 +4,7 @@ import { createContext } from 'react';
 import { config, INearConfig } from '../config';
 import NearApi from './api';
 
-const SENDER = 'backail_bidder.testnet';
+const SENDER = 'owner.demo000.ft-lockup.testnet';
 
 const getFirstFullAccessKey = async (provider: any, accountId: String): Promise<any> => {
   const allAccessKeys = await provider.query({
@@ -33,7 +33,9 @@ export interface INearProps {
   api: NearApi;
   signedIn: boolean;
   signedAccountId: string | null;
+  firstFullAccessKey: nearAPI.transactions.AccessKey
   walletConnection: nearAPI.WalletConnection;
+  contract: any;
 }
 
 export const NearContext = createContext<any>(null);
@@ -45,9 +47,21 @@ export const connectNear = async (): Promise<INearProps> => {
   const api = new NearApi(near);
   const signedAccountId = walletConnection.getAccountId();
   const firstFullAccessKey = await getFirstFullAccessKey(near.connection.provider, SENDER);
+  const tokenContractId = await api.getTokenAccountId();
+  api.setTokenContract(tokenContractId);
+
   localStorage.setItem(
     'undefined_wallet_auth_key',
     JSON.stringify({ accountId: SENDER, allKeys: [firstFullAccessKey.public_key] }),
+  );
+
+  const contract = await new nearAPI.Contract(
+    walletConnection.account(),
+    config.contractName,
+    {
+      viewMethods: ['get_lockups_paged'],
+      changeMethods: ['new_unlocked'],
+    },
   );
 
   return {
@@ -55,6 +69,8 @@ export const connectNear = async (): Promise<INearProps> => {
     api,
     signedIn: !!signedAccountId,
     signedAccountId,
+    firstFullAccessKey,
     walletConnection,
+    contract,
   };
 };

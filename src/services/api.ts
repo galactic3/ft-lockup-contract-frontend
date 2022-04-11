@@ -11,6 +11,10 @@ type TViewMethods = {
   'get_token_account_id': any,
 };
 
+type TTokenChangeMethods = {
+  'ft_transfer_call': any,
+};
+
 type TNearAmount = string;
 type TNearTimestamp = number;
 
@@ -36,6 +40,8 @@ class NearApi {
 
   private walletConnection: WalletConnection;
 
+  private tokenContract: Contract | null;
+
   constructor(near: Near) {
     this.near = near;
     this.walletConnection = new WalletConnection(near, config.contractName);
@@ -43,6 +49,22 @@ class NearApi {
       viewMethods: ['get_lockups_paged', 'get_token_account_id'],
       changeMethods: [],
     }) as (Contract & TViewMethods);
+    this.tokenContract = null;
+  }
+
+  setTokenContract(tokenContractId: string) {
+    this.tokenContract = new Contract(this.walletConnection.account(), tokenContractId, {
+      viewMethods: [],
+      changeMethods: ['ft_transfer_call'],
+    }) as (Contract & TTokenChangeMethods);
+  }
+
+  getTokenContract(): Contract {
+    return this.tokenContract as (Contract & TTokenChangeMethods);
+  }
+
+  getContract(): Contract {
+    return this.contract as Contract;
   }
 
   getTokenAccountId(): Promise<string> {
