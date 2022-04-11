@@ -17,6 +17,12 @@ function CreateLockup() {
   } = useContext(NearContext);
 
   const handleCreateLockup = async () => {
+    const tokenContract = near?.api?.getTokenContract();
+
+    if (!tokenContract) {
+      throw new Error('token contract is not initialized!');
+    }
+
     const FT_SCHEDULE_AMOUNT_1 = '3000000';
     const FT_SCHEDULE_AMOUNT_2 = '6000000';
     const TOTAL_FT_LOCKUP_AMOUNT = '9000000';
@@ -32,14 +38,10 @@ function CreateLockup() {
       claimed_balance: '0',
     } as TLockup;
 
-    const tokenContract = near?.api.getTokenContract();
-    console.log('token contract = ', tokenContract);
-
-    const lockupContract = near?.api.getContract();
-    console.log('lockup contract = ', lockupContract);
+    const lockupContractId = near?.api.getContract().contractId || '';
 
     const createLockup = new CreateLockupService(
-      lockupContract,
+      lockupContractId,
       tokenContract,
       lockupView,
       TOTAL_FT_LOCKUP_AMOUNT,

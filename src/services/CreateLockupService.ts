@@ -1,5 +1,5 @@
 import {
-  TTokenContract, TLockup, TCheckpoint, TLockupContract,
+  TTokenContract, TLockup, TCheckpoint,
 } from './api';
 
 const MAX_GAS = 300_000_000_000_000;
@@ -12,7 +12,7 @@ type TLockupMessage = {
 };
 
 class CreateLockupService {
-  private lockupContract: TLockupContract;
+  private lockupContractId: string;
 
   private tokenContract: TTokenContract;
 
@@ -21,12 +21,12 @@ class CreateLockupService {
   private lockupTotalAmount: string;
 
   constructor(
-    lockupContract: any,
-    tokenContract: any,
+    lockupContractId: string,
+    tokenContract: TTokenContract,
     lockupView: TLockup,
     lockupTotalAmount: string,
   ) {
-    this.lockupContract = lockupContract;
+    this.lockupContractId = lockupContractId;
     this.tokenContract = tokenContract;
     this.lockupView = lockupView;
     this.lockupTotalAmount = lockupTotalAmount;
@@ -34,7 +34,7 @@ class CreateLockupService {
 
   async call() {
     const meta = {
-      receiver_id: this.lockupContract.contractId,
+      receiver_id: this.lockupContractId,
       amount: this.lockupTotalAmount,
       msg: JSON.stringify(this.lockupView as TLockupMessage),
     };
