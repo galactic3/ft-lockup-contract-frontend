@@ -8,6 +8,7 @@ export interface INearProps {
   api: NearApi;
   signedIn: boolean;
   signedAccountId: string | null;
+  walletConnection: nearAPI.WalletConnection;
 }
 
 export const NearContext = createContext<any>(null);
@@ -24,5 +25,6 @@ export const connectNear = async (): Promise<INearProps> => {
     api,
     signedIn: !!signedAccountId,
     signedAccountId,
+    walletConnection,
   };
 };
