@@ -1,7 +1,8 @@
 @import-normalize;
 
 :root {
-  --bg: #ECEFF8;
+  --bg: #F4F7FC;
+  --white: #FFF;
   --main: #272A34;
   --gray: #636E95;
   --primary: #242F57;
@@ -10,7 +11,7 @@
 body {
   margin: 0;
   background: var(--bg);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -32,14 +33,14 @@ code {
 }
 
 .lockup-row {
-  border:1px solid black;
+  border: 1px solid black;
   padding: 10px;
   margin: 10px;
 }
 
 .header {
   height: 82px;
-  background: #fff;
+  background: var(--white);
   margin: 0 0 50px;
 }
 
@@ -59,4 +60,107 @@ code {
   line-height: 70px;
   margin: 0 12px;
   padding: 0 7px;
+}
+
+.main-table {
+  border-color: #EAEDF7;
+}
+
+.table-head .MuiTableCell-head {
+  color: #97A0C3;
+  background: #F4F7FC;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.main-table .MuiTableCell-head,
+.main-table .MuiTableCell-body {
+  border-bottom-color: #EAEDF7;
+}
+
+.main-table .MuiTableCell-body {
+  font-weight: 700;
+  color: #636E95;
+}
+
+.main-table tr .MuiTableCell-body:first-child {
+  border-left: 1px solid #EAEDF7;
+}
+
+.main-table .MuiTableCell-body a {
+  color: #636E95;
+}
+
+.main-table .exp-row .MuiTableCell-body {
+  border-bottom: unset;
+}
+.main-table .expanded .MuiTableCell-body {
+  background: #F4FAFF;
+  transition: background-color .2s;
+}
+
+.inner-table_wrapper {
+  background: var(--white);
+  width: 240px;
+  padding: 20px 0;
+  border-radius: 10px;
+}
+
+.inner-table_wrapper h5 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 4px 0 14px;
+  color: #242F57;
+  padding: 0 16px;
+}
+
+.inner-table {
+  font-weight: 700;
+}
+
+.inner-table .MuiTableCell-head {
+  color: #97A0C3;
+  font-weight: 700;
+  border-bottom-color: #EAEDF7;
+}
+.inner-table .MuiTableCell-body {
+  color: #636E95;
+  font-weight: 700;
+  border-bottom-color: #EAEDF7;
+}
+
+.progress-bar {
+  display: flex;
+  width: 300px;
+  margin: 0 auto;
+  height: 14px;
+  border-radius: 14px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.progress-bar span {
+  display: block;
+  color: #fff;
+  font-size: 10px;
+  line-height: 15px;
+}
+
+.claimed {
+  background: #00D1A2;
+  border-radius: 14px 0 0 14px;
+}
+
+.available {
+  background: #D2D0FE;
+}
+
+.vested {
+  background: #55AAFF;
+}
+
+.unvested {
+  background: #F4A700;
+  border-radius: 0 14px 14px 0;
 }
