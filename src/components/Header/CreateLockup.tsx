@@ -24,9 +24,9 @@ function CreateLockup() {
       { timestamp: 1600000000, balance: '6000000' },
       { timestamp: 1700000000, balance: lockupTotalAmount },
     ];
-    const userAccountId = 'bob.backail_caller.testnet';
+    const userAccountId = 'bob.demo000.ft-lockup.testnet';
     const claimedBalance = '0';
-    const senderAccountId = 'owner.backail_caller.testnet';
+    const senderAccountId = 'owner.demo000.ft-lockup.testnet';
     const provider = near?.provider;
 
     const createLockup = new CreateLockupService(
