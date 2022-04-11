@@ -23,23 +23,27 @@ function CreateLockup() {
     }
 
     const lockupContractId = near?.api.getContract().contractId || '';
-    const TOTAL_FT_LOCKUP_AMOUNT = '9000000';
+    const lockupTotalAmount = '9000000';
     const schedule = [
       { timestamp: 1400000000, balance: '0000000' },
       { timestamp: 1500000000, balance: '3000000' },
       { timestamp: 1600000000, balance: '6000000' },
-      { timestamp: 1700000000, balance: TOTAL_FT_LOCKUP_AMOUNT },
+      { timestamp: 1700000000, balance: lockupTotalAmount },
     ];
     const userAccountId = 'bob.backail_caller.testnet';
     const claimedBalance = '0';
+    const senderAccountId = 'owner.backail_caller.testnet';
+    const provider = near?.provider;
 
     const createLockup = new CreateLockupService(
       tokenContract,
       schedule,
       lockupContractId,
       userAccountId,
-      TOTAL_FT_LOCKUP_AMOUNT,
+      senderAccountId,
+      lockupTotalAmount,
       claimedBalance,
+      provider,
     );
     console.log('createLockup = ', createLockup);
 
