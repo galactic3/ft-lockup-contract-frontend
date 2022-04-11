@@ -8,6 +8,7 @@ export interface INearProps {
   api: NearApi;
   signedIn: boolean;
   signedAccountId: string | null;
+  provider: any;
 }
 
 export const NearContext = createContext<any>(null);
@@ -18,11 +19,15 @@ export const connectNear = async (): Promise<INearProps> => {
   const walletConnection = new nearAPI.WalletConnection(near, config.contractName);
   const api = new NearApi(near);
   const signedAccountId = walletConnection.getAccountId();
+  const tokenContractId = await api.getTokenAccountId();
+  api.setTokenContract(tokenContractId);
+  const { provider } = near.connection;
 
   return {
     config,
     api,
     signedIn: !!signedAccountId,
     signedAccountId,
+    provider,
   };
 };

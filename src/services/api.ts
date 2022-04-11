@@ -14,12 +14,12 @@ type TViewMethods = {
 type TNearAmount = string;
 type TNearTimestamp = number;
 
-type TCheckpoint = {
+export type TCheckpoint = {
   timestamp: TNearTimestamp,
   balance: TNearAmount,
 };
 
-type TLockup = {
+export type TLockup = {
   id: number,
   account_id: string,
   claimed_balance: TNearAmount,
@@ -29,6 +29,14 @@ type TLockup = {
   unclaimed_balance: TNearAmount,
 };
 
+type TTokenChangeMethods = {
+  'ft_transfer_call': any,
+};
+
+export type TTokenContract = Contract & TTokenChangeMethods;
+
+export type TLockupContract = Contract & TViewMethods;
+
 class NearApi {
   private near: Near;
 
@@ -36,21 +44,40 @@ class NearApi {
 
   private walletConnection: WalletConnection;
 
+  private tokenContract: Contract | null;
+
   constructor(near: Near) {
     this.near = near;
     this.walletConnection = new WalletConnection(near, config.contractName);
     this.contract = new Contract(this.walletConnection.account(), config.contractName, {
       viewMethods: ['get_lockups_paged', 'get_token_account_id'],
       changeMethods: [],
-    }) as (Contract & TViewMethods);
+    }) as TLockupContract;
+    this.tokenContract = null;
+  }
+
+  setTokenContract(tokenContractId: string) {
+    console.log('account to token = ', this.walletConnection.account());
+    this.tokenContract = new Contract(this.walletConnection.account(), tokenContractId, {
+      viewMethods: [],
+      changeMethods: ['ft_transfer_call'],
+    }) as TTokenContract;
+  }
+
+  getTokenContract(): TTokenContract {
+    return this.tokenContract as TTokenContract;
+  }
+
+  getContract(): Contract {
+    return this.contract as Contract;
   }
 
   getTokenAccountId(): Promise<string> {
-    return (this.contract as Contract & TViewMethods).get_token_account_id();
+    return (this.contract as TLockupContract).get_token_account_id();
   }
 
   loadAllLockups(): Promise<TLockup[]> {
-    return (this.contract as Contract & TViewMethods).get_lockups_paged().then(
+    return (this.contract as TLockupContract).get_lockups_paged().then(
       (response: any) => response.map(([id, data]: [number, any]) => Object.assign(data, { id })),
     );
   }
