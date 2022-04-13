@@ -11,7 +11,6 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { INearProps, NearContext } from '../../services/near';
-import CreateLockupService from '../../services/CreateLockupService';
 import { addYear } from '../../utils';
 
 export default function CreateLockup() {
@@ -28,12 +27,6 @@ export default function CreateLockup() {
 
   const handleCreateLockup = async (e: any) => {
     e.preventDefault();
-
-    const tokenContract = near?.api?.getTokenContract();
-
-    if (!tokenContract) {
-      throw new Error('token contract is not initialized!');
-    }
 
     const { account, amount } = e.target.elements;
 
@@ -53,18 +46,17 @@ export default function CreateLockup() {
       { timestamp: addYear(startDate, 4), balance: lockupTotalAmount },
     ];
 
-    const createLockup = new CreateLockupService(
-      tokenContract,
-      schedule,
-      lockupContractId,
-      userAccountId,
-      lockupTotalAmount,
-      claimedBalance,
-    );
+    const meta = {
+      receiver_id: lockupContractId,
+      amount: lockupTotalAmount,
+      msg: {
+        account_id: userAccountId,
+        schedule,
+        claimed_balance: claimedBalance,
+      },
+    };
 
-    console.log(createLockup);
-
-    createLockup.call();
+    near?.tokenApi.ftTransferCall(meta);
   };
 
   return (

@@ -2,6 +2,7 @@ import * as nearAPI from 'near-api-js';
 import { createContext } from 'react';
 import { config, INearConfig } from '../config';
 import NearApi from './api';
+import TokenApi from './tokenApi';
 import NoLogInUsage from './NoLogInUsage';
 
 export interface INearProps {
@@ -9,6 +10,7 @@ export interface INearProps {
   api: NearApi;
   signedIn: boolean;
   signedAccountId: string | null;
+  tokenApi: TokenApi;
 }
 
 export const NearContext = createContext<any>(null);
@@ -23,11 +25,13 @@ export const connectNear = async (): Promise<INearProps> => {
   const signedAccountId = walletConnection.getAccountId();
   const tokenContractId = await api.getTokenAccountId();
   api.setTokenContract(tokenContractId);
+  const tokenApi = new TokenApi(walletConnection, tokenContractId);
 
   return {
     config,
     api,
     signedIn: !!signedAccountId,
     signedAccountId,
+    tokenApi,
   };
 };
