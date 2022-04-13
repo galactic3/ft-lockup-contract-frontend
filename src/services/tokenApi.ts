@@ -9,7 +9,7 @@ type TTokenChangeMethods = {
   'ft_transfer_call': any,
 };
 
-export type TTokenContract = Contract & TTokenChangeMethods;
+type TTokenContract = Contract & TTokenChangeMethods;
 
 class TokenApi {
   private contract: TTokenContract;
@@ -27,7 +27,7 @@ class TokenApi {
     return this.contract;
   }
 
-  ftTransferCall(
+  async ftTransferCall(
     meta: {
       receiver_id: string,
       amount: string,
@@ -39,14 +39,18 @@ class TokenApi {
     },
     gas = MAX_GAS,
     deposit = ONE_YOKTO,
-  ): Promise<any> {
+  ) {
     const { msg, ...rest } = meta;
 
-    return this.contract.ft_transfer_call(
-      { msg: JSON.stringify(msg), ...rest },
-      gas,
-      deposit,
-    );
+    try {
+      await this.contract.ft_transfer_call(
+        { msg: JSON.stringify(msg), ...rest },
+        gas,
+        deposit,
+      );
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
 

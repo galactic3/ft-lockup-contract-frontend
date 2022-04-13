@@ -35,10 +35,10 @@ export default function App() {
 
   useEffect(() => {
     if (near) {
-      setToken(near.api.getTokenContract().contractId);
+      setToken(near.tokenApi.getContract().contractId);
     }
 
-    return () => { };
+    return () => {};
   }, [near]);
 
   if (Object.keys(contractState).length === 0) return null;

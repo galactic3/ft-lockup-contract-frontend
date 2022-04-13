@@ -46,7 +46,7 @@ export default function CreateLockup() {
       { timestamp: addYear(startDate, 4), balance: lockupTotalAmount },
     ];
 
-    const meta = {
+    await near?.tokenApi.ftTransferCall({
       receiver_id: lockupContractId,
       amount: lockupTotalAmount,
       msg: {
@@ -54,9 +54,7 @@ export default function CreateLockup() {
         schedule,
         claimed_balance: claimedBalance,
       },
-    };
-
-    near?.tokenApi.ftTransferCall(meta);
+    });
   };
 
   return (
