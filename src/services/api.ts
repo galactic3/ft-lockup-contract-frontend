@@ -30,12 +30,6 @@ export type TLockup = {
   unclaimed_balance: TNearAmount,
 };
 
-type TTokenChangeMethods = {
-  'ft_transfer_call': any,
-};
-
-export type TTokenContract = Contract & TTokenChangeMethods;
-
 export type TLockupContract = Contract & TViewMethods;
 
 class NearApi {
@@ -45,8 +39,6 @@ class NearApi {
 
   private walletConnection: WalletConnection;
 
-  private tokenContract: Contract | null;
-
   constructor(near: Near) {
     this.near = near;
     this.walletConnection = new WalletConnection(near, config.contractName);
@@ -54,20 +46,6 @@ class NearApi {
       viewMethods: ['get_lockups_paged', 'get_token_account_id', 'get_deposit_whitelist'],
       changeMethods: [],
     }) as TLockupContract;
-    this.tokenContract = null;
-  }
-
-  setTokenContract(tokenContractId: string) {
-    console.log('account to token = ', this.walletConnection.account());
-    this.tokenContract = new Contract(this.walletConnection.account(), tokenContractId, {
-      viewMethods: [],
-      changeMethods: ['ft_transfer_call'],
-    }) as TTokenContract;
-    console.log('tokenContract = ', this.tokenContract);
-  }
-
-  getTokenContract(): TTokenContract {
-    return this.tokenContract as TTokenContract;
   }
 
   getContract(): TLockupContract {

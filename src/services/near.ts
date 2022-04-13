@@ -24,7 +24,6 @@ export const connectNear = async (): Promise<INearProps> => {
   const walletConnection = new nearAPI.WalletConnection(near, config.contractName);
   const signedAccountId = walletConnection.getAccountId();
   const tokenContractId = await api.getTokenAccountId();
-  api.setTokenContract(tokenContractId);
   const tokenApi = new TokenApi(walletConnection, tokenContractId);
 
   return {
