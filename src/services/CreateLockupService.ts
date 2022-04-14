@@ -22,6 +22,8 @@ class CreateLockupService {
 
   private userAccountId: string;
 
+  private senderAccountId: string;
+
   private claimedBalance: string;
 
   constructor(
@@ -29,6 +31,7 @@ class CreateLockupService {
     schedule: Array<TCheckpoint>,
     lockupContractId: string,
     userAccountId: string,
+    senderAccountId: string,
     lockupTotalAmount: string,
     claimedBalance: string,
   ) {
@@ -36,6 +39,7 @@ class CreateLockupService {
     this.schedule = schedule;
     this.lockupContractId = lockupContractId;
     this.userAccountId = userAccountId;
+    this.senderAccountId = senderAccountId;
     this.lockupTotalAmount = lockupTotalAmount;
     this.claimedBalance = claimedBalance;
   }

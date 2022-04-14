@@ -88,6 +88,10 @@ code {
   border-left: 1px solid #EAEDF7;
 }
 
+.main-table .inner-table tr .MuiTableCell-body:first-child {
+  border-left: 0;
+}
+
 .main-table .MuiTableCell-body a {
   color: #636E95;
 }
@@ -134,8 +138,8 @@ code {
   display: flex;
   width: 300px;
   margin: 0 auto;
-  height: 14px;
-  border-radius: 14px;
+  height: 16px;
+  border-radius: 16px;
   overflow: hidden;
   text-align: center;
 }
@@ -144,7 +148,7 @@ code {
   display: block;
   color: #fff;
   font-size: 10px;
-  line-height: 15px;
+  line-height: 16px;
 }
 
 .claimed {
@@ -172,6 +176,7 @@ code {
   font-size: 14px;
   font-weight: 500;
   line-height: 18px;
+  border-radius: 8px;
   color: #fff;
   border: unset;
   padding: 8px;

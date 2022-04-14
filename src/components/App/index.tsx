@@ -3,7 +3,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route, HashRouter } from 'react-router-dom';
 import { INearProps, NearContext } from '../../services/near';
 import About from '../../pages/About';
 import Lockups from '../../pages/Lockups';
@@ -46,13 +46,13 @@ export default function App() {
   const { lockups }: any = contractState as any;
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Header />
       <Routes>
         <Route path="/about" element={<About lockups={lockups} token_account_id={token} />} />
         <Route path="/lockups" element={<Lockups lockups={lockups} />} />
         <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
