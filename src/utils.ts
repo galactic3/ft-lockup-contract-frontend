@@ -21,3 +21,6 @@ export const big = (value = '0') => Big(value);
 export const tsNear2JS = (time: number) => Math.floor(time / 1000000);
 export const convertTimestamp = (time: number) => new Date(time * 1000).toLocaleDateString('en-US');
 export const convertAmount = (value: number) => Math.floor(value / 100000);
+// @ts-ignore
+// eslint-disable-next-line max-len
+export const addYear = (date: Date | null, year: number) => new Date(date?.setFullYear((date?.getFullYear() || 0) + year)).getTime() / 1000;

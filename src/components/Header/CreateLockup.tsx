@@ -7,8 +7,12 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { INearProps, NearContext } from '../../services/near';
 import CreateLockupService from '../../services/CreateLockupService';
+import { addYear } from '../../utils';
 
 export default function CreateLockup() {
   const {
@@ -18,6 +22,7 @@ export default function CreateLockup() {
   } = useContext(NearContext);
 
   const [open, setOpen] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(null);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -30,20 +35,22 @@ export default function CreateLockup() {
       throw new Error('token contract is not initialized!');
     }
 
-    const { sender, account, amount } = e.target.elements;
+    const { account, amount } = e.target.elements;
 
-    console.log(sender.value, account.value, amount.value);
+    console.log(account.value, amount.value);
 
     const lockupContractId = near?.api.getContract().contractId || '';
     const claimedBalance = '0';
     const userAccountId = account.value || 'alice.demo000.ft-lockup.testnet';
-    const senderAccountId = sender.value || 'owner.demo000.ft-lockup.testnet';
     const lockupTotalAmount = amount.value || '9000000';
+
+    const ts = (startDate?.getTime() || 0) / 1000;
+
     const schedule = [
-      { timestamp: 1400000000, balance: '0000000' },
-      { timestamp: 1500000000, balance: '3000000' },
-      { timestamp: 1600000000, balance: '6000000' },
-      { timestamp: 1700000000, balance: lockupTotalAmount },
+      { timestamp: ts, balance: '0' },
+      { timestamp: addYear(startDate, 1) - 1, balance: '0' },
+      { timestamp: addYear(startDate, 1), balance: (lockupTotalAmount / 4).toString() },
+      { timestamp: addYear(startDate, 4), balance: lockupTotalAmount },
     ];
 
     const createLockup = new CreateLockupService(
@@ -51,10 +58,11 @@ export default function CreateLockup() {
       schedule,
       lockupContractId,
       userAccountId,
-      senderAccountId,
       lockupTotalAmount,
       claimedBalance,
     );
+
+    console.log(createLockup);
 
     createLockup.call();
   };
@@ -62,35 +70,46 @@ export default function CreateLockup() {
   return (
     <div>
       <button className="button" type="button" onClick={handleOpen}>Create Lockup</button>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} maxWidth="xs" onClose={handleClose}>
         <form className="form_offer" onSubmit={handleCreateLockup}>
           <DialogTitle>Create Lockup</DialogTitle>
           <DialogContent>
             <TextField
-              autoFocus
-              margin="dense"
-              id="sender"
-              label="Sender"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-            <TextField
-              margin="dense"
+              margin="normal"
               id="account"
               label="Account Id"
               type="text"
-              fullWidth
+              sx={{ width: '75%' }}
               variant="standard"
             />
             <TextField
-              margin="dense"
+              margin="normal"
               id="amount"
               label="Amount"
               type="text"
-              fullWidth
               variant="standard"
+              sx={{ width: '50%' }}
             />
+            <br />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Start date"
+                value={startDate}
+                onChange={(newValue) => {
+                  setStartDate(newValue);
+                }}
+                renderInput={
+                  (params) => (
+                    <TextField
+                      margin="normal"
+                      sx={{ width: '50%' }}
+                      variant="standard"
+                      {...params}
+                    />
+                  )
+                }
+              />
+            </LocalizationProvider>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>

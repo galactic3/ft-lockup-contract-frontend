@@ -7,6 +7,7 @@
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.5.1",
     "@mui/material": "^5.5.3",
+    "@mui/x-date-pickers": "^5.0.0-alpha.0",
     "@reach/router": "^1.3.4",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
@@ -20,6 +21,7 @@
     "@types/react-dom": "^17.0.9",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
+    "date-fns": "^2.28.0",
     "gh-pages": "^3.2.3",
     "near-api-js": "^0.44.2",
     "react": "^17.0.2",
@@ -93,7 +95,8 @@
         {
           "varsIgnorePattern": "^_"
         }
-      ]
+      ],
+      "react/jsx-props-no-spreading": "off"
     },
     "parserOptions": {
       "project": "./tsconfig.json"
