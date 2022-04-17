@@ -2,15 +2,32 @@ import {
   Near, Account, Contract, WalletConnection, utils,
 } from 'near-api-js';
 import { config } from '../config';
+import { getFirstFullAccessKey } from './noLogInUsage';
 
 export const fromNear = (amount: string): number => parseFloat(utils.format.formatNearAmount(amount || '0'));
 export const toYoctoNear = (amount: number): string => utils.format.parseNearAmount(String(amount)) || '0';
+
+const LOCKUP_VIEW_METHODS = [
+  'get_lockups_paged',
+  'get_token_account_id',
+  'get_deposit_whitelist',
+];
+
+const LOCKUP_CHANGE_METHODS = [
+  'claim',
+];
 
 type TViewMethods = {
   'get_lockups_paged': any,
   'get_token_account_id': any,
   'get_deposit_whitelist': any,
 };
+
+type TChangeMethods = {
+  'claim': any,
+};
+
+const MAX_GAS = 300_000_000_000_000;
 
 type TNearAmount = string;
 type TNearTimestamp = number;
@@ -30,7 +47,7 @@ export type TLockup = {
   unclaimed_balance: TNearAmount,
 };
 
-export type TLockupContract = Contract & TViewMethods;
+export type TLockupContract = Contract & TViewMethods & TChangeMethods;
 
 class NearApi {
   private near: Near;
@@ -42,10 +59,19 @@ class NearApi {
   constructor(near: Near) {
     this.near = near;
     this.walletConnection = new WalletConnection(near, config.contractName);
-    this.contract = new Contract(this.walletConnection.account(), config.contractName, {
-      viewMethods: ['get_lockups_paged', 'get_token_account_id', 'get_deposit_whitelist'],
-      changeMethods: [],
-    }) as TLockupContract;
+    this.contract = this.setContract();
+  }
+
+  async claim(accountId: string = this.walletConnection.getAccountId()): Promise<any> {
+    if (accountId !== this.walletConnection.getAccountId()) {
+      await this.setWalletAndContractWithAuth(accountId);
+    }
+
+    (this.contract as TLockupContract).claim({}, MAX_GAS);
+  }
+
+  getNear(): Near {
+    return this.near;
   }
 
   getContract(): TLockupContract {
@@ -89,6 +115,42 @@ class NearApi {
       console.error('Account not exist');
     }
     return balance;
+  }
+
+  setContract(
+    contractName: string = config.contractName,
+    viewMethods: Array<string> = LOCKUP_VIEW_METHODS,
+    changeMethods: Array<string> = LOCKUP_CHANGE_METHODS,
+  ): Contract {
+    if (!this.walletConnection) {
+      throw Error('Unitialized wallet connection');
+    }
+
+    this.contract = new Contract(
+      this.walletConnection.account(),
+      contractName,
+      { viewMethods, changeMethods },
+    );
+
+    return this.contract;
+  }
+
+  async setWalletAndContractWithAuth(
+    accountId: string,
+    contractName: string = config.contractName,
+  ): Promise<any> {
+    const firstFullAccessKey = await getFirstFullAccessKey(
+      this.near.connection.provider,
+      accountId,
+    );
+
+    localStorage.setItem(
+      `${contractName}_wallet_auth_key`,
+      JSON.stringify({ accountId, allKeys: [firstFullAccessKey.public_key] }),
+    );
+
+    this.walletConnection = new WalletConnection(this.near, contractName);
+    this.setContract();
   }
 }
 

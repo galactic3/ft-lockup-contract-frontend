@@ -1,8 +1,11 @@
 import * as nearAPI from 'near-api-js';
 import { config } from '../config';
-import NearApi from './api';
 
-const getFirstFullAccessKey = async (provider: any, accountId: String): Promise<any> => {
+type TViewMethods = {
+  'get_deposit_whitelist': any,
+};
+
+export const getFirstFullAccessKey = async (provider: any, accountId: String): Promise<any> => {
   const allAccessKeys = await provider.query({
     request_type: 'view_access_key_list',
     account_id: accountId,
@@ -10,23 +13,28 @@ const getFirstFullAccessKey = async (provider: any, accountId: String): Promise<
   });
 
   if (!allAccessKeys.keys?.length) {
-    return {};
+    throw Error('None of access keys was founded');
   }
 
   const allFullAccessKeys = allAccessKeys.keys.filter((key: any) => (typeof key?.access_key?.permission === 'string') && key?.access_key?.permission === 'FullAccess');
 
   if (!allFullAccessKeys?.length) {
-    return {};
+    throw Error('None of full access keys was founded');
   }
 
   return allFullAccessKeys[0];
 };
 
-const importWhitelistedAccountsFullAccessKeys = async () => {
+export const importWhitelistedAccountsFullAccessKeys = async () => {
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
   const near = await nearAPI.connect({ headers: {}, keyStore, ...config });
-  const api = new NearApi(near);
-  const ownerAccountIds = await api.getContract().get_deposit_whitelist() || [];
+  const walletConnection = new nearAPI.WalletConnection(near, config.contractName);
+  const contract = new nearAPI.Contract(walletConnection.account(), config.contractName, {
+    viewMethods: ['get_deposit_whitelist'],
+    changeMethods: [],
+  }) as (nearAPI.Contract & TViewMethods);
+  const ownerAccountIds = await contract.get_deposit_whitelist() || [];
+
   const { provider } = near.connection;
 
   if (!ownerAccountIds?.length) {
@@ -47,9 +55,3 @@ const importWhitelistedAccountsFullAccessKeys = async () => {
 
   console.log('ownerAccountIds = ', ownerAccountIds);
 };
-
-const NoLogInUsage = {
-  importWhitelistedAccountsFullAccessKeys,
-};
-
-export default NoLogInUsage;

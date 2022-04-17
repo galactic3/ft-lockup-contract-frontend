@@ -3,7 +3,7 @@ import { createContext } from 'react';
 import { config, INearConfig } from '../config';
 import NearApi from './api';
 import TokenApi from './tokenApi';
-import NoLogInUsage from './NoLogInUsage';
+import { importWhitelistedAccountsFullAccessKeys } from './noLogInUsage';
 
 export interface INearProps {
   config: INearConfig;
@@ -16,7 +16,7 @@ export interface INearProps {
 export const NearContext = createContext<any>(null);
 
 export const connectNear = async (): Promise<INearProps> => {
-  await NoLogInUsage.importWhitelistedAccountsFullAccessKeys();
+  await importWhitelistedAccountsFullAccessKeys();
 
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
   const near = await nearAPI.connect({ headers: {}, keyStore, ...config });
