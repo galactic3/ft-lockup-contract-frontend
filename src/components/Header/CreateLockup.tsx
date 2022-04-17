@@ -26,6 +26,10 @@ export default function CreateLockup() {
   const handleClose = () => setOpen(false);
 
   const handleCreateLockup = async (e: any) => {
+    if (!near) {
+      throw Error('Cannot access token api');
+    }
+
     e.preventDefault();
 
     const { account, amount } = e.target.elements;
@@ -46,7 +50,7 @@ export default function CreateLockup() {
       { timestamp: addYear(startDate, 4), balance: lockupTotalAmount },
     ];
 
-    await near?.tokenApi.ftTransferCall({
+    near.tokenApi.ftTransferCall({
       receiver_id: lockupContractId,
       amount: lockupTotalAmount,
       msg: {
