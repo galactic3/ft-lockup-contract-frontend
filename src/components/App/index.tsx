@@ -34,7 +34,7 @@ export default function App() {
   }, [near]);
 
   useEffect(() => {
-    if (near) {
+    if (near && near.tokenApi) {
       setToken(near.tokenApi.getContract().contractId);
     }
 
