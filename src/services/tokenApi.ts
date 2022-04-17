@@ -42,15 +42,11 @@ class TokenApi {
   ) {
     const { msg, ...rest } = meta;
 
-    try {
-      await this.contract.ft_transfer_call(
-        { msg: JSON.stringify(msg), ...rest },
-        gas,
-        deposit,
-      );
-    } catch (e) {
-      console.log(e);
-    }
+    await this.contract.ft_transfer_call(
+      { msg: JSON.stringify(msg), ...rest },
+      gas,
+      deposit,
+    );
   }
 }
 
