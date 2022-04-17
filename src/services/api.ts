@@ -62,7 +62,7 @@ class NearApi {
     this.contract = this.setContract();
   }
 
-  async claim(accountId: string = this.walletConnection.getAccountId()): Promise<any> {
+  async claim(accountId: string = this.walletConnection.getAccountId()): Promise<void> {
     if (accountId !== this.walletConnection.getAccountId()) {
       await this.setWalletAndContractWithAuth(accountId);
     }
