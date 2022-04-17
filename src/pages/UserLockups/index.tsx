@@ -9,10 +9,7 @@ import {
   TableRow,
 } from '@mui/material';
 import Row from '../../components/table/row';
-
-const claim = () => {
-  console.log('claim');
-};
+import ClaimAllLockups from '../../components/Header/ClaimAllLockups';
 
 export default function UserLockups({ lockups: allLockups }: { lockups: any[] }) {
   const { userId } = useParams();
@@ -23,7 +20,7 @@ export default function UserLockups({ lockups: allLockups }: { lockups: any[] })
 
   return (
     <div className="container">
-      <button className="button" type="button" onClick={claim}>Claim All</button>
+      <ClaimAllLockups accountId={userId} />
 
       <TableContainer sx={{ boxShadow: 'unset' }} component={Paper}>
         <Table className="main-table" aria-label="collapsible table">
