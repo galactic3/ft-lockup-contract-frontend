@@ -49,6 +49,7 @@ export default function App() {
     <HashRouter>
       <Header />
       <Routes>
+        <Route path="/" element={<About lockups={lockups} token_account_id={token} />} />
         <Route path="/about" element={<About lockups={lockups} token_account_id={token} />} />
         <Route path="/lockups" element={<Lockups lockups={lockups} />} />
         <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} />} />
