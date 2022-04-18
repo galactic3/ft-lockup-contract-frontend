@@ -3,12 +3,16 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { Routes, Route, HashRouter } from 'react-router-dom';
+import {
+  Routes, Route, HashRouter,
+} from 'react-router-dom';
 import { INearProps, NearContext } from '../../services/near';
 import About from '../../pages/About';
 import Lockups from '../../pages/Lockups';
 import UserLockups from '../../pages/UserLockups';
 import Header from '../Header';
+import Authorize from '../Authorize';
+import RequireAuth from '../RequireAuth';
 
 export default function App() {
   const { near }: { near: INearProps | null } = useContext(NearContext);
@@ -51,8 +55,11 @@ export default function App() {
       <Routes>
         <Route path="/" element={<About lockups={lockups} token_account_id={token} />} />
         <Route path="/about" element={<About lockups={lockups} token_account_id={token} />} />
-        <Route path="/lockups" element={<Lockups lockups={lockups} />} />
-        <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} />} />
+        <Route path="/lockups" element={<Lockups lockups={lockups} token={token} />} />
+        <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} token={token} />} />
+        <Route path="/admin" element={<Authorize />} />
+        <Route path="/admin/lockups" element={<RequireAuth><Lockups lockups={lockups} token={token} /></RequireAuth>} />
+        <Route path="/admin/lockups/:userId" element={<RequireAuth><UserLockups lockups={lockups} token={token} /></RequireAuth>} />
       </Routes>
     </HashRouter>
   );
