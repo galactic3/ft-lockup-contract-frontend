@@ -2,7 +2,7 @@ import {
   Near, Account, Contract, WalletConnection, utils,
 } from 'near-api-js';
 import { config } from '../config';
-import { getFirstFullAccessKey } from './noLogInUsage';
+import getFirstFullAccessKey from './noLogInUsage';
 
 export const fromNear = (amount: string): number => parseFloat(utils.format.formatNearAmount(amount || '0'));
 export const toYoctoNear = (amount: number): string => utils.format.parseNearAmount(String(amount)) || '0';
