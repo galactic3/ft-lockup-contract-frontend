@@ -4,7 +4,7 @@ import {
   useState,
 } from 'react';
 import {
-  Routes, Route, HashRouter,
+  Routes, Route, HashRouter, Navigate,
 } from 'react-router-dom';
 import { INearProps, NearContext } from '../../services/near';
 import About from '../../pages/About';
@@ -65,6 +65,7 @@ export default function App() {
     <HashRouter>
       <Header />
       <Routes>
+        <Route path="/" element={<Navigate replace to="/lockups" />} />
         <Route path="/about" element={<About lockups={lockups} token_account_id={contractId} />} />
         <Route path="/lockups" element={<Lockups lockups={lockups} token={token} />} />
         <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} token={token} />} />
