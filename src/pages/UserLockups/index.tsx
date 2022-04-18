@@ -18,14 +18,14 @@ export default function UserLockups({ lockups: allLockups, token }: { lockups: a
 
   const lockups = allLockups.filter((x) => x.account_id === userId);
 
-  const totalClaimedBalance = lockups.reduce((acc, obj) => acc + convertAmount(obj.claimed_balance, token.decimals), 0);
+  const totalUnclaimedBalance = lockups.reduce((acc, obj) => acc + convertAmount(obj.unclaimed_balance, token.decimals), 0);
 
   console.log('user lockups', userId, lockups);
 
   return (
     <div className="container">
 
-      <ClaimAllLockups accountId={userId} token={token} total={totalClaimedBalance} />
+      <ClaimAllLockups accountId={userId} token={token} total={totalUnclaimedBalance} />
 
       <TableContainer sx={{ boxShadow: 'unset' }} component={Paper}>
         <Table className="main-table" aria-label="collapsible table">

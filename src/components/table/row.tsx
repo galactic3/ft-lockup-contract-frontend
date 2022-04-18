@@ -62,7 +62,7 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata }) {
             </div>
             <div style={{ width: `${(row.unclaimed_balance / row.total_balance) * 100}%` }} className="available">
               <span>
-                {(row.unclaimed_balance / row.total_balance) > 0.2
+                {(row.unclaimed_balance / row.total_balance) > 0.1
                   && convertAmount(row.unclaimed_balance, token.decimals)}
               </span>
             </div>
