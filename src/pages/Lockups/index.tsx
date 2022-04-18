@@ -7,13 +7,25 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import { useContext } from 'react';
 import Row from '../../components/table/row';
-import CreateLockup from '../../components/Header/CreateLockup';
+import CreateLockup from '../../components/CreateLockup';
+import { INearProps, NearContext } from '../../services/near';
 
-export default function Lockups({ lockups }: { lockups: any[] }) {
+export default function Lockups({ lockups, token }: { lockups: any[], token: string | null }) {
   const uniqueUsers = Array.from(new Set(lockups.map((x) => x.account_id)));
 
   console.log('unique users', uniqueUsers);
+
+  const {
+    near,
+  }: {
+    near: INearProps | null,
+  } = useContext(NearContext);
+
+  if (!near) return null;
+
+  const { signedIn } = near;
 
   return (
     <div className="container">
@@ -33,13 +45,13 @@ export default function Lockups({ lockups }: { lockups: any[] }) {
           </TableHead>
           <TableBody>
             {lockups.map((lockup) => (
-              <Row key={lockup.id} row={lockup} />
+              <Row key={lockup.id} row={lockup} token={token} />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <CreateLockup />
+      {signedIn && <CreateLockup />}
 
     </div>
   );

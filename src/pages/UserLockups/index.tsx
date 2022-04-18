@@ -10,7 +10,8 @@ import {
 } from '@mui/material';
 import Row from '../../components/table/row';
 
-export default function UserLockups({ lockups: allLockups }: { lockups: any[] }) {
+// eslint-disable-next-line max-len
+export default function UserLockups({ lockups: allLockups, token }: { lockups: any[], token: string | null }) {
   const { userId } = useParams();
 
   const lockups = allLockups.filter((x) => x.account_id === userId);
@@ -35,7 +36,7 @@ export default function UserLockups({ lockups: allLockups }: { lockups: any[] })
           </TableHead>
           <TableBody>
             {lockups.map((lockup) => (
-              <Row key={lockup.id} row={lockup} />
+              <Row key={lockup.id} row={lockup} token={token} />
             ))}
           </TableBody>
         </Table>
