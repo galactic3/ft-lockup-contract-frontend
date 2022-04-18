@@ -89,7 +89,7 @@ class NearApi {
   }
 
   signIn(): void {
-    const successUrl = window.location.href;
+    const successUrl = `${window.location.href}/lockups`;
     this.walletConnection.requestSignIn(config.contractName, undefined, successUrl);
   }
 
