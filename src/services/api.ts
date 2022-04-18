@@ -82,6 +82,10 @@ class NearApi {
     return (this.contract as TLockupContract).get_token_account_id();
   }
 
+  getDepositWhitelist(): Promise<Array<string>> {
+    return (this.contract as TLockupContract).get_deposit_whitelist();
+  }
+
   loadAllLockups(): Promise<TLockup[]> {
     return (this.contract as TLockupContract).get_lockups_paged().then(
       (response: any) => response.map(([id, data]: [number, any]) => Object.assign(data, { id })),
