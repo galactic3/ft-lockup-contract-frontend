@@ -9,7 +9,7 @@ import {
   TableRow,
 } from '@mui/material';
 import Row from '../../components/table/row';
-import ClaimAllLockups from '../../components/Header/ClaimAllLockups';
+import ClaimAllLockups from '../../components/Claim';
 import { TMetadata } from '../../services/tokenApi';
 
 // eslint-disable-next-line max-len
