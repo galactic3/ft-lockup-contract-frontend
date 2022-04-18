@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { convertAmount, convertTimestamp } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
+import TerminateLockup from '../TerminateLockup';
 
 export default function Row(props: { row: ReturnType<any>, token: TMetadata }) {
   const [open, setOpen] = useState(false);
@@ -107,6 +108,7 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata }) {
                 </Table>
               </div>
             </Box>
+            <TerminateLockup lockupIndex={row.id} />
           </Collapse>
         </TableCell>
       </TableRow>
