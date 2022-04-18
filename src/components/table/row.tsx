@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import {
-  Box,
   Collapse,
   IconButton,
   Table,
@@ -81,7 +80,7 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata }) {
       <TableRow sx={{ background: '#F4FAFF' }}>
         <TableCell style={{ padding: 0 }} colSpan={7}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ padding: 2 }}>
+            <div className="lockup-row">
               <div className="inner-table_wrapper">
                 <h5>Lockup schedule</h5>
                 <Table className="inner-table" size="small" aria-label="purchases">
@@ -107,8 +106,12 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata }) {
                   </TableBody>
                 </Table>
               </div>
-            </Box>
-            <TerminateLockup lockupIndex={row.id} />
+              {signedIn && (
+              <div className="terminate">
+                <TerminateLockup lockupIndex={row.id} />
+              </div>
+              )}
+            </div>
           </Collapse>
         </TableCell>
       </TableRow>

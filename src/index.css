@@ -34,9 +34,12 @@ code {
 }
 
 .lockup-row {
-  border: 1px solid black;
-  padding: 10px;
-  margin: 10px;
+  padding: 20px;
+}
+
+.terminate {
+  width: 240px;
+  margin-top: 20px;
 }
 
 .header {
@@ -61,6 +64,44 @@ code {
   line-height: 82px;
   margin: 0 12px;
   padding: 0 7px;
+}
+
+.claim-wrapper {
+  padding: 24px;
+  display: inline-block;
+  border-radius: 16px;
+  border: 1px solid #EDF2F7;
+  background: var(--white);
+  margin-bottom: 20px;
+}
+
+.claim-wrapper h5 {
+  color: #718096;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0 0 24px;
+}
+
+.claim-amount {
+  color: #1A202C;
+  font-size: 40px;
+  line-height: 44px;
+  font-weight: 700;
+}
+
+.claim-amount span {
+  color: #718096;
+  font-size: 20px;
+  line-height: 27px;
+  font-weight: 700;
+  margin-left: 10px;
+}
+
+.claim-wrapper button {
+  width: 150px;
+  height: 48px;
+  font-weight: 700;
+  margin: 20px 0 0;
 }
 
 .main-table {
@@ -185,4 +226,14 @@ code {
 
 .button.fullWidth {
   width: 100%;
+}
+
+.button.red {
+  background: #ff2222;
+}
+
+.login .button {
+  width: 150px;
+  height: 48px;
+  margin-left: 20px;
 }

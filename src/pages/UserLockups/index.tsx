@@ -11,19 +11,21 @@ import {
 import Row from '../../components/table/row';
 import ClaimAllLockups from '../../components/Claim';
 import { TMetadata } from '../../services/tokenApi';
+import { convertAmount } from '../../utils';
 
-// eslint-disable-next-line max-len
 export default function UserLockups({ lockups: allLockups, token }: { lockups: any[], token: TMetadata }) {
   const { userId } = useParams();
 
   const lockups = allLockups.filter((x) => x.account_id === userId);
+
+  const totalClaimedBalance = lockups.reduce((acc, obj) => acc + convertAmount(obj.claimed_balance, token.decimals), 0);
 
   console.log('user lockups', userId, lockups);
 
   return (
     <div className="container">
 
-      <ClaimAllLockups accountId={userId} />
+      <ClaimAllLockups accountId={userId} token={token} total={totalClaimedBalance} />
 
       <TableContainer sx={{ boxShadow: 'unset' }} component={Paper}>
         <Table className="main-table" aria-label="collapsible table">

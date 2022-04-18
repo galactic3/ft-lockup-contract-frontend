@@ -18,7 +18,7 @@ function TerminateLockup(props: { lockupIndex: number | undefined }) {
   };
 
   return (
-    <button className="button" type="button" onClick={handleTerminateLockup}>Terminate</button>
+    <button className="button red fullWidth" type="button" onClick={handleTerminateLockup}>Terminate</button>
   );
 }
 

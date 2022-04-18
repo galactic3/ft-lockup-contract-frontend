@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { INearProps, NearContext } from '../../services/near';
 
 function Auth({ children }: { children: ReactNode }) {
-  return <div className="container">{children}</div>;
+  return <div className="container login">{children}</div>;
 }
 
 function Authorize() {
