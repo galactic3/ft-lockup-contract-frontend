@@ -9,11 +9,11 @@ jest.mock('./services/near', () => ({
     return {
       config: {},
       api: {
-        getTokenAccountId: () => 'token.jest.testnet',
         loadAllLockups: async () => {
           return Promise.resolve([]);
         }
       },
+      tokenApi: { getContract: () => { return { contractId: 'token.jest.testnet'} } },
       signedIn: false,
       signedAccountId: '',
     }
