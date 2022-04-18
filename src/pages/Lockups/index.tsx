@@ -31,7 +31,7 @@ export default function Lockups({ lockups, token }: { lockups: any[], token: TMe
   return (
     <div className="container">
 
-      <TableContainer sx={{ boxShadow: 'unset' }} component={Paper}>
+      <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }} component={Paper}>
         <Table className="main-table" aria-label="collapsible table">
           <TableHead className="table-head">
             <TableRow>

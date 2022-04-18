@@ -22,6 +22,7 @@ export default function UserLockups({ lockups: allLockups, token }: { lockups: a
 
   return (
     <div className="container">
+
       <ClaimAllLockups accountId={userId} />
 
       <TableContainer sx={{ boxShadow: 'unset' }} component={Paper}>

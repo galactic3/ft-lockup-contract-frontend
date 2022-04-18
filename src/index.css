@@ -171,7 +171,6 @@ code {
 }
 
 .button {
-  margin: 20px 20px 0 auto;
   background: #00B988;
   height: 36px;
   font-size: 14px;
@@ -182,4 +181,8 @@ code {
   border: unset;
   padding: 8px;
   cursor: pointer;
+}
+
+.button.fullWidth {
+  width: 100%;
 }

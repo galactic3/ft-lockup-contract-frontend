@@ -23,7 +23,7 @@ export default function Header() {
               <Link className="nav-link" to="admin/lockups">Lockups</Link>
               <Link className="nav-link" to="/about">About</Link>
             </div>
-            <Box sx={{ marginTop: '3px' }}>
+            <Box sx={{ marginTop: '23px' }}>
               <span>
                 {signedAccountId}
                 {' '}
