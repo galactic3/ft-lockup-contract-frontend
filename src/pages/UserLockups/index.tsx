@@ -10,9 +10,10 @@ import {
 } from '@mui/material';
 import Row from '../../components/table/row';
 import ClaimAllLockups from '../../components/Header/ClaimAllLockups';
+import { TMetadata } from '../../services/tokenApi';
 
 // eslint-disable-next-line max-len
-export default function UserLockups({ lockups: allLockups, token }: { lockups: any[], token: string | null }) {
+export default function UserLockups({ lockups: allLockups, token }: { lockups: any[], token: TMetadata }) {
   const { userId } = useParams();
 
   const lockups = allLockups.filter((x) => x.account_id === userId);

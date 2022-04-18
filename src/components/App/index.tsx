@@ -13,11 +13,21 @@ import UserLockups from '../../pages/UserLockups';
 import Header from '../Header';
 import Authorize from '../Authorize';
 import RequireAuth from '../RequireAuth';
+import { TMetadata } from '../../services/tokenApi';
 
 export default function App() {
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [contractState, setContractState] = useState({});
-  const [token, setToken] = useState<string | null>(null);
+  const [contractId, setContractId] = useState<string | null>(null);
+  const [token, setToken] = useState<TMetadata>({
+    decimals: 0,
+    icon: null,
+    name: '',
+    reference: null,
+    reference_hash: null,
+    spec: '',
+    symbol: '',
+  });
 
   useEffect(() => {
     let active = true;
@@ -25,9 +35,11 @@ export default function App() {
     if (near) {
       const load = async () => {
         const lockups = await near.api.loadAllLockups();
+        const metadata = await near.tokenApi.ftMetadata();
         if (!active) {
           return;
         }
+        setToken(metadata);
         setContractState({ lockups, name: 'name' });
       };
 
@@ -39,7 +51,7 @@ export default function App() {
 
   useEffect(() => {
     if (near && near.tokenApi) {
-      setToken(near.tokenApi.getContract().contractId);
+      setContractId(near.tokenApi.getContract().contractId);
     }
 
     return () => {};
@@ -53,8 +65,7 @@ export default function App() {
     <HashRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<About lockups={lockups} token_account_id={token} />} />
-        <Route path="/about" element={<About lockups={lockups} token_account_id={token} />} />
+        <Route path="/about" element={<About lockups={lockups} token_account_id={contractId} />} />
         <Route path="/lockups" element={<Lockups lockups={lockups} token={token} />} />
         <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} token={token} />} />
         <Route path="/admin" element={<Authorize />} />

@@ -22,7 +22,7 @@ type TTokenViewMethods = {
   'ft_metadata': any
 };
 
-type TMetadata = {
+export type TMetadata = {
   spec: string,
   name: string,
   symbol: string,

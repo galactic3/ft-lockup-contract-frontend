@@ -11,8 +11,9 @@ import { useContext } from 'react';
 import Row from '../../components/table/row';
 import CreateLockup from '../../components/CreateLockup';
 import { INearProps, NearContext } from '../../services/near';
+import { TMetadata } from '../../services/tokenApi';
 
-export default function Lockups({ lockups, token }: { lockups: any[], token: string | null }) {
+export default function Lockups({ lockups, token }: { lockups: any[], token: TMetadata }) {
   const uniqueUsers = Array.from(new Set(lockups.map((x) => x.account_id)));
 
   console.log('unique users', uniqueUsers);
@@ -51,7 +52,7 @@ export default function Lockups({ lockups, token }: { lockups: any[], token: str
         </Table>
       </TableContainer>
 
-      {signedIn && <CreateLockup />}
+      {signedIn && <CreateLockup token={token} />}
 
     </div>
   );

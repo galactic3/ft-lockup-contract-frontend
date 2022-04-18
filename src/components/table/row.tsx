@@ -14,8 +14,9 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link } from 'react-router-dom';
 import { convertAmount, convertTimestamp } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
+import { TMetadata } from '../../services/tokenApi';
 
-export default function Row(props: { row: ReturnType<any>, token: string | null }) {
+export default function Row(props: { row: ReturnType<any>, token: TMetadata }) {
   const [open, setOpen] = useState(false);
   const { row, token } = props;
   const {
@@ -27,7 +28,6 @@ export default function Row(props: { row: ReturnType<any>, token: string | null 
   if (!near) return null;
 
   const { signedIn } = near;
-  console.log(token);
 
   // @ts-ignore
   return (
@@ -51,25 +51,26 @@ export default function Row(props: { row: ReturnType<any>, token: string | null 
           {convertTimestamp(row.schedule[row.schedule.length - 1].timestamp)}
         </TableCell>
         <TableCell align="right">
-          {convertAmount(row.total_balance)}
-          &nbsp;TOKEN
+          {convertAmount(row.total_balance, token.decimals)}
+          &nbsp;
+          {token.symbol}
         </TableCell>
         <TableCell align="center">
           <div className="progress-bar">
             <div style={{ width: `${(row.claimed_balance / row.total_balance) * 100}%` }} className="claimed">
-              <span>{convertAmount(row.claimed_balance)}</span>
+              <span>{convertAmount(row.claimed_balance, token.decimals)}</span>
             </div>
             <div style={{ width: `${(row.unclaimed_balance / row.total_balance) * 100}%` }} className="available">
               <span>
                 {(row.unclaimed_balance / row.total_balance) > 0.2
-                  && convertAmount(row.unclaimed_balance)}
+                  && convertAmount(row.unclaimed_balance, token.decimals)}
               </span>
             </div>
             <div style={{ width: `${((row.total_balance - row.claimed_balance - row.unclaimed_balance) / row.total_balance) * 100}%` }} className="vested">
               <span>
                 {((row.total_balance - row.claimed_balance - row.unclaimed_balance)
                   / row.total_balance) > 0.2 && convertAmount(row.total_balance
-                  - row.claimed_balance - row.unclaimed_balance)}
+                  - row.claimed_balance - row.unclaimed_balance, token.decimals)}
               </span>
             </div>
             <div style={{ width: `${(row.total_balance - row.total_balance) * 100}%` }} className="unvested">&nbsp;</div>
@@ -96,8 +97,9 @@ export default function Row(props: { row: ReturnType<any>, token: string | null 
                           {convertTimestamp(x.timestamp)}
                         </TableCell>
                         <TableCell>
-                          {convertAmount(x.balance)}
-                          &nbsp;TOKEN
+                          {convertAmount(x.balance, token.decimals)}
+                          &nbsp;
+                          {token.symbol}
                         </TableCell>
                       </TableRow>
                     ))}

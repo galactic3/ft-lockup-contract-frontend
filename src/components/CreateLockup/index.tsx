@@ -12,8 +12,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { INearProps, NearContext } from '../../services/near';
 import { addYear } from '../../utils';
+import { TMetadata } from '../../services/tokenApi';
 
-export default function CreateLockup() {
+export default function CreateLockup({ token } : { token: TMetadata }) {
   const {
     near,
   }: {
@@ -38,8 +39,8 @@ export default function CreateLockup() {
 
     const lockupContractId = near?.api.getContract().contractId || '';
     const claimedBalance = '0';
-    const userAccountId = account.value || 'alice.demo000.ft-lockup.testnet';
-    const lockupTotalAmount = amount.value || '9000000';
+    const userAccountId = account.value;
+    const lockupTotalAmount = amount.value * 10 ** token.decimals;
 
     const ts = (startDate?.getTime() || 0) / 1000;
 
@@ -47,12 +48,12 @@ export default function CreateLockup() {
       { timestamp: ts, balance: '0' },
       { timestamp: addYear(startDate, 1) - 1, balance: '0' },
       { timestamp: addYear(startDate, 1), balance: (lockupTotalAmount / 4).toString() },
-      { timestamp: addYear(startDate, 4), balance: lockupTotalAmount },
+      { timestamp: addYear(startDate, 4), balance: lockupTotalAmount.toString() },
     ];
 
     near.tokenApi.ftTransferCall({
       receiver_id: lockupContractId,
-      amount: lockupTotalAmount,
+      amount: lockupTotalAmount.toString(),
       msg: {
         account_id: userAccountId,
         schedule,
