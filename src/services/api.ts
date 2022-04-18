@@ -15,6 +15,7 @@ const LOCKUP_VIEW_METHODS = [
 
 const LOCKUP_CHANGE_METHODS = [
   'claim',
+  'terminate',
 ];
 
 type TViewMethods = {
@@ -25,6 +26,7 @@ type TViewMethods = {
 
 type TChangeMethods = {
   'claim': any,
+  'terminate': any,
 };
 
 const MAX_GAS = 300_000_000_000_000;
@@ -68,6 +70,17 @@ class NearApi {
     }
 
     (this.contract as TLockupContract).claim({}, MAX_GAS);
+  }
+
+  async terminate(lockupIndex: number): Promise<void> {
+    try {
+      await (this.contract as TLockupContract).terminate(
+        { lockup_index: lockupIndex },
+        MAX_GAS,
+      );
+    } catch (e) {
+      throw Error('Cannot terminate lockup more than once');
+    }
   }
 
   getNear(): Near {
