@@ -1,3 +1,5 @@
+import BN from 'bn.js';
+
 export const parseSpreadsheetColumns = (input: string): any[] => {
   const colSep = '\t';
   const rowSep = '\n';
@@ -27,7 +29,7 @@ export const isValidNearAccountId = (account: string): boolean => {
   return true;
 };
 
-type TokenAmount = number;
+type TokenAmount = string;
 
 export const isValidTokenAmount = (amount: string): boolean => {
   return !!amount.match(/^[0-9]+(\.[0-9]+)?$/);
@@ -174,4 +176,47 @@ export const parseSpreadsheetToSpreadsheetRows = (input: string): SpreadsheetRow
   let parsedStringRows = parseSpreadsheetColumns(input);
 
   return parsedStringRows.map(x => parseToSpreadsheetRow(x));
+};
+
+type ValidAccountId = string;
+type TimestampSec = number;
+type Balance = BN;
+type Checkpoint = {
+  timestamp: TimestampSec,
+  balance: Balance,
+};
+type Schedule = Checkpoint[];
+type TerminationConfig = {
+  terminator_id: ValidAccountId,
+  vesting_schedule: {
+    Schedule: Schedule,
+  },
+};
+type Lockup = {
+  account_id: ValidAccountId,
+  schedule: Schedule,
+  claimed_balance: Balance,
+  termination_config: TerminationConfig | null,
+};
+
+export const datePlusDurationMul = (date: Date, duration: IsoDuration, mul: number): Date => {
+  mul = Math.floor(mul);
+  let result = new Date(Date.UTC(
+    date.getUTCFullYear() + duration.year * mul,
+    date.getUTCMonth() + duration.month * mul,
+    date.getUTCDate() + (duration.week * 7 + duration.day) * mul,
+    date.getUTCHours() + duration.hour * mul,
+    date.getUTCMinutes() + duration.minute * mul,
+    date.getUTCSeconds() + duration.second * mul,
+  ));
+  return result;
+};
+
+export const toLockupSchedule = (schedule: HumanFriendlySchedule, totalAmount: TokenAmount): Schedule => {
+  let timestampStart = schedule.timestampStart;
+  let timestampFinish = datePlusDurationMul(timestampStart, schedule.durationTotal, 1);
+  return [
+    { timestamp: Math.floor(timestampStart.getTime() / 1000), balance: new BN('0') },
+    { timestamp: Math.floor(timestampFinish.getTime() / 1000), balance: new BN(totalAmount) },
+  ];
 };

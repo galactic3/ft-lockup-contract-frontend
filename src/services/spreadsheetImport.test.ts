@@ -1,4 +1,7 @@
+import BN from 'bn.js';
+
 import {
+  datePlusDurationMul,
   isValidNearAccountId,
   isValidTokenAmount,
   parseCliffInfo,
@@ -8,6 +11,7 @@ import {
   parseTimestamp,
   parseToSpreadsheetRow,
   parseSpreadsheetToSpreadsheetRows,
+  toLockupSchedule,
 } from './spreadsheetImport';
 
 describe('.parseSpreadsheetColumns', () => {
@@ -189,5 +193,48 @@ describe('./parseToSpreadsheetRow', () => {
           terminator_id: 'owner.near',
         }],
       );
+  });
+})
+
+describe('.datePlusDurationMul', () => {
+  it('works', () => {
+    let m = datePlusDurationMul;
+    let d = parseDuration;
+    let tm = new Date('1999-12-31T23:59:59Z');
+
+    expect(m(tm, d('PT0S'), 1)).toStrictEqual(new Date('1999-12-31T23:59:59Z'));
+
+    expect(m(tm, d('P1Y'), 2)).toStrictEqual(new Date('2001-12-31T23:59:59Z'));
+
+    expect(m(tm, d('P2M'), 1)).toStrictEqual(new Date('2000-03-02T23:59:59Z'));
+    expect(m(tm, d('P3M'), 1)).toStrictEqual(new Date('2000-03-31T23:59:59Z'));
+
+    expect(m(tm, d('P2W'), 1)).toStrictEqual(new Date('2000-01-14T23:59:59Z'));
+
+    expect(m(tm, d('P5D'), 1)).toStrictEqual(new Date('2000-01-05T23:59:59Z'));
+
+    expect(m(tm, d('PT36H'), 1)).toStrictEqual(new Date('2000-01-02T11:59:59Z'));
+
+    expect(m(tm, d('PT90M'), 1)).toStrictEqual(new Date('2000-01-01T01:29:59Z'));
+
+    expect(m(tm, d('PT86400S'), 1)).toStrictEqual(new Date('2000-01-01T23:59:59Z'));
+
+    expect(m(tm, d('P1Y2M3DT4H5M6S'), 1)).toStrictEqual(new Date('2001-03-07T04:05:05Z'));
+  });
+})
+
+describe('.toLockupSchedule', () => {
+  it('works', () => {
+    let unix = (x: string) => Math.floor(new Date(x).getTime() / 1000);
+
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:25|P1M'),
+        '60000' + '000000000000', // ensure no rounding
+      )
+    ).toStrictEqual([
+      { timestamp: unix('1999-12-31T23:59:59Z'), balance: new BN('0') },
+      { timestamp: unix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+    ]);
   });
 })
