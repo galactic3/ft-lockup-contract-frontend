@@ -68,7 +68,7 @@ describe('.parseTimestamp', () => {
   })
 });
 
-describe('./parseDuration', () => {
+describe('.parseDuration', () => {
   it('works', () => {
     expect(() => parseDuration('')).toThrow("invalid duration");
     expect(() => parseDuration('P1Y1W')).toThrow("invalid duration");
@@ -92,7 +92,7 @@ describe('./parseDuration', () => {
   });
 });
 
-describe('./parseCliffInfo', () => {
+describe('.parseCliffInfo', () => {
   it('works', () => {
     expect(() => parseCliffInfo('')).toThrow(/expected 2 parts/);
     expect(() => parseCliffInfo('P1Y:112')).toThrow(/invalid percentage/);
@@ -102,7 +102,7 @@ describe('./parseCliffInfo', () => {
   });
 });
 
-describe('./parseHumanFriendlySchedule', () => {
+describe('.parseHumanFriendlySchedule', () => {
   it('works', () => {
     expect(() => parseHumanFriendlySchedule('')).toThrow(/expected 4 parts/);
     expect(parseHumanFriendlySchedule('2017-07-14T23:59:48Z|P4Y|P1Y:25|P1M'))
@@ -118,7 +118,7 @@ describe('./parseHumanFriendlySchedule', () => {
   });
 });
 
-describe('./parseToSpreadsheetRow', () => {
+describe('.parseToSpreadsheetRow', () => {
   it('works', () => {
     let input: any;
 
@@ -175,7 +175,7 @@ describe('./parseToSpreadsheetRow', () => {
   });
 });
 
-describe('./parseToSpreadsheetRow', () => {
+describe('.parseToSpreadsheetRow', () => {
   it('works', () => {
     let input: any;
 
