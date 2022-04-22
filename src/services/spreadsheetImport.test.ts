@@ -12,6 +12,7 @@ import {
   parseToSpreadsheetRow,
   parseSpreadsheetToSpreadsheetRows,
   toLockupSchedule,
+  toUnix,
 } from './spreadsheetImport';
 
 describe('.parseSpreadsheetColumns', () => {
@@ -225,16 +226,43 @@ describe('.datePlusDurationMul', () => {
 
 describe('.toLockupSchedule', () => {
   it('works', () => {
-    let unix = (x: string) => Math.floor(new Date(x).getTime() / 1000);
-
+    // basic
     expect(
       toLockupSchedule(
         parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:25|P1M'),
         '60000' + '000000000000', // ensure no rounding
       )
     ).toStrictEqual([
-      { timestamp: unix('1999-12-31T23:59:59Z'), balance: new BN('0') },
-      { timestamp: unix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
+      { timestamp: toUnix('2000-12-31T23:59:58Z'), balance: new BN('0') },
+      { timestamp: toUnix('2000-12-31T23:59:59Z'), balance: new BN('15000' + '000000000000') },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+    ]);
+
+    // zero cliff
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:0|P1M'),
+        '60000' + '000000000000', // ensure no rounding
+      )
+    ).toStrictEqual([
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
+      { timestamp: toUnix('2000-12-31T23:59:58Z'), balance: new BN('0') },
+      { timestamp: toUnix('2000-12-31T23:59:59Z'), balance: new BN('0') },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+    ]);
+
+    // full amount cliff
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:100|P1M'),
+        '60000' + '000000000000', // ensure no rounding
+      )
+    ).toStrictEqual([
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
+      { timestamp: toUnix('2000-12-31T23:59:58Z'), balance: new BN('0') },
+      { timestamp: toUnix('2000-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
     ]);
   });
 })

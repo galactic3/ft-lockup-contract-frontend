@@ -212,11 +212,45 @@ export const datePlusDurationMul = (date: Date, duration: IsoDuration, mul: numb
   return result;
 };
 
+export const toUnix = (date: Date | string) => Math.floor(new Date(date).getTime() / 1000);
+
 export const toLockupSchedule = (schedule: HumanFriendlySchedule, totalAmount: TokenAmount): Schedule => {
   let timestampStart = schedule.timestampStart;
+  let timestampCliff = datePlusDurationMul(timestampStart, schedule.durationCliff, 1);
+  let timestampPreCliff = datePlusDurationMul(timestampCliff, parseDuration('PT1S'), -1);
   let timestampFinish = datePlusDurationMul(timestampStart, schedule.durationTotal, 1);
+
+  // clone normalizes internal structure, needed for unit test equality
+  let cliffAmount = new BN(totalAmount).muln(schedule.percentageCliff).divn(100).clone();
+
+  if (timestampStart == timestampFinish) {
+    throw 'error: zero total duration';
+  }
+  if (timestampCliff > timestampFinish) {
+    throw 'error: timestampCliff > timestampFinish';
+  }
+  if (timestampCliff < timestampStart) {
+    throw 'error: timestampPreCliff < timestampStart';
+  }
+
+  if (timestampCliff === timestampFinish) {
+    throw 'cliff == finish not supported';
+  }
+  if (timestampPreCliff === timestampStart) {
+    throw 'precliff == start supported';
+  }
+
+  let checkpointsCliff = [
+    { timestamp: toUnix(timestampPreCliff), balance: new BN('0') },
+    { timestamp: toUnix(timestampCliff), balance: cliffAmount },
+  ]
+
+  let checkpointStart = { timestamp: toUnix(timestampStart), balance: new BN('0') };
+  let checkpointFinish = { timestamp: toUnix(timestampFinish), balance: new BN(totalAmount) };
+
   return [
-    { timestamp: Math.floor(timestampStart.getTime() / 1000), balance: new BN('0') },
-    { timestamp: Math.floor(timestampFinish.getTime() / 1000), balance: new BN(totalAmount) },
+    checkpointStart,
+    ...checkpointsCliff,
+    checkpointFinish,
   ];
 };
