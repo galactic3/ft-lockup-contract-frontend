@@ -36,8 +36,12 @@ export const parseValidAccountId = (accountId: string): ValidAccountId => {
 
 type TokenAmount = string;
 
-export const isValidTokenAmount = (amount: string): boolean => {
-  return !!amount.match(/^[0-9]+(\.[0-9]+)?$/);
+export const parseTokenAmount = (amount: string): TokenAmount => {
+  if (amount.match(/^[0-9]+$/)) {
+    return amount;
+  } else {
+    throw 'invalid token amount';
+  }
 };
 
 export const parseTimestamp = (timestamp: string): Date => {
@@ -148,10 +152,7 @@ type SpreadsheetRow = {
 
 export const parseToSpreadsheetRow = (input: any): SpreadsheetRow => {
   let account_id = parseValidAccountId(input.account_id);
-  if (!isValidTokenAmount(input.amount)) {
-    throw "invalid token amount";
-  }
-  let amount = input.amount;
+  let amount = parseTokenAmount(input.amount);
   let lockup_schedule = parseHumanFriendlySchedule(input.lockup_schedule);
   let vesting_schedule = input.vesting_schedule === '' ? null : parseHumanFriendlySchedule(input.vesting_schedule);
   let terminator_id = null;

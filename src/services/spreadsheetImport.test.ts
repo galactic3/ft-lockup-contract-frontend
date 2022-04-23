@@ -3,7 +3,7 @@ import BN from 'bn.js';
 import {
   datePlusDurationMul,
   parseValidAccountId,
-  isValidTokenAmount,
+  parseTokenAmount,
   parseCliffInfo,
   parseSpreadsheetColumns,
   parseHumanFriendlySchedule,
@@ -53,12 +53,12 @@ describe('.parseValidAccountId', () => {
   })
 });
 
-describe('.isValidTokenAmount', () => {
+describe('.parseTokenAmount', () => {
   it('works', () => {
-    expect(isValidTokenAmount('123')).toBe(true);
-    expect(isValidTokenAmount('123.')).toBe(false);
-    expect(isValidTokenAmount('.456')).toBe(false);
-    expect(isValidTokenAmount('123.456')).toBe(true);
+    expect(parseTokenAmount('123')).toBe('123');
+    expect(() => parseTokenAmount('123.')).toThrow('invalid token amount');
+    expect(() => parseTokenAmount('.456')).toThrow('invalid token amount');
+    expect(() => parseTokenAmount('123.456')).toThrow('invalid token amount');
   })
 });
 
