@@ -4,14 +4,16 @@
 import { TextareaAutosize } from '@mui/material';
 import { useState } from 'react';
 import { parseRawSpreadsheetInput } from '../../services/spreadsheetImport';
+import { TMetadata } from '../../services/tokenApi';
 
-function ImportDraftGroup() {
+function ImportDraftGroup({ token }: { token: TMetadata }) {
   const [data, setData] = useState('');
 
   console.log(setData);
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     try {
+      console.log(token);
       const input = event.target.value;
       const lockups = parseRawSpreadsheetInput(input);
       setData(JSON.stringify(lockups, null, 2));

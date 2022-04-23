@@ -40,7 +40,7 @@ function Admin({ lockups, token }: { lockups: any[], token: TMetadata }) {
         <Route path="/" element={<Authorize />} />
         <Route path="/lockups" element={<RequireAuth><Lockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
         <Route path="/lockups/:userId" element={<RequireAuth><UserLockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
-        <Route path="/import_draft_group" element={<RequireAuth><ImportDraftGroup /></RequireAuth>} />
+        <Route path="/import_draft_group" element={<RequireAuth><ImportDraftGroup token={token} /></RequireAuth>} />
       </Routes>
     </>
   );
