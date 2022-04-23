@@ -267,7 +267,7 @@ export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmou
   return result;
 };
 
-type Lockup = {
+export type Lockup = {
   account_id: ValidAccountId,
   schedule: Schedule,
   claimed_balance: Balance,

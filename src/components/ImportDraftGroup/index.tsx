@@ -3,11 +3,11 @@
 // import { INearProps, NearContext } from '../../services/near';
 import { TextareaAutosize } from '@mui/material';
 import { useState } from 'react';
-import { parseRawSpreadsheetInput } from '../../services/spreadsheetImport';
+import { parseRawSpreadsheetInput, Lockup } from '../../services/spreadsheetImport';
 import { TMetadata } from '../../services/tokenApi';
 
 function ImportDraftGroup({ token }: { token: TMetadata }) {
-  const [data, setData] = useState('');
+  const [data, setData] = useState<Lockup[]>([]);
 
   console.log(setData);
 
@@ -16,10 +16,9 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
       console.log(token);
       const input = event.target.value;
       const lockups = parseRawSpreadsheetInput(input);
-      setData(JSON.stringify(lockups, null, 2));
+      setData(lockups);
     } catch (e) {
       console.log(e);
-      setData(`Error: ${e}`);
     }
   };
 
@@ -39,7 +38,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
       </div>
       <div>
         <pre>
-          {data}
+          {JSON.stringify(data, null, 2)}
         </pre>
       </div>
     </div>
