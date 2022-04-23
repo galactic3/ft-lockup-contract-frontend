@@ -1,5 +1,10 @@
 import BN from 'bn.js';
 
+// TODO: replace with cleaner hack or another library
+BN.prototype.toJSON = function toJSON () {
+  return this.toString();
+};
+
 export const parseSpreadsheetColumns = (input: string): any[] => {
   const colSep = '\t';
   const rowSep = '\n';
@@ -142,6 +147,14 @@ export const parseHumanFriendlySchedule = (schedule: string): HumanFriendlySched
   };
 };
 
+type RawSpreadsheetRow = {
+  account_id: string,
+  amount: string,
+  lockup_schedule: string,
+  vesting_schedule: string,
+  terminator_id: string,
+}
+
 type SpreadsheetRow = {
   account_id: NearAccountId,
   amount: TokenAmount,
@@ -150,7 +163,7 @@ type SpreadsheetRow = {
   terminator_id: NearAccountId | null,
 };
 
-export const parseToSpreadsheetRow = (input: any): SpreadsheetRow => {
+export const parseToSpreadsheetRow = (input: RawSpreadsheetRow): SpreadsheetRow => {
   let account_id = parseValidAccountId(input.account_id);
   let amount = parseTokenAmount(input.amount);
   let lockup_schedule = parseHumanFriendlySchedule(input.lockup_schedule);
@@ -195,11 +208,14 @@ type TerminationConfig = {
     Schedule: Schedule,
   },
 };
-type Lockup = {
-  account_id: ValidAccountId,
-  schedule: Schedule,
-  claimed_balance: Balance,
-  termination_config: TerminationConfig | null,
+
+export const buildTerminationConfig = (schedule: Schedule, terminator_id: ValidAccountId): TerminationConfig => {
+  return {
+    terminator_id,
+    vesting_schedule: {
+      Schedule: schedule,
+    },
+  };
 };
 
 export const datePlusDurationMul = (date: Date, duration: IsoDuration, mul: number): Date => {
@@ -253,4 +269,29 @@ export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmou
   }
 
   return result;
+};
+
+type Lockup = {
+  account_id: ValidAccountId,
+  schedule: Schedule,
+  claimed_balance: Balance,
+  termination_config: TerminationConfig | null,
+};
+
+export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow): Lockup => {
+  let row = parseToSpreadsheetRow(rawSpreadsheetRow);
+
+  let termination_config;
+  if (row.vesting_schedule && row.terminator_id) {
+    termination_config = buildTerminationConfig(toLockupSchedule(row.vesting_schedule, row.amount), row.terminator_id);
+  } else {
+    termination_config = null;
+  }
+
+  return {
+    account_id: row.account_id,
+    schedule: toLockupSchedule(row.lockup_schedule, row.amount),
+    claimed_balance: new BN(0),
+    termination_config,
+  };
 };
