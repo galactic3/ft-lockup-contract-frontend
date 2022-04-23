@@ -21,12 +21,17 @@ export const parseSpreadsheetColumns = (input: string): any[] => {
 
 type NearAccountId = string;
 
-export const isValidNearAccountId = (account: string): boolean => {
-  if (account.length < 2) return false;
-  if (account.length > 64) return false;
-  if (!account.match(/^[a-z0-9\._-]+$/)) return false;
+export const parseValidAccountId = (accountId: string): ValidAccountId => {
+  let isValid = true;
+  if (accountId.length < 2) isValid = false;
+  if (accountId.length > 64) isValid = false;
+  if (!accountId.match(/^[a-z0-9\._-]+$/)) isValid = false;
 
-  return true;
+  if (isValid) {
+    return accountId;
+  } else {
+    throw 'invalid near account id';
+  }
 };
 
 type TokenAmount = string;
@@ -142,10 +147,7 @@ type SpreadsheetRow = {
 };
 
 export const parseToSpreadsheetRow = (input: any): SpreadsheetRow => {
-  if (!isValidNearAccountId(input.account_id)) {
-    throw "invalid near account id";
-  }
-  let account_id = input.account_id;
+  let account_id = parseValidAccountId(input.account_id);
   if (!isValidTokenAmount(input.amount)) {
     throw "invalid token amount";
   }

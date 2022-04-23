@@ -2,7 +2,7 @@ import BN from 'bn.js';
 
 import {
   datePlusDurationMul,
-  isValidNearAccountId,
+  parseValidAccountId,
   isValidTokenAmount,
   parseCliffInfo,
   parseSpreadsheetColumns,
@@ -43,12 +43,13 @@ describe('.parseSpreadsheetColumns', () => {
   });
 });
 
-describe('.isValidNearAccountId', () => {
+describe('.parseValidAccountId', () => {
   it('works', () => {
-    expect(isValidNearAccountId('')).toBe(false);
-    expect(isValidNearAccountId('a'.repeat(65))).toBe(false);
-    expect(isValidNearAccountId('foo#near')).toBe(false);
-    expect(isValidNearAccountId('foo.bar')).toBe(true);
+    expect(() => parseValidAccountId('')).toThrow('invalid near account id');
+    expect(() => parseValidAccountId('a'.repeat(65))).toThrow('invalid near account id');
+    expect(() => parseValidAccountId('foo#near')).toThrow('invalid near account id');
+
+    expect(parseValidAccountId('foo.bar')).toBe('foo.bar');
   })
 });
 
