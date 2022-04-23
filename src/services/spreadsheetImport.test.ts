@@ -9,6 +9,7 @@ import {
   parseHumanFriendlySchedule,
   parseDuration,
   parseLockup,
+  parseRawSpreadsheetInput,
   parseTimestamp,
   parseToSpreadsheetRow,
   parseSpreadsheetToSpreadsheetRows,
@@ -381,5 +382,50 @@ describe('.parseLockup', () => {
         },
       },
     );
+  });
+})
+
+describe('.parseRawSpreadsheetInput', () => {
+  it('works', () => {
+    expect(
+      parseRawSpreadsheetInput(`
+        account_id	amount	lockup_schedule	vesting_schedule	terminator_id
+        alice.near	100000	2009-12-31T23:59:59Z|P4Y|P2Y:50|P1M		
+        bob.near	60000	1999-12-31T23:59:59Z|P4Y|P2Y:50|P1M	1999-12-31T23:59:59Z|P4Y|P2Y:50|P1M	owner.near
+      `),
+    ).toStrictEqual([
+      {
+        account_id: "alice.near",
+        claimed_balance: new BN('0'),
+        schedule: [
+          { balance: new BN('0'), timestamp: 1262303999 },
+          { balance: new BN('0'), timestamp: 1325375998 },
+          { balance: new BN('50000'), timestamp: 1325375999 },
+          { balance: new BN('100000'), timestamp: 1388534399 },
+        ],
+        termination_config: null,
+      },
+      {
+        account_id: 'bob.near',
+        claimed_balance: new BN('0'),
+        schedule: [
+          {balance: new BN('0'), timestamp: 946684799},
+          {balance: new BN('0'), timestamp: 1009843198},
+          {balance: new BN('30000'), timestamp: 1009843199},
+          {balance: new BN('60000'), timestamp: 1072915199},
+        ],
+        termination_config: {
+          terminator_id: 'owner.near',
+          vesting_schedule: {
+            Schedule: [
+              {balance: new BN('0'), timestamp: 946684799},
+              {balance: new BN('0'), timestamp: 1009843198},
+              {balance: new BN('30000'), timestamp: 1009843199},
+              {balance: new BN('60000'), timestamp: 1072915199},
+            ],
+          },
+        },
+      },
+    ]);
   });
 })

@@ -295,3 +295,8 @@ export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow): Lockup => {
     termination_config,
   };
 };
+
+export const parseRawSpreadsheetInput = (spreadsheetInput: string): Lockup[] => {
+  let rows = parseSpreadsheetColumns(spreadsheetInput);
+  return rows.map(x => parseLockup(x));
+}
