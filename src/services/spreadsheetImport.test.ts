@@ -96,8 +96,8 @@ describe('.parseDuration', () => {
 describe('.parseCliffInfo', () => {
   it('works', () => {
     expect(() => parseCliffInfo('')).toThrow(/expected 2 parts/);
-    expect(() => parseCliffInfo('P1Y:112')).toThrow(/invalid percentage/);
-    expect(() => parseCliffInfo('P1Y:-7')).toThrow(/invalid percentage/);
+    expect(() => parseCliffInfo('P1Y:112')).toThrow(/invalid cliff percentage/);
+    expect(() => parseCliffInfo('P1Y:-7')).toThrow(/invalid cliff percentage/);
     expect(parseCliffInfo('P1Y:25'))
       .toStrictEqual({ duration: parseDuration('P1Y'), percentage: 25 });
   });
@@ -264,5 +264,84 @@ describe('.toLockupSchedule', () => {
       { timestamp: toUnix('2000-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
       { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
     ]);
+
+    // full duration cliff
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P4Y:25|P1M'),
+        '60000' + '000000000000', // ensure no rounding
+      )
+    ).toStrictEqual([
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
+      { timestamp: toUnix('2003-12-31T23:59:58Z'), balance: new BN('0') },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+    ]);
+
+    // zero duration cliff
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P0Y:25|P1M'),
+        '60000' + '000000000000', // ensure no rounding
+      )
+    ).toStrictEqual([
+      { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: new BN('0') },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('15000' + '000000000000') },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+    ]);
+
+    // full duration zero amount cliff
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P4Y:0|P1M'),
+        '60000' + '000000000000', // ensure no rounding
+      )
+    ).toStrictEqual([
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
+      { timestamp: toUnix('2003-12-31T23:59:58Z'), balance: new BN('0') },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+    ]);
+
+    // zero duration full amount cliff
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P0Y:100|P1M'),
+        '60000' + '000000000000', // ensure no rounding
+      )
+    ).toStrictEqual([
+      { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: new BN('0') },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+    ]);
+
+    // one second duration lockup
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|PT1S|PT1S:25|P1M'),
+        '60000' + '000000000000', // ensure no rounding
+      )
+    ).toStrictEqual([
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
+      { timestamp: toUnix('2000-01-01T00:00:00Z'), balance: new BN('60000' + '000000000000') },
+    ]);
+
+    // zero duration lockup
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|PT0S|PT0S:25|P1M'),
+        '60000' + '000000000000', // ensure no rounding
+      )
+    ).toStrictEqual([
+      { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: new BN('0') },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+    ]);
+
+    // controversial cases
+    // cliff bigger than total duration
+    expect(
+      () => toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P5Y:25|P1M'),
+        '60000' + '000000000000', // ensure no rounding
+      )
+    ).toThrow('error: timestampCliff > timestampFinish');
   });
 })
