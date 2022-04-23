@@ -54,6 +54,17 @@
     "rules": {
       "no-console": "off",
       "no-debugger": "off",
+      "no-mixed-operators": [
+        "error",
+        {
+          "groups": [
+            ["&", "|", "^", "~", "<<", ">>", ">>>"],
+            ["==", "!=", "===", "!==", ">", ">=", "<", "<="],
+            ["in", "instanceof"]
+          ],
+          "allowSamePrecedence": true
+        }
+      ],
       "max-len": ["error", {"code": 180}],
       "@typescript-eslint/naming-convention": [
         "error",

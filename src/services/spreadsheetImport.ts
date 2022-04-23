@@ -1,7 +1,7 @@
 import BN from 'bn.js';
 
 // TODO: replace with cleaner hack or another library
-BN.prototype.toJSON = function toJSON () {
+BN.prototype.toJSON = function toJSON() {
   return this.toString();
 };
 
@@ -12,14 +12,12 @@ export const parseSpreadsheetColumns = (input: string): any[] => {
   if (lines.length <= 1) {
     return [];
   }
-  let table = lines.map(line => line.split(colSep).map(x => x.trim()));
+  const table = lines.map((line) => line.split(colSep).map((x) => x.trim()));
   const [columns, ...rowsSplit] = table;
 
-  const rowsParsed = rowsSplit.map((row) => {
-    return Object.fromEntries(
-      columns.map((col, colIdx) => [col, row[colIdx] || '']),
-    );
-  });
+  const rowsParsed = rowsSplit.map((row) => Object.fromEntries(
+    columns.map((col, colIdx) => [col, row[colIdx] || '']),
+  ));
 
   return rowsParsed;
 };
@@ -30,13 +28,12 @@ export const parseValidAccountId = (accountId: string): ValidAccountId => {
   let isValid = true;
   if (accountId.length < 2) isValid = false;
   if (accountId.length > 64) isValid = false;
-  if (!accountId.match(/^[a-z0-9\._-]+$/)) isValid = false;
+  if (!accountId.match(/^[a-z0-9._-]+$/)) isValid = false;
 
   if (isValid) {
     return accountId;
-  } else {
-    throw 'invalid near account id';
   }
+  throw new Error('invalid near account id');
 };
 
 type TokenAmount = string;
@@ -44,22 +41,21 @@ type TokenAmount = string;
 export const parseTokenAmount = (amount: string): TokenAmount => {
   if (amount.match(/^[0-9]+$/)) {
     return amount;
-  } else {
-    throw 'invalid token amount';
   }
+  throw new Error('invalid token amount');
 };
 
 export const parseTimestamp = (timestamp: string): Date => {
   if (!timestamp.match(/\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\dZ/)) {
-    throw "invalid timestamp";
+    throw new Error('invalid timestamp');
   }
   const result = new Date(timestamp);
-  if (isNaN(result.getTime())) {
-    throw "invalid timestamp";
+  if (Number.isNaN(result.getTime())) {
+    throw new Error('invalid timestamp');
   }
 
   return result;
-}
+};
 
 type IsoDuration = {
   year: number,
@@ -69,29 +65,29 @@ type IsoDuration = {
   hour: number,
   minute: number,
   second: number,
-}
+};
 
 export const parseDuration = (input: string): IsoDuration => {
   // const pattern = /^(P(\d+Y)?(\d+M)?(\d+D)?T(\d+H)?(\d+M)?(\d+S)?|P(\d+W))$/;
   const pattern = /^P(((((?<year>\d+)Y)?((?<month>\d+)M)?((?<day>\d+)D)?)(T((?<hour>\d+)H)?((?<minute>\d+)M)?((?<second>\d+)S)?)?)|((?<week>\d+)W)?)$/;
-  let match = input.match(pattern);
+  const match = input.match(pattern);
   if (!match) {
-    throw "invalid duration";
+    throw new Error('invalid duration');
   }
 
-  let groups = match && match.groups || {};
-  let result = {
-    year: parseInt(groups.year) || 0,
-    month: parseInt(groups.month) || 0,
-    week: parseInt(groups.week) || 0,
-    day: parseInt(groups.day) || 0,
-    hour: parseInt(groups.hour) || 0,
-    minute: parseInt(groups.minute) || 0,
-    second: parseInt(groups.second) || 0,
-  }
+  const groups = match && match.groups || {};
+  const result = {
+    year: parseInt(groups.year, 10) || 0,
+    month: parseInt(groups.month, 10) || 0,
+    week: parseInt(groups.week, 10) || 0,
+    day: parseInt(groups.day, 10) || 0,
+    hour: parseInt(groups.hour, 10) || 0,
+    minute: parseInt(groups.minute, 10) || 0,
+    second: parseInt(groups.second, 10) || 0,
+  };
 
   return result;
-}
+};
 
 type CliffInfo = {
   duration: IsoDuration,
@@ -101,13 +97,13 @@ type CliffInfo = {
 export const parseCliffInfo = (input: string): CliffInfo => {
   const parts = input.split(':');
   if (parts.length !== 2) {
-    throw 'expected 2 parts';
+    throw new Error('expected 2 parts');
   }
   const [durationRaw, percentageRaw] = parts;
   const duration = parseDuration(durationRaw);
   const percentage = parseInt(percentageRaw, 10);
   if (percentage < 0 || percentage > 100) {
-    throw 'invalid cliff percentage';
+    throw new Error('invalid cliff percentage');
   }
   return { duration, percentage };
 };
@@ -121,22 +117,22 @@ type HumanFriendlySchedule = {
 };
 
 export const parseHumanFriendlySchedule = (schedule: string): HumanFriendlySchedule => {
-  let parts = schedule.split('|');
+  const parts = schedule.split('|');
   if (parts.length !== 4) {
-    throw "invalid human friendly schedule, expected 4 parts";
+    throw new Error('invalid human friendly schedule, expected 4 parts');
   }
 
-  let [
+  const [
     timestampStartRaw,
     durationTotalRaw,
     cliffInfoRaw,
     releaseEveryRaw,
   ] = parts;
 
-  let timestampStart = parseTimestamp(timestampStartRaw);
-  let durationTotal = parseDuration(durationTotalRaw);
-  let cliffInfo = parseCliffInfo(cliffInfoRaw);
-  let releaseEvery = parseDuration(releaseEveryRaw);
+  const timestampStart = parseTimestamp(timestampStartRaw);
+  const durationTotal = parseDuration(durationTotalRaw);
+  const cliffInfo = parseCliffInfo(cliffInfoRaw);
+  const releaseEvery = parseDuration(releaseEveryRaw);
 
   return {
     timestampStart,
@@ -153,7 +149,7 @@ type RawSpreadsheetRow = {
   lockup_schedule: string,
   vesting_schedule: string,
   terminator_id: string,
-}
+};
 
 type SpreadsheetRow = {
   account_id: NearAccountId,
@@ -164,34 +160,36 @@ type SpreadsheetRow = {
 };
 
 export const parseToSpreadsheetRow = (input: RawSpreadsheetRow): SpreadsheetRow => {
-  let account_id = parseValidAccountId(input.account_id);
-  let amount = parseTokenAmount(input.amount);
-  let lockup_schedule = parseHumanFriendlySchedule(input.lockup_schedule);
-  let vesting_schedule = input.vesting_schedule === '' ? null : parseHumanFriendlySchedule(input.vesting_schedule);
-  let terminator_id = null;
-  if (vesting_schedule === null) {
+  const accountId = parseValidAccountId(input.account_id);
+  const amount = parseTokenAmount(input.amount);
+  const lockupSchedule = parseHumanFriendlySchedule(input.lockup_schedule);
+  const vestingSchedule = input.vesting_schedule === '' ? null : parseHumanFriendlySchedule(input.vesting_schedule);
+  let terminatorId = null;
+  if (vestingSchedule === null) {
     if (input.terminator_id === '') {
-      terminator_id = null;
+      terminatorId = null;
     } else {
-      throw 'expected empty terminator_id for empty vesting_schedule';
+      throw new Error('expected empty terminator_id for empty vesting_schedule');
     }
+  } else if (input.terminator_id === '') {
+    throw new Error('expected present terminator_id for present vesting_schedule');
   } else {
-    if (input.terminator_id === '') {
-      throw 'expected present terminator_id for present vesting_schedule';
-    } else {
-      terminator_id = input.terminator_id;
-    }
+    terminatorId = input.terminator_id;
   }
 
   return {
-    account_id, amount, lockup_schedule, vesting_schedule, terminator_id,
-  }
+    account_id: accountId,
+    amount,
+    lockup_schedule: lockupSchedule,
+    vesting_schedule: vestingSchedule,
+    terminator_id: terminatorId,
+  };
 };
 
 export const parseSpreadsheetToSpreadsheetRows = (input: string): SpreadsheetRow[] => {
-  let parsedStringRows = parseSpreadsheetColumns(input);
+  const parsedStringRows = parseSpreadsheetColumns(input);
 
-  return parsedStringRows.map(x => parseToSpreadsheetRow(x));
+  return parsedStringRows.map((x) => parseToSpreadsheetRow(x));
 };
 
 type ValidAccountId = string;
@@ -209,18 +207,16 @@ type TerminationConfig = {
   },
 };
 
-export const buildTerminationConfig = (schedule: Schedule, terminator_id: ValidAccountId): TerminationConfig => {
-  return {
-    terminator_id,
-    vesting_schedule: {
-      Schedule: schedule,
-    },
-  };
-};
+export const buildTerminationConfig = (schedule: Schedule, terminator_id: ValidAccountId): TerminationConfig => ({
+  terminator_id,
+  vesting_schedule: {
+    Schedule: schedule,
+  },
+});
 
-export const datePlusDurationMul = (date: Date, duration: IsoDuration, mul: number): Date => {
-  mul = Math.floor(mul);
-  let result = new Date(Date.UTC(
+export const datePlusDurationMul = (date: Date, duration: IsoDuration, mulInput: number): Date => {
+  const mul = Math.floor(mulInput);
+  const result = new Date(Date.UTC(
     date.getUTCFullYear() + duration.year * mul,
     date.getUTCMonth() + duration.month * mul,
     date.getUTCDate() + (duration.week * 7 + duration.day) * mul,
@@ -234,36 +230,36 @@ export const datePlusDurationMul = (date: Date, duration: IsoDuration, mul: numb
 export const toUnix = (date: Date | string) => Math.floor(new Date(date).getTime() / 1000);
 
 export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmount: TokenAmount): Schedule => {
-  let timestampStart = schedule.timestampStart;
-  let timestampCliff = datePlusDurationMul(timestampStart, schedule.durationCliff, 1);
-  let timestampPreCliff = datePlusDurationMul(timestampCliff, parseDuration('PT1S'), -1);
-  let timestampFinish = datePlusDurationMul(timestampStart, schedule.durationTotal, 1);
+  const { timestampStart } = schedule;
+  const timestampCliff = datePlusDurationMul(timestampStart, schedule.durationCliff, 1);
+  const timestampPreCliff = datePlusDurationMul(timestampCliff, parseDuration('PT1S'), -1);
+  const timestampFinish = datePlusDurationMul(timestampStart, schedule.durationTotal, 1);
 
   // clone normalizes internal structure, needed for unit test equality
-  let totalAmount = new BN(inputTotalAmount);
-  let cliffAmount = new BN(totalAmount).muln(schedule.percentageCliff).divn(100).clone();
+  const totalAmount = new BN(inputTotalAmount);
+  const cliffAmount = new BN(totalAmount).muln(schedule.percentageCliff).divn(100).clone();
 
   if (cliffAmount.gt(totalAmount)) {
-    throw 'error: cliffAmount > totalAmount';
+    throw new Error('error: cliffAmount > totalAmount');
   }
   if (timestampCliff > timestampFinish) {
-    throw 'error: timestampCliff > timestampFinish';
+    throw new Error('error: timestampCliff > timestampFinish');
   }
   if (timestampCliff < timestampStart) {
-    throw 'error: timestampPreCliff < timestampStart';
+    throw new Error('error: timestampPreCliff < timestampStart');
   }
 
-  let checkpointStart = { timestamp: toUnix(timestampStart), balance: new BN('0') };
-  let checkpointPreCliff = { timestamp: toUnix(timestampPreCliff), balance: new BN('0') };
-  let checkpointCliff = { timestamp: toUnix(timestampCliff), balance: cliffAmount };
-  let checkpointFinish = { timestamp: toUnix(timestampFinish), balance: totalAmount };
+  const checkpointStart = { timestamp: toUnix(timestampStart), balance: new BN('0') };
+  const checkpointPreCliff = { timestamp: toUnix(timestampPreCliff), balance: new BN('0') };
+  const checkpointCliff = { timestamp: toUnix(timestampCliff), balance: cliffAmount };
+  const checkpointFinish = { timestamp: toUnix(timestampFinish), balance: totalAmount };
 
-  let result = [];
+  const result = [];
   result.unshift(checkpointFinish);
   if (checkpointCliff.timestamp < checkpointFinish.timestamp) {
     result.unshift(checkpointCliff);
   }
-  result.unshift(checkpointPreCliff)
+  result.unshift(checkpointPreCliff);
   if (checkpointStart.timestamp < checkpointPreCliff.timestamp) {
     result.unshift(checkpointStart);
   }
@@ -279,24 +275,24 @@ type Lockup = {
 };
 
 export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow): Lockup => {
-  let row = parseToSpreadsheetRow(rawSpreadsheetRow);
+  const row = parseToSpreadsheetRow(rawSpreadsheetRow);
 
-  let termination_config;
+  let terminationConfig;
   if (row.vesting_schedule && row.terminator_id) {
-    termination_config = buildTerminationConfig(toLockupSchedule(row.vesting_schedule, row.amount), row.terminator_id);
+    terminationConfig = buildTerminationConfig(toLockupSchedule(row.vesting_schedule, row.amount), row.terminator_id);
   } else {
-    termination_config = null;
+    terminationConfig = null;
   }
 
   return {
     account_id: row.account_id,
     schedule: toLockupSchedule(row.lockup_schedule, row.amount),
     claimed_balance: new BN(0),
-    termination_config,
+    termination_config: terminationConfig,
   };
 };
 
 export const parseRawSpreadsheetInput = (spreadsheetInput: string): Lockup[] => {
-  let rows = parseSpreadsheetColumns(spreadsheetInput);
-  return rows.map(x => parseLockup(x));
-}
+  const rows = parseSpreadsheetColumns(spreadsheetInput);
+  return rows.map((x) => parseLockup(x));
+};

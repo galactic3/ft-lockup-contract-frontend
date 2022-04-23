@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { INearProps, NearContext } from '../../services/near';
 import About from '../../pages/About';
+import ImportDraftGroup from '../ImportDraftGroup';
 import Lockups from '../../pages/Lockups';
 import UserLockups from '../../pages/UserLockups';
 import Header from '../Header';
@@ -39,6 +40,7 @@ function Admin({ lockups, token }: { lockups: any[], token: TMetadata }) {
         <Route path="/" element={<Authorize />} />
         <Route path="/lockups" element={<RequireAuth><Lockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
         <Route path="/lockups/:userId" element={<RequireAuth><UserLockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
+        <Route path="/import_draft_group" element={<RequireAuth><ImportDraftGroup /></RequireAuth>} />
       </Routes>
     </>
   );
