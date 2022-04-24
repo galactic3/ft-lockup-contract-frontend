@@ -1,9 +1,7 @@
 import {
   Near, Account, Contract, WalletConnection, utils,
 } from 'near-api-js';
-import { config } from '../config';
-import { dumpLocalStorage } from '../utils';
-import getFirstFullAccessKey from './noLogInUsage';
+import { MAX_GAS } from '../utils';
 
 export const fromNear = (amount: string): number => parseFloat(utils.format.formatNearAmount(amount || '0'));
 export const toYoctoNear = (amount: number): string => utils.format.parseNearAmount(String(amount)) || '0';
@@ -18,7 +16,6 @@ const LOCKUP_VIEW_METHODS = [
 ];
 
 const LOCKUP_CHANGE_METHODS = [
-  'claim',
   'create_draft',
   'create_drafts',
   'create_draft_group',
@@ -35,14 +32,11 @@ type TViewMethods = {
 };
 
 type TChangeMethods = {
-  'claim': any,
   'create_draft': any,
   'create_drafts': any,
   'create_draft_group': any,
   'terminate': any,
 };
-
-const MAX_GAS = 300_000_000_000_000;
 
 type TNearAmount = string;
 type TNearTimestamp = number;
@@ -128,14 +122,6 @@ class NearApi {
     return result;
   }
 
-  async claim(accountId: string = this.walletConnection.getAccountId()): Promise<void> {
-    if (accountId !== this.walletConnection.getAccountId()) {
-      await this.setWalletAndContractWithAuth(accountId);
-    }
-
-    (this.contract as TLockupContract).claim({}, MAX_GAS);
-  }
-
   async terminate(lockupIndex: number): Promise<void> {
     try {
       await (this.contract as TLockupContract).terminate(
@@ -171,7 +157,7 @@ class NearApi {
 
   signIn(): void {
     const successUrl = `${window.location.href}`;
-    this.walletConnection.requestSignIn(config.contractName, undefined, successUrl);
+    this.walletConnection.requestSignIn(this.near.config.contractName, undefined, successUrl);
   }
 
   signOut(): void {
@@ -197,44 +183,6 @@ class NearApi {
       console.error('Account not exist');
     }
     return balance;
-  }
-
-  setContract(
-    contractName: string = config.contractName,
-    viewMethods: Array<string> = LOCKUP_VIEW_METHODS,
-    changeMethods: Array<string> = LOCKUP_CHANGE_METHODS,
-  ): TLockupContract {
-    if (!this.walletConnection) {
-      throw Error('Unitialized wallet connection');
-    }
-
-    this.contract = new Contract(
-      this.walletConnection.account(),
-      contractName,
-      { viewMethods, changeMethods },
-    ) as TLockupContract;
-
-    return this.contract;
-  }
-
-  async setWalletAndContractWithAuth(
-    accountId: string,
-    contractName: string = config.contractName,
-  ): Promise<any> {
-    dumpLocalStorage();
-
-    const firstFullAccessKey = await getFirstFullAccessKey(
-      this.near.connection.provider,
-      accountId,
-    );
-
-    localStorage.setItem(
-      `${contractName}_wallet_auth_key`,
-      JSON.stringify({ accountId, allKeys: [firstFullAccessKey.public_key] }),
-    );
-
-    this.walletConnection = new WalletConnection(this.near, contractName);
-    this.setContract();
   }
 }
 

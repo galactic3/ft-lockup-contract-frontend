@@ -3,11 +3,13 @@ import { createContext } from 'react';
 import { config, INearConfig } from '../config';
 import { restoreLocalStorage } from '../utils';
 import NearApi from './api';
+import NoLoginApi from './noLoginApi';
 import TokenApi from './tokenApi';
 
 export interface INearProps {
   config: INearConfig;
   api: NearApi;
+  noLoginApi: NoLoginApi
   signedIn: boolean;
   isAdmin: boolean;
   signedAccountId: string | null;
@@ -22,6 +24,11 @@ export const connectNear = async (): Promise<INearProps> => {
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
   const near = await nearAPI.connect({ headers: {}, keyStore, ...config });
   const api = new NearApi(near);
+
+  const noLoginKeyStore = new nearAPI.keyStores.InMemoryKeyStore();
+  const noLoginNear = await nearAPI.connect({ headers: {}, keyStore: noLoginKeyStore, ...config });
+  const noLoginApi = new NoLoginApi(noLoginNear);
+
   const walletConnection = new nearAPI.WalletConnection(near, config.contractName);
   const signedAccountId = walletConnection.getAccountId();
   const tokenContractId = await api.getTokenAccountId();
@@ -32,6 +39,7 @@ export const connectNear = async (): Promise<INearProps> => {
   return {
     config,
     api,
+    noLoginApi,
     signedIn: !!signedAccountId,
     isAdmin,
     signedAccountId,
