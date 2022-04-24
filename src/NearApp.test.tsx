@@ -13,7 +13,18 @@ jest.mock('./services/near', () => ({
           return Promise.resolve([]);
         }
       },
-      tokenApi: { getContract: () => { return { contractId: 'token.jest.testnet'} } },
+      tokenApi: {
+        getContract: () => { return { contractId: 'token.jest.testnet'} },
+        ftMetadata: () => { return {
+          spec: 'ft-1.0.0',
+          name: 'Token',
+          symbol: 'TOKEN',
+          icon: null,
+          reference: null,
+          reference_hash: null,
+          decimals: 6
+        } },
+      },
       signedIn: false,
       signedAccountId: '',
     }
@@ -26,9 +37,6 @@ it('renders welcome message', async () => {
     render(<NearApp />);
     await new Promise(process.nextTick);
   });
-  const items = await screen.findAllByText(/About Page/);
-  expect(items).toHaveLength(1);
-
-  const tokenMessage = await screen.findAllByText(/token account id: /);
-  expect(screen.getByText(/token.jest.testnet/)).toBeInTheDocument();
+  const progressItem= await screen.findAllByText(/Progress/);
+  expect(progressItem).toHaveLength(1);
 });
