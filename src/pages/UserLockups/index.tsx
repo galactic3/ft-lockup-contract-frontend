@@ -13,19 +13,19 @@ import ClaimAllLockups from '../../components/Claim';
 import { TMetadata } from '../../services/tokenApi';
 import { convertAmount } from '../../utils';
 
-export default function UserLockups({ lockups: allLockups, token }: { lockups: any[], token: TMetadata }) {
+export default function UserLockups({ lockups: allLockups, token, adminControls }: { lockups: any[], token: TMetadata, adminControls: boolean }) {
   const { userId } = useParams();
 
   const lockups = allLockups.filter((x) => x.account_id === userId);
 
-  const totalUnclaimedBalance = lockups.reduce((acc, obj) => acc + convertAmount(obj.unclaimed_balance, token.decimals), 0);
+  const totalUnclaimedBalance = lockups.reduce((acc, obj) => acc + parseFloat(obj.unclaimed_balance), 0);
 
   console.log('user lockups', userId, lockups);
 
   return (
     <div className="container">
 
-      <ClaimAllLockups accountId={userId} token={token} total={totalUnclaimedBalance} />
+      <ClaimAllLockups accountId={userId} token={token} total={convertAmount(totalUnclaimedBalance, token.decimals)} />
 
       <TableContainer sx={{ boxShadow: 'unset' }} component={Paper}>
         <Table className="main-table" aria-label="collapsible table">
@@ -42,7 +42,7 @@ export default function UserLockups({ lockups: allLockups, token }: { lockups: a
           </TableHead>
           <TableBody>
             {lockups.map((lockup) => (
-              <Row key={lockup.id} row={lockup} token={token} />
+              <Row key={lockup.id} row={lockup} token={token} adminControls={adminControls} />
             ))}
           </TableBody>
         </Table>

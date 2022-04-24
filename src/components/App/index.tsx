@@ -15,6 +15,35 @@ import Authorize from '../Authorize';
 import RequireAuth from '../RequireAuth';
 import { TMetadata } from '../../services/tokenApi';
 
+function Customer({
+  lockups, token, contractId,
+}: { lockups: any[], token: TMetadata, contractId: string | null }) {
+  return (
+    <>
+      <Header adminControls={false} />
+      <Routes>
+        <Route path="/" element={<Navigate replace to="/lockups" />} />
+        <Route path="/about" element={<About lockups={lockups} token_account_id={contractId} />} />
+        <Route path="/lockups" element={<Lockups lockups={lockups} token={token} adminControls={false} />} />
+        <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} token={token} adminControls={false} />} />
+      </Routes>
+    </>
+  );
+}
+
+function Admin({ lockups, token }: { lockups: any[], token: TMetadata }) {
+  return (
+    <>
+      <Header adminControls />
+      <Routes>
+        <Route path="/" element={<Authorize />} />
+        <Route path="/lockups" element={<RequireAuth><Lockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
+        <Route path="/lockups/:userId" element={<RequireAuth><UserLockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
+      </Routes>
+    </>
+  );
+}
+
 export default function App() {
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [contractState, setContractState] = useState({});
@@ -63,15 +92,9 @@ export default function App() {
 
   return (
     <HashRouter>
-      <Header />
       <Routes>
-        <Route path="/" element={<Navigate replace to="/lockups" />} />
-        <Route path="/about" element={<About lockups={lockups} token_account_id={contractId} />} />
-        <Route path="/lockups" element={<Lockups lockups={lockups} token={token} />} />
-        <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} token={token} />} />
-        <Route path="/admin" element={<Authorize />} />
-        <Route path="/admin/lockups" element={<RequireAuth><Lockups lockups={lockups} token={token} /></RequireAuth>} />
-        <Route path="/admin/lockups/:userId" element={<RequireAuth><UserLockups lockups={lockups} token={token} /></RequireAuth>} />
+        <Route path="/*" element={<Customer lockups={lockups} token={token} contractId={contractId} />} />
+        <Route path="/admin/*" element={<Admin lockups={lockups} token={token} />} />
       </Routes>
     </HashRouter>
   );

@@ -13,7 +13,7 @@ import CreateLockup from '../../components/CreateLockup';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 
-export default function Lockups({ lockups, token }: { lockups: any[], token: TMetadata }) {
+export default function Lockups({ lockups, token, adminControls }: { lockups: any[], token: TMetadata, adminControls: boolean }) {
   const uniqueUsers = Array.from(new Set(lockups.map((x) => x.account_id)));
 
   console.log('unique users', uniqueUsers);
@@ -26,7 +26,7 @@ export default function Lockups({ lockups, token }: { lockups: any[], token: TMe
 
   if (!near) return null;
 
-  const { signedIn } = near;
+  const { signedIn, isAdmin } = near;
 
   return (
     <div className="container">
@@ -46,13 +46,13 @@ export default function Lockups({ lockups, token }: { lockups: any[], token: TMe
           </TableHead>
           <TableBody>
             {lockups.map((lockup) => (
-              <Row key={lockup.id} row={lockup} token={token} />
+              <Row key={lockup.id} row={lockup} token={token} adminControls={adminControls} />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      {signedIn && <CreateLockup token={token} />}
+      {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
 
     </div>
   );

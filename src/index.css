@@ -224,6 +224,10 @@ code {
   cursor: pointer;
 }
 
+.button[disabled] {
+  background: #97A0C3!important;
+}
+
 .button.fullWidth {
   width: 100%;
 }
@@ -235,5 +239,5 @@ code {
 .login .button {
   width: 150px;
   height: 48px;
-  margin-left: 20px;
+  margin: 20px;
 }

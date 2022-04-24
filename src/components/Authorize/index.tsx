@@ -1,3 +1,4 @@
+import { Alert } from '@mui/material';
 import { ReactNode, useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { INearProps, NearContext } from '../../services/near';
@@ -15,21 +16,13 @@ function Authorize() {
 
   if (!near) return null;
 
-  const { signedIn } = near;
-
-  const handleSignIn = async () => {
-    signIn();
-  };
-
-  if (signedIn) {
-    return (
-      <Navigate to="/admin/lockups" replace />
-    );
-  }
+  const { signedIn, isAdmin } = near;
 
   return (
     <Auth>
-      <button className="button" type="button" onClick={handleSignIn}>Sign In</button>
+      { signedIn && !isAdmin && <Alert sx={{ margin: 2, width: '500px' }} severity="error">You are not admin</Alert>}
+      { !signedIn && <button className="button" type="button" onClick={signIn}>Sign In</button> }
+      { signedIn && isAdmin && <Navigate to="lockups" replace />}
     </Auth>
   );
 }

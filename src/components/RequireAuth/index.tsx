@@ -12,9 +12,9 @@ export default function RequireAuth({ children }: { children: JSX.Element }) {
 
   if (!near) return null;
 
-  const { signedIn } = near;
+  const { signedIn, isAdmin } = near;
 
-  if (!signedIn) {
+  if (!signedIn || !isAdmin) {
     return <Navigate to="/admin" state={{ from: location }} replace />;
   }
 
