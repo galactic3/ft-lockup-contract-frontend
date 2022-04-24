@@ -16,9 +16,9 @@ import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import TerminateLockup from '../TerminateLockup';
 
-export default function Row(props: { row: ReturnType<any>, token: TMetadata }) {
+export default function Row(props: { row: ReturnType<any>, token: TMetadata, adminControls: boolean }) {
   const [open, setOpen] = useState(false);
-  const { row, token } = props;
+  const { row, token, adminControls } = props;
   const {
     near,
   }: {
@@ -27,9 +27,8 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata }) {
 
   if (!near) return null;
 
-  const { signedIn } = near;
+  const { signedIn, isAdmin } = near;
 
-  // @ts-ignore
   return (
     <>
       <TableRow className={open ? 'expanded exp-row' : 'exp-row'} sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -62,8 +61,7 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata }) {
             </div>
             <div style={{ width: `${(row.unclaimed_balance / row.total_balance) * 100}%` }} className="available">
               <span>
-                {(row.unclaimed_balance / row.total_balance) > 0.1
-                  && convertAmount(row.unclaimed_balance, token.decimals)}
+                {convertAmount(row.unclaimed_balance, token.decimals)}
               </span>
             </div>
             <div style={{ width: `${((row.total_balance - row.claimed_balance - row.unclaimed_balance) / row.total_balance) * 100}%` }} className="vested">
@@ -106,10 +104,10 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata }) {
                   </TableBody>
                 </Table>
               </div>
-              {signedIn && (
-              <div className="terminate">
-                <TerminateLockup lockupIndex={row.id} />
-              </div>
+              {signedIn && isAdmin && adminControls && (
+                <div className="terminate">
+                  <TerminateLockup lockupIndex={row.id} config={row.termination_config} />
+                </div>
               )}
             </div>
           </Collapse>

@@ -8,6 +8,7 @@ export interface INearProps {
   config: INearConfig;
   api: NearApi;
   signedIn: boolean;
+  isAdmin: boolean;
   signedAccountId: string | null;
   tokenApi: TokenApi;
 }
@@ -21,12 +22,15 @@ export const connectNear = async (): Promise<INearProps> => {
   const walletConnection = new nearAPI.WalletConnection(near, config.contractName);
   const signedAccountId = walletConnection.getAccountId();
   const tokenContractId = await api.getTokenAccountId();
+  const depositWhitelist = await api.getDepositWhitelist();
+  const isAdmin = depositWhitelist.includes(signedAccountId);
   const tokenApi = new TokenApi(walletConnection, tokenContractId);
 
   return {
     config,
     api,
     signedIn: !!signedAccountId,
+    isAdmin,
     signedAccountId,
     tokenApi,
   };

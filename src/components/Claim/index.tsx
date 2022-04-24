@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 
-function ClaimAllLockups(params: { accountId: string | undefined, token: TMetadata, total: Number }) {
+function ClaimAllLockups(params: { accountId: string | undefined, token: TMetadata, total: String }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const { accountId, token, total } = params;
 
