@@ -1,7 +1,7 @@
 import { TextareaAutosize } from '@mui/material';
 import { useState } from 'react';
 
-// import LockupsTable from '../LockupsTable';
+import DraftsTable from '../DraftsTable';
 import { parseRawSpreadsheetInput, Lockup } from '../../services/spreadsheetImport';
 import { TMetadata } from '../../services/tokenApi';
 
@@ -35,12 +35,10 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
           onChange={handleChangeInput}
         />
       </div>
-      <div>
-        <pre>
-          {JSON.stringify(data, null, 2)}
-        </pre>
-      </div>
-      {/* <LockupsTable lockups={data} token={token} /> */}
+      <DraftsTable lockups={data} token={token} />
+      <pre>
+        {JSON.stringify(data, null, 2)}
+      </pre>
     </div>
   );
 }
