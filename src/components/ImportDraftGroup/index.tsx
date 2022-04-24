@@ -1,8 +1,7 @@
-// import { ReactNode, useContext } from 'react';
-// import { Navigate } from 'react-router-dom';
-// import { INearProps, NearContext } from '../../services/near';
 import { TextareaAutosize } from '@mui/material';
 import { useState } from 'react';
+
+// import LockupsTable from '../LockupsTable';
 import { parseRawSpreadsheetInput, Lockup } from '../../services/spreadsheetImport';
 import { TMetadata } from '../../services/tokenApi';
 
@@ -41,6 +40,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
           {JSON.stringify(data, null, 2)}
         </pre>
       </div>
+      {/* <LockupsTable lockups={data} token={token} /> */}
     </div>
   );
 }
