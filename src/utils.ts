@@ -1,5 +1,7 @@
 import Big from 'big.js';
 
+export const MAX_GAS = 300_000_000_000_000;
+
 Big.DP = 40;
 export const NEAR_ROUND_DIGITS = 2;
 
