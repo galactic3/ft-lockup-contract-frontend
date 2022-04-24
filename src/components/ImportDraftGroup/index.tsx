@@ -1,12 +1,21 @@
 import { TextareaAutosize } from '@mui/material';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import DraftsTable from '../DraftsTable';
 import { parseRawSpreadsheetInput, Lockup } from '../../services/spreadsheetImport';
 import { TMetadata } from '../../services/tokenApi';
+import { INearProps, NearContext } from '../../services/near';
 
 function ImportDraftGroup({ token }: { token: TMetadata }) {
+  const { near }: { near: INearProps | null } = useContext(NearContext);
+
   const [data, setData] = useState<Lockup[]>([]);
+  const [importLog, setImportLog] = useState<string[]>([]);
+
+  const log = (message: string) => {
+    console.log(message);
+    setImportLog((currentLog) => currentLog.concat([message]));
+  };
 
   console.log(setData);
 
@@ -17,8 +26,46 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
       const lockups = parseRawSpreadsheetInput(input, token.decimals);
       setData(lockups);
     } catch (e) {
-      console.log(e);
+      if (e instanceof Error) {
+        console.log(e);
+      }
     }
+  };
+
+  const handleClickImport = async () => {
+    if (!near) {
+      throw new Error('near is null');
+    }
+    log('import started');
+    const contract = near.api.getContract();
+    debugger;
+    const draftGroupId = await contract.create_draft_group();
+    debugger;
+    const msg = `created draft group id: ${draftGroupId}`;
+    log(msg);
+
+    for (let i = 0; i < data.length; i += 1) {
+      debugger;
+      const lockup = data[i];
+      log(`adding draft for ${lockup.account_id}`);
+      const draft = JSON.parse(JSON.stringify({
+        draft_group_id: draftGroupId,
+        lockup,
+      }));
+      try {
+        debugger;
+        const draftId = await contract.create_draft({ draft });
+        log(`created draft for ${lockup.account_id}: ${draftId}`);
+        debugger;
+      } catch (e) {
+        console.log(`ERROR: ${e}`);
+        debugger;
+      }
+    }
+
+    debugger;
+
+    log('import finished');
   };
 
   return (
@@ -36,6 +83,16 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
         />
       </div>
       <DraftsTable lockups={data} token={token} />
+      <div>
+        <button className="button fullWidth noMargin" onClick={handleClickImport} type="button">
+          Import
+        </button>
+      </div>
+      <div id="import-log">
+        <ul>
+          {importLog.map((line) => <li>{line}</li>)}
+        </ul>
+      </div>
       <pre>
         {JSON.stringify(data, null, 2)}
       </pre>

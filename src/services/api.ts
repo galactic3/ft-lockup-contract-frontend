@@ -15,6 +15,8 @@ const LOCKUP_VIEW_METHODS = [
 
 const LOCKUP_CHANGE_METHODS = [
   'claim',
+  'create_draft',
+  'create_draft_group',
   'terminate',
 ];
 
@@ -26,6 +28,8 @@ type TViewMethods = {
 
 type TChangeMethods = {
   'claim': any,
+  'create_draft': any,
+  'create_draft_group': any,
   'terminate': any,
 };
 

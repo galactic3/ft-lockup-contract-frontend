@@ -52,6 +52,7 @@
       "plugin:react/jsx-runtime"
     ],
     "rules": {
+      "no-await-in-loop": "off",
       "no-console": "off",
       "no-debugger": "off",
       "no-mixed-operators": [
