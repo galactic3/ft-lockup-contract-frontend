@@ -42,7 +42,7 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata, adm
           </IconButton>
         </TableCell>
         <TableCell align="left">{row.id}</TableCell>
-        <TableCell align="left"><Link to={signedIn ? `/admin/lockups/${row.account_id}` : `/lockups/${row.account_id}`}>{row.account_id}</Link></TableCell>
+        <TableCell align="left"><Link to={`${row.account_id}`}>{row.account_id}</Link></TableCell>
         <TableCell align="right">
           {convertTimestamp(row.schedule[0].timestamp)}
         </TableCell>

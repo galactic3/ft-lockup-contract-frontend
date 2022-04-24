@@ -25,7 +25,7 @@ export default function UserLockups({ lockups: allLockups, token, adminControls 
   return (
     <div className="container">
 
-      <ClaimAllLockups accountId={userId} token={token} total={convertAmount(totalUnclaimedBalance, token.decimals)} />
+      {!adminControls && <ClaimAllLockups accountId={userId} token={token} total={convertAmount(totalUnclaimedBalance, token.decimals)} />}
 
       <TableContainer sx={{ boxShadow: 'unset' }} component={Paper}>
         <Table className="main-table" aria-label="collapsible table">
