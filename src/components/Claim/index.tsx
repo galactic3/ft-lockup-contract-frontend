@@ -15,7 +15,7 @@ function ClaimAllLockups(params: { accountId: string | undefined, token: TMetada
   }
 
   const handleClaimAllLockups = () => {
-    near.api.claim(accountId);
+    near.noLoginApi.claim(accountId);
   };
 
   return (
