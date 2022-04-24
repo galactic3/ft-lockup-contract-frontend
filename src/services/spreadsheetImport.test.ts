@@ -233,7 +233,8 @@ describe('.toLockupSchedule', () => {
     expect(
       toLockupSchedule(
         parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:25|P1M'),
-        '60000' + '000000000000', // ensure no rounding
+        '60000',
+        12,
       )
     ).toStrictEqual([
       { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
@@ -246,7 +247,8 @@ describe('.toLockupSchedule', () => {
     expect(
       toLockupSchedule(
         parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:0|P1M'),
-        '60000' + '000000000000', // ensure no rounding
+        '60000',
+        12,
       )
     ).toStrictEqual([
       { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
@@ -259,7 +261,8 @@ describe('.toLockupSchedule', () => {
     expect(
       toLockupSchedule(
         parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:100|P1M'),
-        '60000' + '000000000000', // ensure no rounding
+        '60000',
+        12,
       )
     ).toStrictEqual([
       { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
@@ -272,7 +275,8 @@ describe('.toLockupSchedule', () => {
     expect(
       toLockupSchedule(
         parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P4Y:25|P1M'),
-        '60000' + '000000000000', // ensure no rounding
+        '60000',
+        12,
       )
     ).toStrictEqual([
       { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
@@ -284,7 +288,8 @@ describe('.toLockupSchedule', () => {
     expect(
       toLockupSchedule(
         parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P0Y:25|P1M'),
-        '60000' + '000000000000', // ensure no rounding
+        '60000',
+        12,
       )
     ).toStrictEqual([
       { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: new BN('0') },
@@ -296,7 +301,8 @@ describe('.toLockupSchedule', () => {
     expect(
       toLockupSchedule(
         parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P4Y:0|P1M'),
-        '60000' + '000000000000', // ensure no rounding
+        '60000',
+        12,
       )
     ).toStrictEqual([
       { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
@@ -308,7 +314,8 @@ describe('.toLockupSchedule', () => {
     expect(
       toLockupSchedule(
         parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P0Y:100|P1M'),
-        '60000' + '000000000000', // ensure no rounding
+        '60000',
+        12,
       )
     ).toStrictEqual([
       { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: new BN('0') },
@@ -320,7 +327,8 @@ describe('.toLockupSchedule', () => {
     expect(
       toLockupSchedule(
         parseHumanFriendlySchedule('1999-12-31T23:59:59Z|PT1S|PT1S:25|P1M'),
-        '60000' + '000000000000', // ensure no rounding
+        '60000',
+        12,
       )
     ).toStrictEqual([
       { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
@@ -331,7 +339,8 @@ describe('.toLockupSchedule', () => {
     expect(
       toLockupSchedule(
         parseHumanFriendlySchedule('1999-12-31T23:59:59Z|PT0S|PT0S:25|P1M'),
-        '60000' + '000000000000', // ensure no rounding
+        '60000',
+        12,
       )
     ).toStrictEqual([
       { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: new BN('0') },
@@ -343,7 +352,8 @@ describe('.toLockupSchedule', () => {
     expect(
       () => toLockupSchedule(
         parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P5Y:25|P1M'),
-        '60000' + '000000000000', // ensure no rounding
+        '60000',
+        12,
       )
     ).toThrow('error: timestampCliff > timestampFinish');
   });
@@ -354,11 +364,11 @@ describe('.parseLockup', () => {
     expect(
       parseLockup({
         account_id: 'alice.near',
-        amount: '60000' + '000000000000',
+        amount: '60000',
         lockup_schedule: '1999-12-31T23:59:59Z|P4Y|P2Y:50|P1M',
         vesting_schedule: '1999-12-31T23:59:59Z|P4Y|P1Y:25|P1M',
         terminator_id: 'owner.near',
-      }),
+      }, 12),
     ).toStrictEqual(
       {
         account_id: "alice.near",
@@ -392,7 +402,7 @@ describe('.parseRawSpreadsheetInput', () => {
         account_id	amount	lockup_schedule	vesting_schedule	terminator_id
         alice.near	100000	2009-12-31T23:59:59Z|P4Y|P2Y:50|P1M		
         bob.near	60000	1999-12-31T23:59:59Z|P4Y|P2Y:50|P1M	1999-12-31T23:59:59Z|P4Y|P2Y:50|P1M	owner.near
-      `),
+      `, 12),
     ).toStrictEqual([
       {
         account_id: "alice.near",
@@ -400,8 +410,8 @@ describe('.parseRawSpreadsheetInput', () => {
         schedule: [
           { balance: new BN('0'), timestamp: 1262303999 },
           { balance: new BN('0'), timestamp: 1325375998 },
-          { balance: new BN('50000'), timestamp: 1325375999 },
-          { balance: new BN('100000'), timestamp: 1388534399 },
+          { balance: new BN('50000' + '000000000000'), timestamp: 1325375999 },
+          { balance: new BN('100000' + '000000000000'), timestamp: 1388534399 },
         ],
         termination_config: null,
       },
@@ -411,8 +421,8 @@ describe('.parseRawSpreadsheetInput', () => {
         schedule: [
           {balance: new BN('0'), timestamp: 946684799},
           {balance: new BN('0'), timestamp: 1009843198},
-          {balance: new BN('30000'), timestamp: 1009843199},
-          {balance: new BN('60000'), timestamp: 1072915199},
+          {balance: new BN('30000' + '000000000000'), timestamp: 1009843199},
+          {balance: new BN('60000' + '000000000000'), timestamp: 1072915199},
         ],
         termination_config: {
           terminator_id: 'owner.near',
@@ -420,8 +430,8 @@ describe('.parseRawSpreadsheetInput', () => {
             Schedule: [
               {balance: new BN('0'), timestamp: 946684799},
               {balance: new BN('0'), timestamp: 1009843198},
-              {balance: new BN('30000'), timestamp: 1009843199},
-              {balance: new BN('60000'), timestamp: 1072915199},
+              {balance: new BN('30000' + '000000000000'), timestamp: 1009843199},
+              {balance: new BN('60000' + '000000000000'), timestamp: 1072915199},
             ],
           },
         },

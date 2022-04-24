@@ -229,14 +229,19 @@ export const datePlusDurationMul = (date: Date, duration: IsoDuration, mulInput:
 
 export const toUnix = (date: Date | string) => Math.floor(new Date(date).getTime() / 1000);
 
-export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmount: TokenAmount): Schedule => {
+export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmount: TokenAmount, tokenDecimals: number): Schedule => {
+  if (!(tokenDecimals >= 0 && tokenDecimals === Math.floor(tokenDecimals))) {
+    throw new Error('invalid token decimals');
+  }
+  const decimalsMultiplier = new BN(10).pow(new BN(tokenDecimals));
+
   const { timestampStart } = schedule;
   const timestampCliff = datePlusDurationMul(timestampStart, schedule.durationCliff, 1);
   const timestampPreCliff = datePlusDurationMul(timestampCliff, parseDuration('PT1S'), -1);
   const timestampFinish = datePlusDurationMul(timestampStart, schedule.durationTotal, 1);
 
   // clone normalizes internal structure, needed for unit test equality
-  const totalAmount = new BN(inputTotalAmount);
+  const totalAmount = new BN(inputTotalAmount).mul(decimalsMultiplier).clone();
   const cliffAmount = new BN(totalAmount).muln(schedule.percentageCliff).divn(100).clone();
 
   if (cliffAmount.gt(totalAmount)) {
@@ -274,25 +279,25 @@ export type Lockup = {
   termination_config: TerminationConfig | null,
 };
 
-export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow): Lockup => {
+export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals: number): Lockup => {
   const row = parseToSpreadsheetRow(rawSpreadsheetRow);
 
   let terminationConfig;
   if (row.vesting_schedule && row.terminator_id) {
-    terminationConfig = buildTerminationConfig(toLockupSchedule(row.vesting_schedule, row.amount), row.terminator_id);
+    terminationConfig = buildTerminationConfig(toLockupSchedule(row.vesting_schedule, row.amount, tokenDecimals), row.terminator_id);
   } else {
     terminationConfig = null;
   }
 
   return {
     account_id: row.account_id,
-    schedule: toLockupSchedule(row.lockup_schedule, row.amount),
+    schedule: toLockupSchedule(row.lockup_schedule, row.amount, tokenDecimals),
     claimed_balance: new BN(0),
     termination_config: terminationConfig,
   };
 };
 
-export const parseRawSpreadsheetInput = (spreadsheetInput: string): Lockup[] => {
+export const parseRawSpreadsheetInput = (spreadsheetInput: string, tokenDecimals: number): Lockup[] => {
   const rows = parseSpreadsheetColumns(spreadsheetInput);
-  return rows.map((x) => parseLockup(x));
+  return rows.map((x) => parseLockup(x, tokenDecimals));
 };

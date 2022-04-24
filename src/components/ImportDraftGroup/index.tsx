@@ -14,7 +14,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
     try {
       console.log(token);
       const input = event.target.value;
-      const lockups = parseRawSpreadsheetInput(input);
+      const lockups = parseRawSpreadsheetInput(input, token.decimals);
       setData(lockups);
     } catch (e) {
       console.log(e);
