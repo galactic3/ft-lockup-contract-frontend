@@ -8,6 +8,8 @@ export const fromNear = (amount: string): number => parseFloat(utils.format.form
 export const toYoctoNear = (amount: number): string => utils.format.parseNearAmount(String(amount)) || '0';
 
 const LOCKUP_VIEW_METHODS = [
+  'get_draft_group',
+  'get_drafts',
   'get_lockups_paged',
   'get_token_account_id',
   'get_deposit_whitelist',
@@ -21,6 +23,8 @@ const LOCKUP_CHANGE_METHODS = [
 ];
 
 type TViewMethods = {
+  'get_draft_group': any,
+  'get_drafts': any,
   'get_lockups_paged': any,
   'get_token_account_id': any,
   'get_deposit_whitelist': any,
