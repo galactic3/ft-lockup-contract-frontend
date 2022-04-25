@@ -23,3 +23,23 @@ export const convertTimestamp = (time: number) => new Date(time * 1000).toLocale
 export const convertAmount = (value: number, decimals: number) => Big(value || '0').div(10 ** decimals).toFixed(NEAR_ROUND_DIGITS);
 // @ts-ignore
 export const addYear = (date: Date | null, year: number) => new Date(date?.setFullYear((date?.getFullYear() || 0) + year)).getTime() / 1000;
+
+export const dumpLocalStorage = (dumpKey: string = 'dump') => {
+  const dumpValue = Object.keys(localStorage).map((key) => [key, localStorage.getItem(key)]);
+
+  localStorage.setItem(dumpKey, JSON.stringify(dumpValue));
+};
+
+export const restoreLocalStorage = (dumpKey: string = 'dump') => {
+  const data = localStorage.getItem(dumpKey);
+
+  if (!data) {
+    return;
+  }
+
+  const dumpValue = JSON.parse(data);
+
+  localStorage.clear();
+
+  dumpValue.forEach((record:string[]) => localStorage.setItem(record[0], record[1]));
+};
