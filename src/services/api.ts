@@ -84,8 +84,12 @@ class NearApi {
 
   constructor(near: Near) {
     this.near = near;
-    this.walletConnection = new WalletConnection(near, config.contractName);
-    this.contract = this.setContract();
+    this.walletConnection = new WalletConnection(near, near.config.contractName);
+    this.contract = new Contract(
+      this.walletConnection.account(),
+      this.near.config.contractName,
+      { viewMethods: LOCKUP_VIEW_METHODS, changeMethods: LOCKUP_CHANGE_METHODS },
+    ) as TLockupContract;
   }
 
   async getDraftGroupsAll(): Promise<[DraftGroupView]> {
