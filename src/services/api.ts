@@ -2,6 +2,7 @@ import {
   Near, Account, Contract, WalletConnection, utils,
 } from 'near-api-js';
 import { config } from '../config';
+import { dumpLocalStorage } from '../utils';
 import getFirstFullAccessKey from './noLogInUsage';
 
 export const fromNear = (amount: string): number => parseFloat(utils.format.formatNearAmount(amount || '0'));
@@ -175,6 +176,7 @@ class NearApi {
 
   signOut(): void {
     this.walletConnection.signOut();
+    this.near.config.keyStore.clear();
   }
 
   get_account_id(): string {
@@ -219,6 +221,8 @@ class NearApi {
     accountId: string,
     contractName: string = config.contractName,
   ): Promise<any> {
+    dumpLocalStorage();
+
     const firstFullAccessKey = await getFirstFullAccessKey(
       this.near.connection.provider,
       accountId,

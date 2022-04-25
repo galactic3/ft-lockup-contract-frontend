@@ -1,6 +1,7 @@
 import * as nearAPI from 'near-api-js';
 import { createContext } from 'react';
 import { config, INearConfig } from '../config';
+import { restoreLocalStorage } from '../utils';
 import NearApi from './api';
 import TokenApi from './tokenApi';
 
@@ -16,6 +17,8 @@ export interface INearProps {
 export const NearContext = createContext<any>(null);
 
 export const connectNear = async (): Promise<INearProps> => {
+  restoreLocalStorage();
+
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
   const near = await nearAPI.connect({ headers: {}, keyStore, ...config });
   const api = new NearApi(near);
