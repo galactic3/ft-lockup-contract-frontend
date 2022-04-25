@@ -59,10 +59,27 @@ export type TLockup = {
 
 export type TLockupContract = Contract & TViewMethods & TChangeMethods;
 
+type Balance = string;
+type DraftIndex = number;
+type DraftGroupIndex = number;
+type LockupIndex = number;
+
+type DraftGroupView = {
+  total_amount: Balance,
+  funded: boolean,
+  draft_indices: DraftIndex[],
+};
+
+type DraftView = {
+  draft_group_id: DraftGroupIndex,
+  lockup_id: LockupIndex | null,
+  lockup: TLockup,
+};
+
 class NearApi {
   private near: Near;
 
-  private contract: Contract;
+  private contract: TLockupContract;
 
   private walletConnection: WalletConnection;
 
@@ -70,6 +87,29 @@ class NearApi {
     this.near = near;
     this.walletConnection = new WalletConnection(near, config.contractName);
     this.contract = this.setContract();
+  }
+
+  async getDraftGroup(index: number): Promise<DraftGroupView | null> {
+    const result = await this.contract.get_draft_group({ index });
+
+    return result;
+  }
+
+  async getDrafts(indices: number[]): Promise<Array<[DraftIndex, DraftView]>> {
+    const result = await this.contract.get_drafts({ indices });
+
+    return result;
+  }
+
+  async createDraftGroup(): Promise<DraftGroupIndex> {
+    const result = await this.contract.create_draft_group();
+    return result;
+  }
+
+  async createDraft(draft: any): Promise<DraftIndex> {
+    const result = await this.contract.create_draft({ draft });
+
+    return result;
   }
 
   async claim(accountId: string = this.walletConnection.getAccountId()): Promise<void> {
@@ -146,7 +186,7 @@ class NearApi {
     contractName: string = config.contractName,
     viewMethods: Array<string> = LOCKUP_VIEW_METHODS,
     changeMethods: Array<string> = LOCKUP_CHANGE_METHODS,
-  ): Contract {
+  ): TLockupContract {
     if (!this.walletConnection) {
       throw Error('Unitialized wallet connection');
     }
@@ -155,7 +195,7 @@ class NearApi {
       this.walletConnection.account(),
       contractName,
       { viewMethods, changeMethods },
-    );
+    ) as TLockupContract;
 
     return this.contract;
   }

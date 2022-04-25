@@ -40,23 +40,23 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
       throw new Error('near is null');
     }
     log('import started');
-    const contract = near.api.getContract();
-    const draftGroupId = await contract.create_draft_group();
+    const draftGroupId = await near.api.createDraftGroup();
     const msg = `created draft group id: ${draftGroupId}`;
     log(msg);
 
     for (let i = 0; i < data.length; i += 1) {
       const lockup = data[i];
       log(`adding draft for ${lockup.account_id}`);
-      const draft = JSON.parse(JSON.stringify({
+      const draft = {
         draft_group_id: draftGroupId,
         lockup,
-      }));
+      };
       try {
-        const draftId = await contract.create_draft({ draft });
+        const draftId = await near.api.createDraft(draft);
         log(`created draft for ${lockup.account_id}: ${draftId}`);
       } catch (e) {
         console.log(`ERROR: ${e}`);
+        throw e;
       }
     }
 

@@ -22,7 +22,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
       if (!near) {
         return;
       }
-      const result = await near.api.getContract().get_draft_group({ index: draftGroupId });
+      const result = await near.api.getDraftGroup(draftGroupId);
       console.log(result);
       setDraftGroup(result);
     };
@@ -40,7 +40,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
       if (!draftGroup) {
         return;
       }
-      const result = await near.api.getContract().get_drafts({ indices: draftGroup.draft_indices });
+      const result = await near.api.getDrafts(draftGroup.draft_indices);
       console.log(result);
       setDrafts(result.map((x: any) => x[1].lockup));
     };
