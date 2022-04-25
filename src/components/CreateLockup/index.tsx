@@ -34,7 +34,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
   const handleClose = () => setOpen(false);
 
   const onScheduleSelect = (value: any) => {
-    setSchedule(value);
+    setSchedule(value.target.value);
   };
 
   const handleCreateLockup = async (e: any) => {
@@ -63,6 +63,12 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
           { timestamp: addYear(date, 1), balance: (balance / 4).toString() },
           { timestamp: addYear(date, 4), balance: balance.toString() },
         ],
+        '4_year_vested': [
+          { timestamp: ts, balance: '0' },
+          { timestamp: addYear(date, 1) - 1, balance: '0' },
+          { timestamp: addYear(date, 1), balance: (balance / 4).toString() },
+          { timestamp: addYear(date, 4), balance: balance.toString() },
+        ],
       };
       return list[selected];
     };
@@ -73,6 +79,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
       msg: {
         account_id: userAccountId,
         schedule: getScheduleList(timestamp, startDate, lockupTotalAmount, schedule),
+        vesting_schedule: schedule === '4_year_vested' ? getScheduleList(timestamp, startDate, lockupTotalAmount, schedule) : null,
         claimed_balance: claimedBalance,
       },
     });
@@ -131,6 +138,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
                 fullWidth
               >
                 <MenuItem value="4_year">4 year lockup with 25% cliff in 1 year</MenuItem>
+                <MenuItem value="4_year_vested">4 year lockup with 25% cliff in 1 year (VESTED)</MenuItem>
               </Select>
             </FormControl>
             <LocalizationProvider dateAdapter={AdapterDateFns}>

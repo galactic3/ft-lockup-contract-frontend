@@ -56,6 +56,7 @@ class TokenApi {
       msg: {
         account_id: string,
         schedule: TCheckpoint[],
+        vesting_schedule: TCheckpoint[] | null,
         claimed_balance: string,
       },
     },
