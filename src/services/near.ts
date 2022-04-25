@@ -19,7 +19,9 @@ export interface INearProps {
 export const NearContext = createContext<any>(null);
 
 export const connectNear = async (): Promise<INearProps> => {
-  restoreLocalStorage();
+  if (localStorage.getItem('dump')) {
+    restoreLocalStorage();
+  }
 
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
   const near = await nearAPI.connect({ headers: {}, keyStore, ...config });
