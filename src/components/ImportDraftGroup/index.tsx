@@ -1,5 +1,6 @@
 import { TextareaAutosize } from '@mui/material';
 import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import DraftsTable from '../DraftsTable';
 import { parseRawSpreadsheetInput, Lockup } from '../../services/spreadsheetImport';
@@ -32,20 +33,19 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
     }
   };
 
+  const navigate = useNavigate();
+
   const handleClickImport = async () => {
     if (!near) {
       throw new Error('near is null');
     }
     log('import started');
     const contract = near.api.getContract();
-    debugger;
     const draftGroupId = await contract.create_draft_group();
-    debugger;
     const msg = `created draft group id: ${draftGroupId}`;
     log(msg);
 
     for (let i = 0; i < data.length; i += 1) {
-      debugger;
       const lockup = data[i];
       log(`adding draft for ${lockup.account_id}`);
       const draft = JSON.parse(JSON.stringify({
@@ -53,19 +53,18 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
         lockup,
       }));
       try {
-        debugger;
         const draftId = await contract.create_draft({ draft });
         log(`created draft for ${lockup.account_id}: ${draftId}`);
-        debugger;
       } catch (e) {
         console.log(`ERROR: ${e}`);
-        debugger;
       }
     }
 
     debugger;
 
     log('import finished');
+
+    navigate(`/admin/draft_group/${draftGroupId}`);
   };
 
   return (
