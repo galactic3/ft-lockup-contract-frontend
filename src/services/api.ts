@@ -9,6 +9,7 @@ export const toYoctoNear = (amount: number): string => utils.format.parseNearAmo
 
 const LOCKUP_VIEW_METHODS = [
   'get_draft_group',
+  'get_draft_groups_paged',
   'get_drafts',
   'get_lockups_paged',
   'get_token_account_id',
@@ -25,6 +26,7 @@ const LOCKUP_CHANGE_METHODS = [
 
 type TViewMethods = {
   'get_draft_group': any,
+  'get_draft_groups_paged': any,
   'get_drafts': any,
   'get_lockups_paged': any,
   'get_token_account_id': any,
@@ -89,6 +91,11 @@ class NearApi {
     this.near = near;
     this.walletConnection = new WalletConnection(near, config.contractName);
     this.contract = this.setContract();
+  }
+
+  async getDraftGroupsAll(): Promise<[DraftGroupView]> {
+    const result = await this.contract.get_draft_groups_paged();
+    return result.map(([draftIndex, draft]: [any, any]) => Object.assign(draft, { id: draftIndex }));
   }
 
   async getDraftGroup(index: number): Promise<DraftGroupView | null> {

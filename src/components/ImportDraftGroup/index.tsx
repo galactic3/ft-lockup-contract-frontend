@@ -63,7 +63,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
 
     log('import finished');
 
-    navigate(`/admin/draft_group/${draftGroupId}`);
+    navigate(`/admin/draft_groups/${draftGroupId}`);
   };
 
   return (
