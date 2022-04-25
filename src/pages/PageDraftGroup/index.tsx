@@ -42,7 +42,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
       }
       const result = await near.api.getDrafts(draftGroup.draft_indices);
       console.log(result);
-      setDrafts(result.map((x: any) => x[1].lockup));
+      setDrafts(result.map((x: any) => Object.assign(x[1].lockup, { id: x[0] })));
     };
 
     fetchDrafts(); // .catch(console.error);
@@ -66,11 +66,6 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
       <div>
         Funded:
         { draftGroup.funded ? 'YES' : 'NO' }
-      </div>
-
-      <div>
-        draft indices:
-        { JSON.stringify(draftGroup.draft_indices) }
       </div>
 
       <h3>Drafts</h3>

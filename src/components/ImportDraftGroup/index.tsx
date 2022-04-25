@@ -18,6 +18,10 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
     setImportLog((currentLog) => currentLog.concat([message]));
   };
 
+  const clearLog = () => {
+    setImportLog([]);
+  };
+
   console.log(setData);
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -39,6 +43,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
     if (!near) {
       throw new Error('near is null');
     }
+    clearLog();
     log('import started');
     const draftGroupId = await near.api.createDraftGroup();
     const msg = `created draft group id: ${draftGroupId}`;
@@ -67,7 +72,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
   };
 
   return (
-    <div>
+    <div className="container">
       <h3>
         Import Draft Group
       </h3>
@@ -81,18 +86,15 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
         />
       </div>
       <DraftsTable lockups={data} token={token} />
+      <br />
       <div>
         <button className="button fullWidth noMargin" onClick={handleClickImport} type="button">
           Import
         </button>
       </div>
-      <div id="import-log">
-        <ul>
-          {importLog.map((line) => <li>{line}</li>)}
-        </ul>
-      </div>
-      <pre>
-        {JSON.stringify(data, null, 2)}
+      <br />
+      <pre id="import-log">
+        {importLog.join('\n')}
       </pre>
     </div>
   );

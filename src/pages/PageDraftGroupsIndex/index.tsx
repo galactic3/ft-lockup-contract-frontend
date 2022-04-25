@@ -9,8 +9,10 @@ import {
 import { Link } from 'react-router-dom';
 
 import { INearProps, NearContext } from '../../services/near';
+import { TMetadata } from '../../services/tokenApi';
+import { convertAmount } from '../../utils';
 
-export default function PageDraftGroupsIndex() {
+export default function PageDraftGroupsIndex({ token }: { token: TMetadata }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [draftGroups, setDraftGroups] = useState<any[]>([]);
   // const [drafts, setDrafts] = useState<any[]>([]);
@@ -84,20 +86,17 @@ export default function PageDraftGroupsIndex() {
               </TableCell>
               <TableCell align="center">{group.funded ? 'Yes' : 'No'}</TableCell>
               <TableCell align="right">{group.draft_indices.length}</TableCell>
-              <TableCell align="right">{group.total_amount}</TableCell>
+              <TableCell align="right">{convertAmount(group.total_amount, token.decimals)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
 
-      draft groups raw:
-      <pre>
-        { JSON.stringify(draftGroups, null, 2) }
-      </pre>
+      <br />
 
-      {/* <h3>Drafts</h3> */}
-
-      {/* <DraftsTable lockups={drafts} token={token} /> */}
+      <Link to="/admin/import_draft_group">
+        <button className="button" type="button">ImportDraftGroup</button>
+      </Link>
     </div>
   );
 }

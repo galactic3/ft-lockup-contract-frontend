@@ -3,7 +3,6 @@ import {
   TableContainer,
 } from '@mui/material';
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
 import CreateLockup from '../../components/CreateLockup';
 import LockupsTable from '../../components/LockupsTable';
 import { INearProps, NearContext } from '../../services/near';
@@ -32,14 +31,6 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
       </TableContainer>
 
       {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
-
-      <br />
-
-      {signedIn && adminControls && isAdmin && (
-        <Link to="/admin/import_draft_group">
-          <button className="button" type="button">ImportDraftGroup</button>
-        </Link>
-      )}
     </div>
   );
 }
