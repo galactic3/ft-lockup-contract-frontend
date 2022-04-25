@@ -1,18 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-// import {
-//   Paper,
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableContainer,
-//   TableHead,
-//   TableRow,
-// } from '@mui/material';
-// import Row from '../../components/table/row';
 import DraftsTable from '../../components/DraftsTable';
 import { TMetadata } from '../../services/tokenApi';
-// import { convertAmount } from '../../utils';
+import { convertAmount } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 
 export default function PageDraftGroup({ token }: { token: TMetadata }) {
@@ -58,12 +48,6 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
     fetchDrafts(); // .catch(console.error);
   }, [near, draftGroup]);
 
-  // const lockups = allLockups.filter((x) => x.account_id === userId);
-
-  // const totalUnclaimedBalance = lockups.reduce((acc, obj) => acc + parseFloat(obj.unclaimed_balance), 0);
-
-  // console.log('user lockups', userId, lockups);
-
   if (!draftGroup) {
     return null;
   }
@@ -75,7 +59,10 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
         {' '}
         {draftGroupId}
       </h1>
-
+      <div>
+        Total amount:
+        { convertAmount(draftGroup.total_amount, token.decimals) }
+      </div>
       <div>
         Funded:
         { draftGroup.funded ? 'YES' : 'NO' }
