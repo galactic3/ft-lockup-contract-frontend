@@ -18,6 +18,7 @@ const LOCKUP_VIEW_METHODS = [
 const LOCKUP_CHANGE_METHODS = [
   'claim',
   'create_draft',
+  'create_drafts',
   'create_draft_group',
   'terminate',
 ];
@@ -33,6 +34,7 @@ type TViewMethods = {
 type TChangeMethods = {
   'claim': any,
   'create_draft': any,
+  'create_drafts': any,
   'create_draft_group': any,
   'terminate': any,
 };
@@ -108,6 +110,12 @@ class NearApi {
 
   async createDraft(draft: any): Promise<DraftIndex> {
     const result = await this.contract.create_draft({ draft });
+
+    return result;
+  }
+
+  async createDrafts(drafts: any[]): Promise<DraftIndex> {
+    const result = await this.contract.create_drafts({ drafts }, '300000000000000');
 
     return result;
   }

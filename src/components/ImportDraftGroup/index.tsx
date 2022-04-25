@@ -44,23 +44,22 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
     const msg = `created draft group id: ${draftGroupId}`;
     log(msg);
 
-    for (let i = 0; i < data.length; i += 1) {
-      const lockup = data[i];
-      log(`adding draft for ${lockup.account_id}`);
-      const draft = {
+    const chunkSize = 100;
+    for (let i = 0; i < data.length; i += chunkSize) {
+      const chunk = data.slice(i, i + chunkSize);
+      log(`adding drafts from (${i}, ${i + chunk.length})`);
+      const drafts = chunk.map((lockup) => ({
         draft_group_id: draftGroupId,
         lockup,
-      };
+      }));
       try {
-        const draftId = await near.api.createDraft(draft);
-        log(`created draft for ${lockup.account_id}: ${draftId}`);
+        const draftIds = await near.api.createDrafts(drafts);
+        log(`created drafts for from (${i}, ${i + chunk.length}): ${draftIds}`);
       } catch (e) {
-        console.log(`ERROR: ${e}`);
+        log(`ERROR: ${e}`);
         throw e;
       }
     }
-
-    debugger;
 
     log('import finished');
 
