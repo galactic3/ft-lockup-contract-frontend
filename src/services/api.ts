@@ -8,6 +8,9 @@ export const fromNear = (amount: string): number => parseFloat(utils.format.form
 export const toYoctoNear = (amount: number): string => utils.format.parseNearAmount(String(amount)) || '0';
 
 const LOCKUP_VIEW_METHODS = [
+  'get_draft_group',
+  'get_draft_groups_paged',
+  'get_drafts',
   'get_lockups_paged',
   'get_token_account_id',
   'get_deposit_whitelist',
@@ -15,10 +18,16 @@ const LOCKUP_VIEW_METHODS = [
 
 const LOCKUP_CHANGE_METHODS = [
   'claim',
+  'create_draft',
+  'create_drafts',
+  'create_draft_group',
   'terminate',
 ];
 
 type TViewMethods = {
+  'get_draft_group': any,
+  'get_draft_groups_paged': any,
+  'get_drafts': any,
   'get_lockups_paged': any,
   'get_token_account_id': any,
   'get_deposit_whitelist': any,
@@ -26,6 +35,9 @@ type TViewMethods = {
 
 type TChangeMethods = {
   'claim': any,
+  'create_draft': any,
+  'create_drafts': any,
+  'create_draft_group': any,
   'terminate': any,
 };
 
@@ -51,10 +63,27 @@ export type TLockup = {
 
 export type TLockupContract = Contract & TViewMethods & TChangeMethods;
 
+type Balance = string;
+type DraftIndex = number;
+type DraftGroupIndex = number;
+type LockupIndex = number;
+
+type DraftGroupView = {
+  total_amount: Balance,
+  funded: boolean,
+  draft_indices: DraftIndex[],
+};
+
+type DraftView = {
+  draft_group_id: DraftGroupIndex,
+  lockup_id: LockupIndex | null,
+  lockup: TLockup,
+};
+
 class NearApi {
   private near: Near;
 
-  private contract: Contract;
+  private contract: TLockupContract;
 
   private walletConnection: WalletConnection;
 
@@ -62,6 +91,40 @@ class NearApi {
     this.near = near;
     this.walletConnection = new WalletConnection(near, config.contractName);
     this.contract = this.setContract();
+  }
+
+  async getDraftGroupsAll(): Promise<[DraftGroupView]> {
+    const result = await this.contract.get_draft_groups_paged();
+    return result.map(([draftIndex, draft]: [any, any]) => Object.assign(draft, { id: draftIndex }));
+  }
+
+  async getDraftGroup(index: number): Promise<DraftGroupView | null> {
+    const result = await this.contract.get_draft_group({ index });
+
+    return result;
+  }
+
+  async getDrafts(indices: number[]): Promise<Array<[DraftIndex, DraftView]>> {
+    const result = await this.contract.get_drafts({ indices });
+
+    return result;
+  }
+
+  async createDraftGroup(): Promise<DraftGroupIndex> {
+    const result = await this.contract.create_draft_group();
+    return result;
+  }
+
+  async createDraft(draft: any): Promise<DraftIndex> {
+    const result = await this.contract.create_draft({ draft });
+
+    return result;
+  }
+
+  async createDrafts(drafts: any[]): Promise<DraftIndex> {
+    const result = await this.contract.create_drafts({ drafts }, '200000000000000');
+
+    return result;
   }
 
   async claim(accountId: string = this.walletConnection.getAccountId()): Promise<void> {
@@ -138,7 +201,7 @@ class NearApi {
     contractName: string = config.contractName,
     viewMethods: Array<string> = LOCKUP_VIEW_METHODS,
     changeMethods: Array<string> = LOCKUP_CHANGE_METHODS,
-  ): Contract {
+  ): TLockupContract {
     if (!this.walletConnection) {
       throw Error('Unitialized wallet connection');
     }
@@ -147,7 +210,7 @@ class NearApi {
       this.walletConnection.account(),
       contractName,
       { viewMethods, changeMethods },
-    );
+    ) as TLockupContract;
 
     return this.contract;
   }

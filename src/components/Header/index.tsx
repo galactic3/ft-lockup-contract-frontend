@@ -21,6 +21,7 @@ export default function Header({ adminControls }: { adminControls: boolean }) {
           <div className="nav">
             <Link className="nav-link" to={adminControls && isAdmin ? '/admin/lockups' : '/lockups'}>Lockups</Link>
             <Link className="nav-link" to="/about">About</Link>
+            {adminControls && (<Link className="nav-link" to="/admin/draft_groups">Draft Groups</Link>)}
           </div>
           {adminControls && signedIn && (
             <Box sx={{ marginTop: '23px' }}>
