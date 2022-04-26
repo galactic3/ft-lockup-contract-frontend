@@ -10,6 +10,12 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [draftGroup, setDraftGroup] = useState<any>(null);
   const [drafts, setDrafts] = useState<any[]>([]);
+  const [processLog, setProcessLog] = useState<string[]>([]);
+
+  const log = (message: string) => {
+    console.log(message);
+    setProcessLog((oldLog) => oldLog.concat([message]));
+  };
 
   console.log(token);
   console.log(draftGroup);
@@ -48,6 +54,31 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
     fetchDrafts(); // .catch(console.error);
   }, [near, draftGroup]);
 
+  const handleConvert = () => {
+    const convertDrafts = async () => {
+      if (!near) {
+        throw new Error('near is null');
+      }
+      log('convert started');
+      const draftIds = draftGroup.draft_indices;
+      for (let i = 0; i < draftIds.length; i += 1) {
+        const draftId = draftIds[i];
+        log(`converting draft ${draftId}`);
+        try {
+          const lockupId = await near.api.convertDraft(draftId);
+          log(`converted draft to lockup: ${draftId} -> ${lockupId}`);
+        } catch (e) {
+          log(`ERROR: ${e}`);
+          throw e;
+        }
+      }
+
+      log('convert finished');
+    };
+
+    convertDrafts();
+  };
+
   if (!draftGroup) {
     return null;
   }
@@ -67,6 +98,12 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
         Funded:
         { draftGroup.funded ? 'YES' : 'NO' }
       </div>
+
+      {draftGroup.funded && (<button className="button" type="button" onClick={handleConvert}>Convert</button>)}
+
+      <pre id="import-log">
+        {processLog.join('\n')}
+      </pre>
 
       <h3>Drafts</h3>
 
