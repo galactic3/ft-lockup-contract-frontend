@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DraftsTable from '../../components/DraftsTable';
 import { TMetadata } from '../../services/tokenApi';
 import { convertAmount } from '../../utils';
@@ -54,6 +54,8 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
     fetchDrafts(); // .catch(console.error);
   }, [near, draftGroup]);
 
+  const navigate = useNavigate();
+
   const handleConvert = () => {
     const convertDrafts = async () => {
       if (!near) {
@@ -61,12 +63,13 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
       }
       log('convert started');
       const draftIds = draftGroup.draft_indices;
-      for (let i = 0; i < draftIds.length; i += 1) {
-        const draftId = draftIds[i];
-        log(`converting draft ${draftId}`);
+      const chunkSize = 100;
+      for (let i = 0; i < draftIds.length; i += chunkSize) {
+        const chunk = draftIds.slice(i, i + chunkSize);
+        log(`converting drafts from (${i}, ${i + chunk.length})`);
         try {
-          const lockupId = await near.api.convertDraft(draftId);
-          log(`converted draft to lockup: ${draftId} -> ${lockupId}`);
+          const result = await near.api.convertDrafts(chunk);
+          log(`converted drafts to lockups from (${i}, ${i + chunk.length}): ${result}`);
         } catch (e) {
           log(`ERROR: ${e}`);
           throw e;
@@ -74,6 +77,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
       }
 
       log('convert finished');
+      navigate('/admin/lockups');
     };
 
     convertDrafts();
