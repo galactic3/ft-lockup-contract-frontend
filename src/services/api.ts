@@ -19,6 +19,8 @@ const LOCKUP_CHANGE_METHODS = [
   'create_draft',
   'create_drafts',
   'create_draft_group',
+  'convert_draft',
+  'convert_drafts',
   'terminate',
 ];
 
@@ -35,6 +37,8 @@ type TChangeMethods = {
   'create_draft': any,
   'create_drafts': any,
   'create_draft_group': any,
+  'convert_draft': any,
+  'convert_drafts': any,
   'terminate': any,
 };
 
@@ -122,6 +126,18 @@ class NearApi {
 
   async createDrafts(drafts: any[]): Promise<DraftIndex> {
     const result = await this.contract.create_drafts({ drafts }, '200000000000000');
+
+    return result;
+  }
+
+  async convertDraft(index: DraftIndex): Promise<LockupIndex> {
+    const result = await this.contract.convert_draft({ draft_id: index });
+
+    return result;
+  }
+
+  async convertDrafts(indices: DraftIndex[]): Promise<LockupIndex[]> {
+    const result = await this.contract.convert_drafts({ draft_ids: indices }, '200000000000000');
 
     return result;
   }

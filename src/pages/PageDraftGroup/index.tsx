@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DraftsTable from '../../components/DraftsTable';
 import { TMetadata } from '../../services/tokenApi';
 import { convertAmount } from '../../utils';
@@ -10,6 +10,12 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [draftGroup, setDraftGroup] = useState<any>(null);
   const [drafts, setDrafts] = useState<any[]>([]);
+  const [processLog, setProcessLog] = useState<string[]>([]);
+
+  const log = (message: string) => {
+    console.log(message);
+    setProcessLog((oldLog) => oldLog.concat([message]));
+  };
 
   console.log(token);
   console.log(draftGroup);
@@ -48,6 +54,35 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
     fetchDrafts(); // .catch(console.error);
   }, [near, draftGroup]);
 
+  const navigate = useNavigate();
+
+  const handleConvert = () => {
+    const convertDrafts = async () => {
+      if (!near) {
+        throw new Error('near is null');
+      }
+      log('convert started');
+      const draftIds = draftGroup.draft_indices;
+      const chunkSize = 100;
+      for (let i = 0; i < draftIds.length; i += chunkSize) {
+        const chunk = draftIds.slice(i, i + chunkSize);
+        log(`converting drafts from (${i}, ${i + chunk.length})`);
+        try {
+          const result = await near.api.convertDrafts(chunk);
+          log(`converted drafts to lockups from (${i}, ${i + chunk.length}): ${result}`);
+        } catch (e) {
+          log(`ERROR: ${e}`);
+          throw e;
+        }
+      }
+
+      log('convert finished');
+      navigate('/admin/lockups');
+    };
+
+    convertDrafts();
+  };
+
   if (!draftGroup) {
     return null;
   }
@@ -67,6 +102,12 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
         Funded:
         { draftGroup.funded ? 'YES' : 'NO' }
       </div>
+
+      {draftGroup.funded && (<button className="button" type="button" onClick={handleConvert}>Convert</button>)}
+
+      <pre id="import-log">
+        {processLog.join('\n')}
+      </pre>
 
       <h3>Drafts</h3>
 
