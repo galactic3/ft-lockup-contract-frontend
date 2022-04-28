@@ -1,5 +1,3 @@
-import BN from 'bn.js';
-
 import {
   datePlusDurationMul,
   parseValidAccountId,
@@ -237,10 +235,10 @@ describe('.toLockupSchedule', () => {
         12,
       )
     ).toStrictEqual([
-      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
-      { timestamp: toUnix('2000-12-31T23:59:58Z'), balance: new BN('0') },
-      { timestamp: toUnix('2000-12-31T23:59:59Z'), balance: new BN('15000' + '000000000000') },
-      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: '0' },
+      { timestamp: toUnix('2000-12-31T23:59:58Z'), balance: '0' },
+      { timestamp: toUnix('2000-12-31T23:59:59Z'), balance: '15000' + '000000000000' },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: '60000' + '000000000000' },
     ]);
 
     // zero cliff
@@ -251,10 +249,10 @@ describe('.toLockupSchedule', () => {
         12,
       )
     ).toStrictEqual([
-      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
-      { timestamp: toUnix('2000-12-31T23:59:58Z'), balance: new BN('0') },
-      { timestamp: toUnix('2000-12-31T23:59:59Z'), balance: new BN('0') },
-      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: '0' },
+      { timestamp: toUnix('2000-12-31T23:59:58Z'), balance: '0' },
+      { timestamp: toUnix('2000-12-31T23:59:59Z'), balance: '0' },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: '60000' + '000000000000' },
     ]);
 
     // full amount cliff
@@ -265,10 +263,10 @@ describe('.toLockupSchedule', () => {
         12,
       )
     ).toStrictEqual([
-      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
-      { timestamp: toUnix('2000-12-31T23:59:58Z'), balance: new BN('0') },
-      { timestamp: toUnix('2000-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
-      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: '0' },
+      { timestamp: toUnix('2000-12-31T23:59:58Z'), balance: '0' },
+      { timestamp: toUnix('2000-12-31T23:59:59Z'), balance: '60000' + '000000000000' },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: '60000' + '000000000000' },
     ]);
 
     // full duration cliff
@@ -279,9 +277,9 @@ describe('.toLockupSchedule', () => {
         12,
       )
     ).toStrictEqual([
-      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
-      { timestamp: toUnix('2003-12-31T23:59:58Z'), balance: new BN('0') },
-      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: '0' },
+      { timestamp: toUnix('2003-12-31T23:59:58Z'), balance: '0' },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: '60000' + '000000000000' },
     ]);
 
     // zero duration cliff
@@ -292,9 +290,9 @@ describe('.toLockupSchedule', () => {
         12,
       )
     ).toStrictEqual([
-      { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: new BN('0') },
-      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('15000' + '000000000000') },
-      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+      { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: '0' },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: '15000' + '000000000000' },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: '60000' + '000000000000' },
     ]);
 
     // full duration zero amount cliff
@@ -305,9 +303,9 @@ describe('.toLockupSchedule', () => {
         12,
       )
     ).toStrictEqual([
-      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
-      { timestamp: toUnix('2003-12-31T23:59:58Z'), balance: new BN('0') },
-      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: '0' },
+      { timestamp: toUnix('2003-12-31T23:59:58Z'), balance: '0' },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: '60000' + '000000000000' },
     ]);
 
     // zero duration full amount cliff
@@ -318,9 +316,9 @@ describe('.toLockupSchedule', () => {
         12,
       )
     ).toStrictEqual([
-      { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: new BN('0') },
-      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
-      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+      { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: '0' },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: '60000' + '000000000000' },
+      { timestamp: toUnix('2003-12-31T23:59:59Z'), balance: '60000' + '000000000000' },
     ]);
 
     // one second duration lockup
@@ -331,8 +329,8 @@ describe('.toLockupSchedule', () => {
         12,
       )
     ).toStrictEqual([
-      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('0') },
-      { timestamp: toUnix('2000-01-01T00:00:00Z'), balance: new BN('60000' + '000000000000') },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: '0' },
+      { timestamp: toUnix('2000-01-01T00:00:00Z'), balance: '60000' + '000000000000' },
     ]);
 
     // zero duration lockup
@@ -343,8 +341,8 @@ describe('.toLockupSchedule', () => {
         12,
       )
     ).toStrictEqual([
-      { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: new BN('0') },
-      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: new BN('60000' + '000000000000') },
+      { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: '0' },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: '60000' + '000000000000' },
     ]);
 
     // controversial cases
@@ -372,21 +370,21 @@ describe('.parseLockup', () => {
     ).toStrictEqual(
       {
         account_id: "alice.near",
-        claimed_balance: new BN("0"),
+        claimed_balance: "0",
         schedule: [
-          { balance: new BN("0"), timestamp: 946684799 },
-          { balance: new BN("0"), timestamp: 1009843198 },
-          { balance: new BN("30000000000000000"), timestamp: 1009843199 },
-          { balance: new BN("60000000000000000"), timestamp: 1072915199 },
+          { balance: "0", timestamp: 946684799 },
+          { balance: "0", timestamp: 1009843198 },
+          { balance: "30000000000000000", timestamp: 1009843199 },
+          { balance: "60000000000000000", timestamp: 1072915199 },
         ],
         termination_config: {
           terminator_id: "owner.near",
           vesting_schedule: {
             Schedule: [
-              { balance: new BN("0"), timestamp: 946684799 },
-              { balance: new BN("0"), timestamp: 978307198 },
-              { balance: new BN("15000000000000000"), timestamp: 978307199 },
-              { balance: new BN("60000000000000000"), timestamp: 1072915199 },
+              { balance: "0", timestamp: 946684799 },
+              { balance: "0", timestamp: 978307198 },
+              { balance: "15000000000000000", timestamp: 978307199 },
+              { balance: "60000000000000000", timestamp: 1072915199 },
             ],
           },
         },
@@ -406,32 +404,32 @@ describe('.parseRawSpreadsheetInput', () => {
     ).toStrictEqual([
       {
         account_id: "alice.near",
-        claimed_balance: new BN('0'),
+        claimed_balance: '0',
         schedule: [
-          { balance: new BN('0'), timestamp: 1262303999 },
-          { balance: new BN('0'), timestamp: 1325375998 },
-          { balance: new BN('50000' + '000000000000'), timestamp: 1325375999 },
-          { balance: new BN('100000' + '000000000000'), timestamp: 1388534399 },
+          { balance: '0', timestamp: 1262303999 },
+          { balance: '0', timestamp: 1325375998 },
+          { balance: '50000' + '000000000000', timestamp: 1325375999 },
+          { balance: '100000' + '000000000000', timestamp: 1388534399 },
         ],
         termination_config: null,
       },
       {
         account_id: 'bob.near',
-        claimed_balance: new BN('0'),
+        claimed_balance: '0',
         schedule: [
-          {balance: new BN('0'), timestamp: 946684799},
-          {balance: new BN('0'), timestamp: 1009843198},
-          {balance: new BN('30000' + '000000000000'), timestamp: 1009843199},
-          {balance: new BN('60000' + '000000000000'), timestamp: 1072915199},
+          {balance: '0', timestamp: 946684799},
+          {balance: '0', timestamp: 1009843198},
+          {balance: '30000' + '000000000000', timestamp: 1009843199},
+          {balance: '60000' + '000000000000', timestamp: 1072915199},
         ],
         termination_config: {
           terminator_id: 'owner.near',
           vesting_schedule: {
             Schedule: [
-              {balance: new BN('0'), timestamp: 946684799},
-              {balance: new BN('0'), timestamp: 1009843198},
-              {balance: new BN('30000' + '000000000000'), timestamp: 1009843199},
-              {balance: new BN('60000' + '000000000000'), timestamp: 1072915199},
+              {balance: '0', timestamp: 946684799},
+              {balance: '0', timestamp: 1009843198},
+              {balance: '30000' + '000000000000', timestamp: 1009843199},
+              {balance: '60000' + '000000000000', timestamp: 1072915199},
             ],
           },
         },

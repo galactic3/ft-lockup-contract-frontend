@@ -194,7 +194,7 @@ export const parseSpreadsheetToSpreadsheetRows = (input: string): SpreadsheetRow
 
 type ValidAccountId = string;
 type TimestampSec = number;
-type Balance = BN;
+type Balance = string;
 type Checkpoint = {
   timestamp: TimestampSec,
   balance: Balance,
@@ -254,19 +254,19 @@ export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmou
     throw new Error('error: timestampPreCliff < timestampStart');
   }
 
-  const checkpointStart = { timestamp: toUnix(timestampStart), balance: new BN('0') };
-  const checkpointPreCliff = { timestamp: toUnix(timestampPreCliff), balance: new BN('0') };
-  const checkpointCliff = { timestamp: toUnix(timestampCliff), balance: cliffAmount };
-  const checkpointFinish = { timestamp: toUnix(timestampFinish), balance: totalAmount };
+  const cpStart = { timestamp: toUnix(timestampStart), balance: new BN('0').toString() };
+  const cpPreCliff = { timestamp: toUnix(timestampPreCliff), balance: new BN('0').toString() };
+  const cpCliff = { timestamp: toUnix(timestampCliff), balance: cliffAmount.toString() };
+  const cpFinish = { timestamp: toUnix(timestampFinish), balance: totalAmount.toString() };
 
   const result = [];
-  result.unshift(checkpointFinish);
-  if (checkpointCliff.timestamp < checkpointFinish.timestamp) {
-    result.unshift(checkpointCliff);
+  result.unshift(cpFinish);
+  if (cpCliff.timestamp < cpFinish.timestamp) {
+    result.unshift(cpCliff);
   }
-  result.unshift(checkpointPreCliff);
-  if (checkpointStart.timestamp < checkpointPreCliff.timestamp) {
-    result.unshift(checkpointStart);
+  result.unshift(cpPreCliff);
+  if (cpStart.timestamp < cpPreCliff.timestamp) {
+    result.unshift(cpStart);
   }
 
   return result;
@@ -292,7 +292,7 @@ export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals:
   return {
     account_id: row.account_id,
     schedule: toLockupSchedule(row.lockup_schedule, row.amount, tokenDecimals),
-    claimed_balance: new BN(0),
+    claimed_balance: new BN(0).toString(),
     termination_config: terminationConfig,
   };
 };
