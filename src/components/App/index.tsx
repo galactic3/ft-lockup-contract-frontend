@@ -34,12 +34,13 @@ function Customer({
   );
 }
 
-function Admin({ lockups, token }: { lockups: any[], token: TMetadata }) {
+function Admin({ lockups, token, tokenContractId }: { lockups: any[], token: TMetadata, tokenContractId: string | null }) {
   return (
     <>
       <Header adminControls />
       <Routes>
         <Route path="/" element={<Authorize />} />
+        <Route path="/about" element={<About lockups={lockups} token_account_id={tokenContractId} />} />
         <Route path="/lockups" element={<RequireAuth><Lockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
         <Route path="/lockups/:userId" element={<RequireAuth><UserLockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
         <Route path="/draft_groups" element={<RequireAuth><PageDraftGroupsIndex token={token} /></RequireAuth>} />
@@ -100,7 +101,7 @@ export default function App() {
     <HashRouter>
       <Routes>
         <Route path="/*" element={<Customer lockups={lockups} token={token} contractId={contractId} />} />
-        <Route path="/admin/*" element={<Admin lockups={lockups} token={token} />} />
+        <Route path="/admin/*" element={<Admin lockups={lockups} token={token} tokenContractId={contractId} />} />
       </Routes>
     </HashRouter>
   );
