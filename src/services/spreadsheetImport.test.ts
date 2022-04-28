@@ -107,14 +107,14 @@ describe('.parseCliffInfo', () => {
 describe('.parseHumanFriendlySchedule', () => {
   it('works', () => {
     expect(() => parseHumanFriendlySchedule('')).toThrow(/expected 4 parts/);
-    expect(parseHumanFriendlySchedule('2017-07-14T23:59:48Z|P4Y|P1Y:25|P1M'))
+    expect(parseHumanFriendlySchedule('2017-07-14T23:59:48Z|P4Y|P1Y:25|PT1S'))
       .toStrictEqual(
         {
           timestampStart: new Date('2017-07-14T23:59:48Z'),
           durationTotal: parseDuration('P4Y'),
           durationCliff: parseDuration('P1Y'),
           percentageCliff: 25,
-          releaseEvery: parseDuration('P1M'),
+          releaseEvery: parseDuration('PT1S'),
         },
       );
   });
@@ -127,8 +127,8 @@ describe('.parseToSpreadsheetRow', () => {
     input = {
       account_id: 'alice.near',
       amount: '100000',
-      lockup_schedule: '2020-12-31T23:59:48Z|P4Y|P1Y:25|P1M',
-      vesting_schedule: '2021-12-31T23:59:48Z|P4Y|P1Y:25|P1M',
+      lockup_schedule: '2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S',
+      vesting_schedule: '2021-12-31T23:59:48Z|P4Y|P1Y:25|PT1S',
       terminator_id: 'owner.near',
     };
     expect(parseToSpreadsheetRow(input))
@@ -136,8 +136,8 @@ describe('.parseToSpreadsheetRow', () => {
         {
           account_id: 'alice.near',
           amount: '100000',
-          lockup_schedule: parseHumanFriendlySchedule('2020-12-31T23:59:48Z|P4Y|P1Y:25|P1M'),
-          vesting_schedule: parseHumanFriendlySchedule('2021-12-31T23:59:48Z|P4Y|P1Y:25|P1M'),
+          lockup_schedule: parseHumanFriendlySchedule('2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S'),
+          vesting_schedule: parseHumanFriendlySchedule('2021-12-31T23:59:48Z|P4Y|P1Y:25|PT1S'),
           terminator_id: 'owner.near',
         },
       );
@@ -145,8 +145,8 @@ describe('.parseToSpreadsheetRow', () => {
     input = {
       account_id: 'alice.near',
       amount: '100000',
-      lockup_schedule: '2020-12-31T23:59:48Z|P4Y|P1Y:25|P1M',
-      vesting_schedule: '2021-12-31T23:59:48Z|P4Y|P1Y:25|P1M',
+      lockup_schedule: '2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S',
+      vesting_schedule: '2021-12-31T23:59:48Z|P4Y|P1Y:25|PT1S',
       terminator_id: '',
     };
     // console.log(parseToSpreadsheetRow(input));
@@ -156,7 +156,7 @@ describe('.parseToSpreadsheetRow', () => {
     input = {
       account_id: 'alice.near',
       amount: '100000',
-      lockup_schedule: '2020-12-31T23:59:48Z|P4Y|P1Y:25|P1M',
+      lockup_schedule: '2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S',
       vesting_schedule: '',
       terminator_id: 'owner.near',
     };
@@ -167,7 +167,7 @@ describe('.parseToSpreadsheetRow', () => {
     input = {
       account_id: 'alice.near',
       amount: '100000',
-      lockup_schedule: '2020-12-31T23:59:48Z|P4Y|P1Y:25|P1M',
+      lockup_schedule: '2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S',
       vesting_schedule: '',
       terminator_id: '',
     };
@@ -183,15 +183,15 @@ describe('.parseToSpreadsheetRow', () => {
 
     input = `
       account_id	amount	lockup_schedule	vesting_schedule	terminator_id
-      alice.near	100000	2020-12-31T23:59:48Z|P4Y|P1Y:25|P1M	2021-12-31T23:59:48Z|P4Y|P1Y:25|P1M	owner.near
+      alice.near	100000	2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S	2021-12-31T23:59:48Z|P4Y|P1Y:25|PT1S	owner.near
     `
     expect(parseSpreadsheetToSpreadsheetRows(input))
       .toStrictEqual(
         [{
           account_id: 'alice.near',
           amount: '100000',
-          lockup_schedule: parseHumanFriendlySchedule('2020-12-31T23:59:48Z|P4Y|P1Y:25|P1M'),
-          vesting_schedule: parseHumanFriendlySchedule('2021-12-31T23:59:48Z|P4Y|P1Y:25|P1M'),
+          lockup_schedule: parseHumanFriendlySchedule('2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S'),
+          vesting_schedule: parseHumanFriendlySchedule('2021-12-31T23:59:48Z|P4Y|P1Y:25|PT1S'),
           terminator_id: 'owner.near',
         }],
       );
@@ -230,7 +230,7 @@ describe('.toLockupSchedule', () => {
     // basic
     expect(
       toLockupSchedule(
-        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:25|P1M'),
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:25|PT1S'),
         '60000',
         12,
       )
@@ -244,7 +244,7 @@ describe('.toLockupSchedule', () => {
     // zero cliff
     expect(
       toLockupSchedule(
-        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:0|P1M'),
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:0|PT1S'),
         '60000',
         12,
       )
@@ -258,7 +258,7 @@ describe('.toLockupSchedule', () => {
     // full amount cliff
     expect(
       toLockupSchedule(
-        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:100|P1M'),
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:100|PT1S'),
         '60000',
         12,
       )
@@ -272,7 +272,7 @@ describe('.toLockupSchedule', () => {
     // full duration cliff
     expect(
       toLockupSchedule(
-        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P4Y:25|P1M'),
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P4Y:25|PT1S'),
         '60000',
         12,
       )
@@ -285,7 +285,7 @@ describe('.toLockupSchedule', () => {
     // zero duration cliff
     expect(
       toLockupSchedule(
-        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P0Y:25|P1M'),
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P0Y:25|PT1S'),
         '60000',
         12,
       )
@@ -298,7 +298,7 @@ describe('.toLockupSchedule', () => {
     // full duration zero amount cliff
     expect(
       toLockupSchedule(
-        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P4Y:0|P1M'),
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P4Y:0|PT1S'),
         '60000',
         12,
       )
@@ -311,7 +311,7 @@ describe('.toLockupSchedule', () => {
     // zero duration full amount cliff
     expect(
       toLockupSchedule(
-        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P0Y:100|P1M'),
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P0Y:100|PT1S'),
         '60000',
         12,
       )
@@ -324,7 +324,7 @@ describe('.toLockupSchedule', () => {
     // one second duration lockup
     expect(
       toLockupSchedule(
-        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|PT1S|PT1S:25|P1M'),
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|PT1S|PT1S:25|PT1S'),
         '60000',
         12,
       )
@@ -336,7 +336,7 @@ describe('.toLockupSchedule', () => {
     // zero duration lockup
     expect(
       toLockupSchedule(
-        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|PT0S|PT0S:25|P1M'),
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|PT0S|PT0S:25|PT1S'),
         '60000',
         12,
       )
@@ -349,7 +349,7 @@ describe('.toLockupSchedule', () => {
     // cliff bigger than total duration
     expect(
       () => toLockupSchedule(
-        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P5Y:25|P1M'),
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P5Y:25|PT1S'),
         '60000',
         12,
       )
@@ -363,8 +363,8 @@ describe('.parseLockup', () => {
       parseLockup({
         account_id: 'alice.near',
         amount: '60000',
-        lockup_schedule: '1999-12-31T23:59:59Z|P4Y|P2Y:50|P1M',
-        vesting_schedule: '1999-12-31T23:59:59Z|P4Y|P1Y:25|P1M',
+        lockup_schedule: '1999-12-31T23:59:59Z|P4Y|P2Y:50|PT1S',
+        vesting_schedule: '1999-12-31T23:59:59Z|P4Y|P1Y:25|PT1S',
         terminator_id: 'owner.near',
       }, 12),
     ).toStrictEqual(
