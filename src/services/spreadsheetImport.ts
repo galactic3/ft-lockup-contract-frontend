@@ -254,21 +254,79 @@ export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmou
     throw new Error('error: timestampPreCliff < timestampStart');
   }
 
+  const { releaseEvery } = schedule;
+
+  const tmCliff = timestampCliff;
+  const tmFirstStep = datePlusDurationMul(timestampCliff, releaseEvery, 1);
+  if (toUnix(tmFirstStep) <= toUnix(tmCliff)) {
+    throw new Error('invalid releaseEvery, zero duration');
+  }
+  if (toUnix(tmFirstStep) - toUnix(tmCliff) === 1) { // linear unlock during cliff
+    const cpStart = { timestamp: toUnix(timestampStart), balance: new BN('0').toString() };
+    const cpPreCliff = { timestamp: toUnix(timestampPreCliff), balance: new BN('0').toString() };
+    const cpCliff = { timestamp: toUnix(timestampCliff), balance: cliffAmount.toString() };
+    const cpFinish = { timestamp: toUnix(timestampFinish), balance: totalAmount.toString() };
+
+    const result = [];
+    result.unshift(cpFinish);
+    if (cpCliff.timestamp < cpFinish.timestamp) {
+      result.unshift(cpCliff);
+    }
+    result.unshift(cpPreCliff);
+    if (cpStart.timestamp < cpPreCliff.timestamp) {
+      result.unshift(cpStart);
+    }
+
+    return result;
+  }
+
+  const tms = [];
+  {
+    // otherwise: use steps
+    let tm = timestampCliff;
+    const maxSteps = 100;
+    while (true) {
+      if (tm >= timestampFinish) {
+        tm = timestampFinish;
+        tms.push(tm);
+        break;
+      }
+      tms.push(tm);
+      tm = datePlusDurationMul(tm, releaseEvery, 1);
+      if (tms.length >= maxSteps) {
+        throw new Error('too many checkpoints for schedule');
+      }
+    }
+  }
+
+  const increment = totalAmount.sub(cliffAmount).divn(tms.length - 1);
+
+  const cps: Checkpoint[] = tms.flatMap((tm, i) => {
+    if (tms.length === 1) {
+      return [{ timestamp: toUnix(timestampFinish), balance: totalAmount.toString() }];
+    }
+    if (i === 0) {
+      return [{ timestamp: toUnix(tm), balance: cliffAmount.toString() }];
+    }
+    const stepBalance = i === tms.length - 1
+      ? totalAmount
+      : cliffAmount.add(increment.muln(i)).toString();
+    return [
+      { timestamp: toUnix(tm) - 1, balance: cliffAmount.add(increment.muln(i - 1)).toString() },
+      { timestamp: toUnix(tm), balance: stepBalance.toString() },
+    ];
+  });
+
+  const cpsStart: Checkpoint[] = [];
   const cpStart = { timestamp: toUnix(timestampStart), balance: new BN('0').toString() };
   const cpPreCliff = { timestamp: toUnix(timestampPreCliff), balance: new BN('0').toString() };
-  const cpCliff = { timestamp: toUnix(timestampCliff), balance: cliffAmount.toString() };
-  const cpFinish = { timestamp: toUnix(timestampFinish), balance: totalAmount.toString() };
 
-  const result = [];
-  result.unshift(cpFinish);
-  if (cpCliff.timestamp < cpFinish.timestamp) {
-    result.unshift(cpCliff);
-  }
-  result.unshift(cpPreCliff);
+  cpsStart.unshift(cpPreCliff);
   if (cpStart.timestamp < cpPreCliff.timestamp) {
-    result.unshift(cpStart);
+    cpsStart.unshift(cpStart);
   }
 
+  const result = cpsStart.concat(cps);
   return result;
 };
 

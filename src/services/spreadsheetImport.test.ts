@@ -357,6 +357,129 @@ describe('.toLockupSchedule', () => {
   });
 })
 
+describe('.toLockupSchedule releaseEvery', () => {
+  it('works', () => {
+    let tmStart = new Date('1999-12-31T23:59:59Z');
+    let tmBuild = (duration: string): Date => {
+      return datePlusDurationMul(tmStart, parseDuration(duration), 1);
+    };
+    // basic
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P2Y|P1Y:50|P6M'),
+        '40000',
+        12,
+      ),
+    ).toStrictEqual([
+      // start
+      { timestamp: toUnix(tmBuild('P0M')), balance: '0' },
+      // cliff
+      { timestamp: toUnix(tmBuild('P1Y')) - 1, balance: '0' },
+      { timestamp: toUnix(tmBuild('P1Y')), balance: '20000' + '000000000000' },
+      // period
+      { timestamp: toUnix(tmBuild('P1Y6M')) - 1, balance: '20000' + '000000000000' },
+      { timestamp: toUnix(tmBuild('P1Y6M')), balance: '30000' + '000000000000' },
+      // period
+      { timestamp: toUnix(tmBuild('P2Y')) - 1, balance: '30000' + '000000000000' },
+      { timestamp: toUnix(tmBuild('P2Y')), balance: '40000' + '000000000000' },
+    ]);
+
+    // releaseEvery longer than aftercliff
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P2Y|P1Y:50|P10Y'),
+        '40000',
+        12,
+      ),
+    ).toStrictEqual([
+      // start
+      { timestamp: toUnix(tmBuild('P0M')), balance: '0' },
+      // cliff
+      { timestamp: toUnix(tmBuild('P1Y')) - 1, balance: '0' },
+      { timestamp: toUnix(tmBuild('P1Y')), balance: '20000' + '000000000000' },
+      // period
+      { timestamp: toUnix(tmBuild('P2Y')) - 1, balance: '20000' + '000000000000' },
+      { timestamp: toUnix(tmBuild('P2Y')), balance: '40000' + '000000000000' },
+    ]);
+
+    // releaseEvery not aligned with interval end
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P1Y:25|P2Y6M'),
+        '80000',
+        12,
+      ),
+    ).toStrictEqual([
+      // start
+      { timestamp: toUnix(tmBuild('P0M')), balance: '0' },
+      // cliff
+      { timestamp: toUnix(tmBuild('P1Y')) - 1, balance: '0' },
+      { timestamp: toUnix(tmBuild('P1Y')), balance: '20000' + '000000000000' },
+      // period
+      { timestamp: toUnix(tmBuild('P3Y6M')) - 1, balance: '20000' + '000000000000' },
+      { timestamp: toUnix(tmBuild('P3Y6M')), balance: '50000' + '000000000000' },
+      // period
+      { timestamp: toUnix(tmBuild('P4Y')) - 1, balance: '50000' + '000000000000' },
+      { timestamp: toUnix(tmBuild('P4Y')), balance: '80000' + '000000000000' },
+    ]);
+
+    // zero duration zero amount cliff
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P0Y:0|P2Y'),
+        '80000',
+        12,
+      ),
+    ).toStrictEqual([
+      // cliff
+      { timestamp: toUnix(tmBuild('P0M')) - 1, balance: '0' },
+      { timestamp: toUnix(tmBuild('P0M')), balance: '0' },
+      // period
+      { timestamp: toUnix(tmBuild('P2Y')) - 1, balance: '0' },
+      { timestamp: toUnix(tmBuild('P2Y')), balance: '40000' + '000000000000' },
+      // period
+      { timestamp: toUnix(tmBuild('P4Y')) - 1, balance: '40000' + '000000000000' },
+      { timestamp: toUnix(tmBuild('P4Y')), balance: '80000' + '000000000000' },
+    ]);
+
+    // full duration cliff
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P4Y:0|P1Y'),
+        '80000',
+        12,
+      ),
+    ).toStrictEqual([
+      // cliff
+      { timestamp: toUnix(tmBuild('P0M')), balance: '0' },
+      // period
+      { timestamp: toUnix(tmBuild('P4Y')) - 1, balance: '0' },
+      { timestamp: toUnix(tmBuild('P4Y')), balance: '80000' + '000000000000' },
+    ]);
+
+    // full amount cliff
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|P4Y|P2Y:100|P1Y'),
+        '80000',
+        12,
+      ),
+    ).toStrictEqual([
+      // cliff
+      { timestamp: toUnix(tmBuild('P0M')), balance: '0' },
+      // period
+      { timestamp: toUnix(tmBuild('P2Y')) - 1, balance: '0' },
+      { timestamp: toUnix(tmBuild('P2Y')), balance: '80000' + '000000000000' },
+      // period
+      { timestamp: toUnix(tmBuild('P3Y')) - 1, balance: '80000' + '000000000000' },
+      { timestamp: toUnix(tmBuild('P3Y')), balance: '80000' + '000000000000' },
+      // period
+      { timestamp: toUnix(tmBuild('P4Y')) - 1, balance: '80000' + '000000000000' },
+      { timestamp: toUnix(tmBuild('P4Y')), balance: '80000' + '000000000000' },
+    ]);
+  })
+})
+
 describe('.parseLockup', () => {
   it('works', () => {
     expect(
@@ -398,8 +521,8 @@ describe('.parseRawSpreadsheetInput', () => {
     expect(
       parseRawSpreadsheetInput(`
         account_id	amount	lockup_schedule	vesting_schedule	terminator_id
-        alice.near	100000	2009-12-31T23:59:59Z|P4Y|P2Y:50|P1M		
-        bob.near	60000	1999-12-31T23:59:59Z|P4Y|P2Y:50|P1M	1999-12-31T23:59:59Z|P4Y|P2Y:50|P1M	owner.near
+        alice.near	100000	2009-12-31T23:59:59Z|P4Y|P2Y:50|PT1S		
+        bob.near	60000	1999-12-31T23:59:59Z|P4Y|P2Y:50|PT1S	1999-12-31T23:59:59Z|P4Y|P2Y:50|PT1S	owner.near
       `, 12),
     ).toStrictEqual([
       {
