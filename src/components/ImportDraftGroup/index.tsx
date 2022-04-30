@@ -88,7 +88,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
       <DraftsTable lockups={data} token={token} />
       <br />
       <div>
-        <button className="button fullWidth noMargin" onClick={handleClickImport} type="button">
+        <button disabled={data.length < 1} className="button noMargin" onClick={handleClickImport} type="button">
           Import
         </button>
       </div>
