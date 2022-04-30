@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import { convertAmount, convertTimestamp } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
+import TokenIcon from '../TokenIcon';
 
 export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMetadata }) {
   const [open, setOpen] = useState(false);
@@ -52,6 +53,8 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
           {convertAmount(row.total_balance, token.decimals)}
           &nbsp;
           {token.symbol}
+          &nbsp;
+          <TokenIcon url={token.icon || ''} size={32} />
         </TableCell>
         <TableCell align="center">
           <div className="progress-bar">
@@ -84,7 +87,7 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
                   <TableHead>
                     <TableRow>
                       <TableCell>DATE</TableCell>
-                      <TableCell>AMOUNT</TableCell>
+                      <TableCell align="right">AMOUNT</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -93,10 +96,12 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
                         <TableCell component="th" scope="row">
                           {convertTimestamp(x.timestamp)}
                         </TableCell>
-                        <TableCell>
+                        <TableCell align="right">
                           {convertAmount(x.balance, token.decimals)}
                           &nbsp;
                           {token.symbol}
+                          &nbsp;
+                          <TokenIcon url={token.icon || ''} size={32} />
                         </TableCell>
                       </TableRow>
                     ))}
