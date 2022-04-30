@@ -83,18 +83,22 @@ code {
 }
 
 .claim-amount {
+  text-align: right;
+  margin-right: 10px;
+}
+
+.claim-amount .token-amount {
   color: #1A202C;
   font-size: 40px;
   line-height: 44px;
   font-weight: 700;
 }
 
-.claim-amount span {
+.claim-amount .token-symbol {
   color: #718096;
   font-size: 20px;
-  line-height: 27px;
+  line-height: 20px;
   font-weight: 700;
-  margin-left: 10px;
 }
 
 .claim-wrapper button {
@@ -148,7 +152,7 @@ code {
 
 .inner-table_wrapper {
   background: var(--white);
-  width: 240px;
+  width: 320px;
   padding: 20px 0;
   border-radius: 10px;
 }

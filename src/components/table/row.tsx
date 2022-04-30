@@ -15,6 +15,7 @@ import { convertAmount, convertTimestamp } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import TerminateLockup from '../TerminateLockup';
+import TokenIcon from '../TokenIcon';
 
 export default function Row(props: { row: ReturnType<any>, token: TMetadata, adminControls: boolean }) {
   const [open, setOpen] = useState(false);
@@ -53,6 +54,8 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata, adm
           {convertAmount(row.total_balance, token.decimals)}
           &nbsp;
           {token.symbol}
+          &nbsp;
+          <TokenIcon url={token.icon || ''} size={32} />
         </TableCell>
         <TableCell align="center">
           <div className="progress-bar">
@@ -85,7 +88,7 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata, adm
                   <TableHead>
                     <TableRow>
                       <TableCell>DATE</TableCell>
-                      <TableCell>AMOUNT</TableCell>
+                      <TableCell align="right">AMOUNT</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -94,10 +97,12 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata, adm
                         <TableCell component="th" scope="row">
                           {convertTimestamp(x.timestamp)}
                         </TableCell>
-                        <TableCell>
+                        <TableCell align="right">
                           {convertAmount(x.balance, token.decimals)}
                           &nbsp;
                           {token.symbol}
+                          &nbsp;
+                          <TokenIcon url={token.icon || ''} size={32} />
                         </TableCell>
                       </TableRow>
                     ))}
