@@ -95,7 +95,7 @@ export default function PageDraftGroupsIndex({ token }: { token: TMetadata }) {
       <br />
 
       <Link to="/admin/import_draft_group">
-        <button className="button" type="button">ImportDraftGroup</button>
+        <button className="button" type="button">Import Draft Group</button>
       </Link>
     </div>
   );
