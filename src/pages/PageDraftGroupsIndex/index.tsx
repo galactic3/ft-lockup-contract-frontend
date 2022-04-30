@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import { convertAmount } from '../../utils';
+import TokenIcon from '../../components/TokenIcon';
 
 export default function PageDraftGroupsIndex({ token }: { token: TMetadata }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
@@ -86,7 +87,13 @@ export default function PageDraftGroupsIndex({ token }: { token: TMetadata }) {
               </TableCell>
               <TableCell align="center">{group.funded ? 'Yes' : 'No'}</TableCell>
               <TableCell align="right">{group.draft_indices.length}</TableCell>
-              <TableCell align="right">{convertAmount(group.total_amount, token.decimals)}</TableCell>
+              <TableCell align="right">
+                {convertAmount(group.total_amount, token.decimals)}
+                &nbsp;
+                {token.symbol}
+                &nbsp;
+                <TokenIcon url={token.icon || ''} size={32} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
