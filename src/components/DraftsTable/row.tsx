@@ -2,10 +2,7 @@ import { useContext, useState } from 'react';
 import {
   Collapse,
   IconButton,
-  Table,
   TableCell,
-  TableHead,
-  TableBody,
   TableRow,
 } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -15,6 +12,7 @@ import { convertAmount, convertTimestamp } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import TokenIcon from '../TokenIcon';
+import ScheduleTable from '../ScheduleTable';
 
 export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMetadata }) {
   const [open, setOpen] = useState(false);
@@ -28,6 +26,8 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
   if (!near) return null;
 
   const { signedIn } = near;
+
+  const vestingSchedule = row?.termination_config?.vesting_schedule?.Schedule;
 
   return (
     <>
@@ -81,32 +81,11 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
         <TableCell style={{ padding: 0 }} colSpan={7}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">
-              <div className="inner-table_wrapper">
-                <h5>Lockup schedule</h5>
-                <Table className="inner-table" size="small" aria-label="purchases">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>DATE</TableCell>
-                      <TableCell align="right">AMOUNT</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {row.schedule.map((x: any) => (
-                      <TableRow key={x.timestamp}>
-                        <TableCell component="th" scope="row">
-                          {convertTimestamp(x.timestamp)}
-                        </TableCell>
-                        <TableCell align="right">
-                          {convertAmount(x.balance, token.decimals)}
-                          &nbsp;
-                          {token.symbol}
-                          &nbsp;
-                          <TokenIcon url={token.icon || ''} size={32} />
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+              <div style={{ display: 'flex', gap: 20 }}>
+                <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
+                {vestingSchedule && (
+                  <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
+                )}
               </div>
             </div>
           </Collapse>

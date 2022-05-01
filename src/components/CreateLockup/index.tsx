@@ -11,6 +11,7 @@ import {
   Select,
   TextField,
 } from '@mui/material';
+import BN from 'bn.js';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -18,7 +19,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { INearProps, NearContext } from '../../services/near';
 import { addYear } from '../../utils';
 import { TMetadata } from '../../services/tokenApi';
-import { TCheckpoint } from '../../services/api';
+import { TSchedule } from '../../services/api';
 
 export default function CreateLockup({ token } : { token: TMetadata }) {
   const {
@@ -41,6 +42,12 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
     if (!near) {
       throw Error('Cannot access token api');
     }
+    if (!near.signedAccountId) {
+      throw new Error('signedAccountId requred to set lockup terminator');
+    }
+    if (!startDate) {
+      throw Error('Start date not set');
+    }
 
     e.preventDefault();
 
@@ -53,33 +60,48 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
     const userAccountId = account.value;
     const lockupTotalAmount = amount.value * 10 ** token.decimals;
 
-    const timestamp = (startDate?.getTime() || 0) / 1000;
+    const getScheduleList = (date: Date, balanceInput: number, selected: string): [TSchedule, TSchedule | null] => {
+      const balance = new BN(balanceInput);
 
-    const getScheduleList = (ts: number, date: Date | null, balance: number, selected: string) => {
-      const list: { [key: string]: TCheckpoint[] } = {
-        '4_year': [
-          { timestamp: ts, balance: '0' },
+      const schedules: { [key: string]: TSchedule } = {
+        '4y_cliff_1y_25': [
+          { timestamp: addYear(date, 0), balance: '0' },
           { timestamp: addYear(date, 1) - 1, balance: '0' },
-          { timestamp: addYear(date, 1), balance: (balance / 4).toString() },
-          { timestamp: addYear(date, 4), balance: balance.toString() },
-        ],
-        '4_year_vested': [
-          { timestamp: ts, balance: '0' },
-          { timestamp: addYear(date, 1) - 1, balance: '0' },
-          { timestamp: addYear(date, 1), balance: (balance / 4).toString() },
+          { timestamp: addYear(date, 1), balance: balance.divn(4).toString() },
           { timestamp: addYear(date, 4), balance: balance.toString() },
         ],
       };
-      return list[selected];
+
+      const schedulePairs: { [key: string]: [TSchedule, TSchedule | null] } = {
+        '4_year': [schedules['4y_cliff_1y_25'], null],
+        '4_year_vested': [schedules['4y_cliff_1y_25'], schedules['4y_cliff_1y_25']],
+      };
+
+      return schedulePairs[selected];
     };
+
+    const [lockupSchedule, vestingSchedule] = getScheduleList(startDate, lockupTotalAmount, schedule);
+
+    let terminationConfig = null;
+
+    if (vestingSchedule) {
+      terminationConfig = {
+        terminator_id: near.signedAccountId,
+        vesting_schedule: {
+          Schedule: vestingSchedule,
+        },
+      };
+    }
+
+    debugger;
 
     near.tokenApi.ftTransferCall({
       receiver_id: lockupContractId,
       amount: lockupTotalAmount.toString(),
       msg: {
         account_id: userAccountId,
-        schedule: getScheduleList(timestamp, startDate, lockupTotalAmount, schedule),
-        vesting_schedule: schedule === '4_year_vested' ? getScheduleList(timestamp, startDate, lockupTotalAmount, schedule) : null,
+        schedule: lockupSchedule,
+        termination_config: terminationConfig,
         claimed_balance: claimedBalance,
       },
     });
@@ -162,7 +184,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
             </LocalizationProvider>
           </DialogContent>
           <DialogActions sx={{ padding: '14px 24px 24px' }}>
-            <button className="button fullWidth noMargin" type="submit">Create</button>
+            <button disabled={!startDate} className="button fullWidth noMargin" type="submit">Create</button>
           </DialogActions>
         </form>
       </Dialog>

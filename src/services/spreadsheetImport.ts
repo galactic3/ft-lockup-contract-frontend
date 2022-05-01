@@ -285,7 +285,7 @@ export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmou
     // otherwise: use steps
     let tm = timestampCliff;
     const maxSteps = 100;
-    while (true) {
+    for (;;) {
       if (tm >= timestampFinish) {
         tm = timestampFinish;
         tms.push(tm);

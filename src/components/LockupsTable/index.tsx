@@ -8,7 +8,9 @@ import {
 import Row from '../table/row';
 import { TMetadata } from '../../services/tokenApi';
 
-export default function LockupsTable({ lockups, token, adminControls }: { lockups: any[], token: TMetadata, adminControls: boolean }) {
+export default function LockupsTable(
+  { lockups, token, adminControls }: { lockups: any[], token: TMetadata, adminControls: boolean },
+) {
   return (
     <Table className="main-table" aria-label="collapsible table">
       <TableHead className="table-head">

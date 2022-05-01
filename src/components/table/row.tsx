@@ -2,10 +2,7 @@ import { useContext, useState } from 'react';
 import {
   Collapse,
   IconButton,
-  Table,
   TableCell,
-  TableHead,
-  TableBody,
   TableRow,
 } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -16,10 +13,11 @@ import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import TerminateLockup from '../TerminateLockup';
 import TokenIcon from '../TokenIcon';
+import ScheduleTable from '../ScheduleTable';
 
-export default function Row(props: { row: ReturnType<any>, token: TMetadata, adminControls: boolean }) {
+export default function Row(props: { adminControls: boolean, row: ReturnType<any>, token: TMetadata }) {
   const [open, setOpen] = useState(false);
-  const { row, token, adminControls } = props;
+  const { adminControls, row, token } = props;
   const {
     near,
   }: {
@@ -28,7 +26,7 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata, adm
 
   if (!near) return null;
 
-  const { signedIn, isAdmin } = near;
+  const vestingSchedule = row?.termination_config?.vesting_schedule?.Schedule;
 
   return (
     <>
@@ -82,38 +80,15 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata, adm
         <TableCell style={{ padding: 0 }} colSpan={7}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">
-              <div className="inner-table_wrapper">
-                <h5>Lockup schedule</h5>
-                <Table className="inner-table" size="small" aria-label="purchases">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>DATE</TableCell>
-                      <TableCell align="right">AMOUNT</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {row.schedule.map((x: any) => (
-                      <TableRow key={x.timestamp}>
-                        <TableCell component="th" scope="row">
-                          {convertTimestamp(x.timestamp)}
-                        </TableCell>
-                        <TableCell align="right">
-                          {convertAmount(x.balance, token.decimals)}
-                          &nbsp;
-                          {token.symbol}
-                          &nbsp;
-                          <TokenIcon url={token.icon || ''} size={32} />
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+              <div style={{ display: 'flex', gap: 20 }}>
+                <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
+                {vestingSchedule && (
+                  <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
+                )}
               </div>
-              {signedIn && isAdmin && adminControls && (
-                <div className="terminate">
-                  <TerminateLockup lockupIndex={row.id} config={row.termination_config} />
-                </div>
-              )}
+              <div className="terminate">
+                <TerminateLockup adminControls={adminControls} lockupIndex={row.id} config={row.termination_config} />
+              </div>
             </div>
           </Collapse>
         </TableCell>

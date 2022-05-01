@@ -24,7 +24,7 @@ export const tsNear2JS = (time: number) => Math.floor(time / 1000000);
 export const convertTimestamp = (time: number) => new Date(time * 1000).toLocaleDateString('en-US');
 export const convertAmount = (value: number, decimals: number) => Big(value || '0').div(10 ** decimals).toFixed(NEAR_ROUND_DIGITS);
 // @ts-ignore
-export const addYear = (date: Date | null, year: number) => new Date(date?.setFullYear((date?.getFullYear() || 0) + year)).getTime() / 1000;
+export const addYear = (date: Date, year: number) => new Date(new Date(date).setFullYear((date.getFullYear()) + year)).getTime() / 1000;
 
 export const dumpLocalStorage = (dumpKey: string = 'dump') => {
   const dumpValue = Object.keys(localStorage).map((key) => [key, localStorage.getItem(key)]);

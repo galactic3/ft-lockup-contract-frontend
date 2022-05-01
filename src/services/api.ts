@@ -42,19 +42,21 @@ type TChangeMethods = {
   'terminate': any,
 };
 
-type TNearAmount = string;
-type TNearTimestamp = number;
+export type TNearAmount = string;
+export type TNearTimestamp = number;
 
 export type TCheckpoint = {
   timestamp: TNearTimestamp,
   balance: TNearAmount,
 };
 
+export type TSchedule = TCheckpoint[];
+
 export type TLockup = {
   id: number,
   account_id: string,
   claimed_balance: TNearAmount,
-  schedule: TCheckpoint[],
+  schedule: TSchedule,
   timestamp: TNearTimestamp,
   total_balance: TNearAmount,
   unclaimed_balance: TNearAmount,
@@ -149,7 +151,7 @@ class NearApi {
         MAX_GAS,
       );
     } catch (e) {
-      throw Error('Cannot terminate lockup more than once');
+      throw Error('Cannot terminate lockup');
     }
   }
 
