@@ -15,9 +15,9 @@ import TerminateLockup from '../TerminateLockup';
 import TokenIcon from '../TokenIcon';
 import ScheduleTable from '../ScheduleTable';
 
-export default function Row(props: { row: ReturnType<any>, token: TMetadata, adminControls: boolean }) {
+export default function Row(props: { adminControls: boolean, row: ReturnType<any>, token: TMetadata }) {
   const [open, setOpen] = useState(false);
-  const { row, token, adminControls } = props;
+  const { adminControls, row, token } = props;
   const {
     near,
   }: {
@@ -25,8 +25,6 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata, adm
   } = useContext(NearContext);
 
   if (!near) return null;
-
-  const { signedIn, isAdmin } = near;
 
   const vestingSchedule = row?.termination_config?.vesting_schedule?.Schedule;
 
@@ -88,11 +86,9 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata, adm
                   <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
                 )}
               </div>
-              {signedIn && isAdmin && adminControls && (
-                <div className="terminate">
-                  <TerminateLockup lockupIndex={row.id} config={row.termination_config} />
-                </div>
-              )}
+              <div className="terminate">
+                <TerminateLockup adminControls={adminControls} lockupIndex={row.id} config={row.termination_config} />
+              </div>
             </div>
           </Collapse>
         </TableCell>
