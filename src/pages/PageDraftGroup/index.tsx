@@ -1,9 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
+import { Alert } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import DraftsTable from '../../components/DraftsTable';
 import { TMetadata } from '../../services/tokenApi';
 import { convertAmount } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
+import TokenAmountPreview from '../../components/TokenAmountPreview';
 
 export default function PageDraftGroup({ token }: { token: TMetadata }) {
   const draftGroupId = parseInt(useParams().draftGroupId || '', 10);
@@ -89,29 +91,34 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
 
   return (
     <div className="container">
-      <h1>
-        Draft group
-        {' '}
-        {draftGroupId}
-      </h1>
-      <div>
-        Total amount:
-        { convertAmount(draftGroup.total_amount, token.decimals) }
-      </div>
-      <div>
-        Funded:
-        { draftGroup.funded ? 'YES' : 'NO' }
-      </div>
+      <div className="draft-group-preview-wrapper">
+        <h5>
+          {`Draft group ${draftGroupId}`}
+        </h5>
+        <TokenAmountPreview token={token} amount={convertAmount(draftGroup.total_amount, token.decimals)} />
 
-      {draftGroup.funded && (<button className="button" type="button" onClick={handleConvert}>Convert</button>)}
+        {!draftGroup.funded && (
+          <div style={{ marginTop: 20 }}>
+            <Alert severity="warning">Not funded, fund group first!</Alert>
+          </div>
+        )}
+        {draftGroup.funded && draftGroup.draft_indices.length > 0 && (
+          <button className="button fullWidth" type="button" onClick={handleConvert}>Convert</button>
+        )}
+        {draftGroup.funded && draftGroup.draft_indices.length === 0 && (
+          <div style={{ marginTop: 20 }}>
+            <Alert severity="success">Draft Group converted</Alert>
+          </div>
+        )}
+      </div>
 
       <pre id="import-log">
         {processLog.join('\n')}
       </pre>
 
-      <h3>Drafts</h3>
-
-      <DraftsTable lockups={drafts} token={token} />
+      {(!draftGroup.funded || draftGroup.draft_indices.length > 0) && (
+        <DraftsTable lockups={drafts} token={token} />
+      )}
     </div>
   );
 }
