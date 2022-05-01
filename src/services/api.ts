@@ -42,8 +42,8 @@ type TChangeMethods = {
   'terminate': any,
 };
 
-type TNearAmount = string;
-type TNearTimestamp = number;
+export type TNearAmount = string;
+export type TNearTimestamp = number;
 
 export type TCheckpoint = {
   timestamp: TNearTimestamp,

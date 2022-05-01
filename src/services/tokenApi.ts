@@ -1,7 +1,7 @@
 import {
   Contract, WalletConnection,
 } from 'near-api-js';
-import { TCheckpoint } from './api';
+import { TSchedule, TNearAmount } from './api';
 
 const MAX_GAS = 300_000_000_000_000;
 const ONE_YOKTO = 1;
@@ -32,6 +32,20 @@ export type TMetadata = {
   decimals: number,
 };
 
+type TTerminationConfig = {
+  terminator_id: string,
+  vesting_schedule: {
+    Schedule: TSchedule,
+  },
+};
+
+type TLockupCreate = {
+  account_id: string,
+  schedule: TSchedule,
+  termination_config: TTerminationConfig | null,
+  claimed_balance: TNearAmount,
+};
+
 type TTokenContract = Contract & TTokenChangeMethods & TTokenViewMethods;
 
 class TokenApi {
@@ -53,12 +67,7 @@ class TokenApi {
     meta: {
       receiver_id: string,
       amount: string,
-      msg: {
-        account_id: string,
-        schedule: TCheckpoint[],
-        vesting_schedule: TCheckpoint[] | null,
-        claimed_balance: string,
-      },
+      msg: TLockupCreate,
     },
     gas = MAX_GAS,
     deposit = ONE_YOKTO,
