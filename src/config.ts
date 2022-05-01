@@ -7,7 +7,7 @@ export interface INearConfig {
   explorerUrl: string,
 }
 
-const CONTRACT_NAME = process.env.REACT_APP_CONTRACT_NAME || 'ft-lockup.demo003.ft-lockup.testnet';
+const CONTRACT_NAME = process.env.REACT_APP_CONTRACT_NAME || 'ft-lockup.demo004.ft-lockup.testnet';
 
 // TODO: move these data to envs
 function getConfig(): INearConfig {
