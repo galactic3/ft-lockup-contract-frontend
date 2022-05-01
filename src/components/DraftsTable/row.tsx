@@ -27,6 +27,8 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
 
   const { signedIn } = near;
 
+  const vestingSchedule = row?.termination_config?.vesting_schedule?.Schedule;
+
   return (
     <>
       <TableRow className={open ? 'expanded exp-row' : 'exp-row'} sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -79,7 +81,12 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
         <TableCell style={{ padding: 0 }} colSpan={7}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">
-              <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
+              <div style={{ display: 'flex', gap: 20 }}>
+                <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
+                {vestingSchedule && (
+                  <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
+                )}
+              </div>
             </div>
           </Collapse>
         </TableCell>

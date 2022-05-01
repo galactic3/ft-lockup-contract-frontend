@@ -28,6 +28,8 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata, adm
 
   const { signedIn, isAdmin } = near;
 
+  const vestingSchedule = row?.termination_config?.vesting_schedule?.Schedule;
+
   return (
     <>
       <TableRow className={open ? 'expanded exp-row' : 'exp-row'} sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -80,7 +82,12 @@ export default function Row(props: { row: ReturnType<any>, token: TMetadata, adm
         <TableCell style={{ padding: 0 }} colSpan={7}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">
-              <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
+              <div style={{ display: 'flex', gap: 20 }}>
+                <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
+                {vestingSchedule && (
+                  <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
+                )}
+              </div>
               {signedIn && isAdmin && adminControls && (
                 <div className="terminate">
                   <TerminateLockup lockupIndex={row.id} config={row.termination_config} />
