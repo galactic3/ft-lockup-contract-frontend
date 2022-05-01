@@ -102,8 +102,13 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
             <Alert severity="warning">Not funded, fund group first!</Alert>
           </div>
         )}
-        {draftGroup.funded && (
+        {draftGroup.funded && draftGroup.draft_indices.length > 0 && (
           <button className="button fullWidth" type="button" onClick={handleConvert}>Convert</button>
+        )}
+        {draftGroup.funded && draftGroup.draft_indices.length === 0 && (
+          <div style={{ marginTop: 20 }}>
+            <Alert severity="success">Draft Group converted</Alert>
+          </div>
         )}
       </div>
 
@@ -111,9 +116,9 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
         {processLog.join('\n')}
       </pre>
 
-      <h3>Drafts</h3>
-
-      <DraftsTable lockups={drafts} token={token} />
+      {(!draftGroup.funded || draftGroup.draft_indices.length > 0) && (
+        <DraftsTable lockups={drafts} token={token} />
+      )}
     </div>
   );
 }
