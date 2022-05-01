@@ -1,9 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
+import { Alert } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import DraftsTable from '../../components/DraftsTable';
 import { TMetadata } from '../../services/tokenApi';
 import { convertAmount } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
+import TokenIcon from '../../components/TokenIcon';
 
 export default function PageDraftGroup({ token }: { token: TMetadata }) {
   const draftGroupId = parseInt(useParams().draftGroupId || '', 10);
@@ -89,21 +91,33 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
 
   return (
     <div className="container">
-      <h1>
-        Draft group
-        {' '}
-        {draftGroupId}
-      </h1>
-      <div>
-        Total amount:
-        { convertAmount(draftGroup.total_amount, token.decimals) }
-      </div>
-      <div>
-        Funded:
-        { draftGroup.funded ? 'YES' : 'NO' }
-      </div>
+      <div className="draft-group-preview-wrapper">
+        <h5>
+          {`Draft group ${draftGroupId}`}
+        </h5>
+        <div className="balance-info-block" style={{ display: 'flex' }}>
+          <div style={{ flex: 1, alignContent: 'center' }} className="amount-info">
+            <div className="token-symbol">
+              {token.symbol}
+            </div>
+            <div className="token-amount">
+              { convertAmount(draftGroup.total_amount, token.decimals) }
+            </div>
+          </div>
+          <div style={{ flex: 1 }}>
+            <TokenIcon url={token.icon || ''} size={64} />
+          </div>
+        </div>
 
-      {draftGroup.funded && (<button className="button" type="button" onClick={handleConvert}>Convert</button>)}
+        {!draftGroup.funded && (
+          <div style={{ marginTop: 20 }}>
+            <Alert severity="warning">Not funded, fund group first!</Alert>
+          </div>
+        )}
+        {draftGroup.funded && (
+          <button className="button fullWidth" type="button" onClick={handleConvert}>Convert</button>
+        )}
+      </div>
 
       <pre id="import-log">
         {processLog.join('\n')}

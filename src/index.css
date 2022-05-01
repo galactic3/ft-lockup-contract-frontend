@@ -66,6 +66,28 @@ code {
   padding: 0 7px;
 }
 
+.draft-group-preview-wrapper {
+  padding: 24px;
+  display: inline-block;
+  border-radius: 16px;
+  border: 1px solid #EDF2F7;
+  background: var(--white);
+  margin-bottom: 20px;
+}
+
+.draft-group-preview-wrapper h5 {
+  color: #718096;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0 0 24px;
+}
+
+.draft-group-preview-wrapper button {
+  height: 48px;
+  font-weight: 700;
+  margin: 20px 0 0;
+}
+
 .claim-wrapper {
   padding: 24px;
   display: inline-block;
@@ -82,19 +104,19 @@ code {
   margin: 0 0 24px;
 }
 
-.claim-amount {
+.amount-info {
   text-align: right;
   margin-right: 10px;
 }
 
-.claim-amount .token-amount {
+.amount-info .token-amount {
   color: #1A202C;
   font-size: 40px;
   line-height: 44px;
   font-weight: 700;
 }
 
-.claim-amount .token-symbol {
+.amount-info .token-symbol {
   color: #718096;
   font-size: 20px;
   line-height: 20px;
@@ -102,7 +124,6 @@ code {
 }
 
 .claim-wrapper button {
-  width: 150px;
   height: 48px;
   font-weight: 700;
   margin: 20px 0 0;

@@ -22,8 +22,8 @@ function ClaimAllLockups(params: { accountId: string | undefined, token: TMetada
   return (
     <div className="claim-wrapper">
       <h5>Total available</h5>
-      <div className="info-block" style={{ display: 'flex' }}>
-        <div style={{ flex: 1, alignContent: 'center' }} className="claim-amount">
+      <div className="balance-info-block" style={{ display: 'flex' }}>
+        <div style={{ flex: 1, alignContent: 'center' }} className="amount-info">
           <div className="token-symbol">
             {token.symbol}
           </div>
