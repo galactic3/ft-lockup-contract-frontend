@@ -5,7 +5,7 @@ import DraftsTable from '../../components/DraftsTable';
 import { TMetadata } from '../../services/tokenApi';
 import { convertAmount } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
-import TokenIcon from '../../components/TokenIcon';
+import TokenAmountPreview from '../../components/TokenAmountPreview';
 
 export default function PageDraftGroup({ token }: { token: TMetadata }) {
   const draftGroupId = parseInt(useParams().draftGroupId || '', 10);
@@ -95,19 +95,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
         <h5>
           {`Draft group ${draftGroupId}`}
         </h5>
-        <div className="balance-info-block" style={{ display: 'flex' }}>
-          <div style={{ flex: 1, alignContent: 'center' }} className="amount-info">
-            <div className="token-symbol">
-              {token.symbol}
-            </div>
-            <div className="token-amount">
-              { convertAmount(draftGroup.total_amount, token.decimals) }
-            </div>
-          </div>
-          <div style={{ flex: 1 }}>
-            <TokenIcon url={token.icon || ''} size={64} />
-          </div>
-        </div>
+        <TokenAmountPreview token={token} amount={convertAmount(draftGroup.total_amount, token.decimals)} />
 
         {!draftGroup.funded && (
           <div style={{ marginTop: 20 }}>

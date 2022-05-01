@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
-import TokenIcon from '../TokenIcon';
+import TokenAmountPreview from '../TokenAmountPreview';
 
 function ClaimAllLockups(params: { accountId: string | undefined, token: TMetadata, total: String }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
@@ -22,19 +22,7 @@ function ClaimAllLockups(params: { accountId: string | undefined, token: TMetada
   return (
     <div className="claim-wrapper">
       <h5>Total available</h5>
-      <div className="balance-info-block" style={{ display: 'flex' }}>
-        <div style={{ flex: 1, alignContent: 'center' }} className="amount-info">
-          <div className="token-symbol">
-            {token.symbol}
-          </div>
-          <div className="token-amount">
-            {total}
-          </div>
-        </div>
-        <div style={{ flex: 1 }}>
-          <TokenIcon url={token.icon || ''} size={64} />
-        </div>
-      </div>
+      <TokenAmountPreview token={token} amount={total} />
       <button className="button fullWidth" type="button" onClick={handleClaimAllLockups}>Claim All</button>
     </div>
   );
