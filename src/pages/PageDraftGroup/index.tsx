@@ -100,7 +100,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
 
         {!draftGroup.funded && (
           <div style={{ marginTop: 20 }}>
-            <Alert severity="warning">Not funded, fund group first!</Alert>
+            <Fund draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} />
           </div>
         )}
         {draftGroup.funded && draftGroup.draft_indices.length > 0 && (
@@ -118,10 +118,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
       </pre>
 
       {(!draftGroup.funded || draftGroup.draft_indices.length > 0) && (
-        <div>
-          <DraftsTable lockups={drafts} token={token} />
-          <Fund draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} />
-        </div>
+        <DraftsTable lockups={drafts} token={token} />
       )}
     </div>
   );
