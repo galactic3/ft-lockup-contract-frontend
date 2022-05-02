@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { INearProps, NearContext } from '../../services/near';
 
-function Fund(props: { draftGroupIndex: number | undefined, amount: string | undefined }) {
+function FundButton(props: { draftGroupIndex: number | undefined, amount: string | undefined }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const { draftGroupIndex, amount } = props;
 
@@ -30,4 +30,4 @@ function Fund(props: { draftGroupIndex: number | undefined, amount: string | und
   );
 }
 
-export default Fund;
+export default FundButton;

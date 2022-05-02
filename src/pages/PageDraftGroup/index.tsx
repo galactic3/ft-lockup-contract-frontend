@@ -6,7 +6,7 @@ import { TMetadata } from '../../services/tokenApi';
 import { convertAmount } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import TokenAmountPreview from '../../components/TokenAmountPreview';
-import Fund from '../../components/Fund';
+import FundButton from '../../components/FundButton';
 
 export default function PageDraftGroup({ token }: { token: TMetadata }) {
   const draftGroupId = parseInt(useParams().draftGroupId || '', 10);
@@ -100,7 +100,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
 
         {!draftGroup.funded && (
           <div style={{ marginTop: 20 }}>
-            <Fund draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} />
+            <FundButton draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} />
           </div>
         )}
         {draftGroup.funded && draftGroup.draft_indices.length > 0 && (
