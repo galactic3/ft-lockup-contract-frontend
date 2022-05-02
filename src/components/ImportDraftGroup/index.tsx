@@ -1,6 +1,7 @@
 import { TextareaAutosize } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import LinearProgress from '@mui/material/LinearProgress';
 
 import DraftsTable from '../DraftsTable';
 import { parseRawSpreadsheetInput, Lockup } from '../../services/spreadsheetImport';
@@ -12,6 +13,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
 
   const [data, setData] = useState<Lockup[]>([]);
   const [importLog, setImportLog] = useState<string[]>([]);
+  const [importProgress, setImportProgress] = useState<boolean>(false);
 
   const log = (message: string) => {
     console.log(message);
@@ -43,32 +45,32 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
     if (!near) {
       throw new Error('near is null');
     }
-    clearLog();
-    log('import started');
-    const draftGroupId = await near.api.createDraftGroup();
-    const msg = `created draft group id: ${draftGroupId}`;
-    log(msg);
+    setImportProgress(true);
+    try {
+      clearLog();
+      log('creating draft group...');
+      const draftGroupId = await near.api.createDraftGroup();
+      const msg = `created draft group id: ${draftGroupId}`;
+      log(msg);
 
-    const chunkSize = 100;
-    for (let i = 0; i < data.length; i += chunkSize) {
-      const chunk = data.slice(i, i + chunkSize);
-      log(`adding drafts from (${i}, ${i + chunk.length})`);
-      const drafts = chunk.map((lockup) => ({
-        draft_group_id: draftGroupId,
-        lockup,
-      }));
-      try {
-        const draftIds = await near.api.createDrafts(drafts);
-        log(`created drafts for from (${i}, ${i + chunk.length}): ${draftIds}`);
-      } catch (e) {
-        log(`ERROR: ${e}`);
-        throw e;
+      const chunkSize = 100;
+      for (let i = 0; i < data.length; i += chunkSize) {
+        const chunk = data.slice(i, i + chunkSize);
+        log(`adding drafts (${i}, ${data.length})...`);
+        const drafts = chunk.map((lockup) => ({
+          draft_group_id: draftGroupId,
+          lockup,
+        }));
+        await near.api.createDrafts(drafts);
       }
+
+      log(`added lockups (${data.length})`);
+
+      navigate(`/admin/draft_groups/${draftGroupId}`);
+    } catch (e) {
+      log(`ERROR: ${e}`);
+      setImportProgress(false);
     }
-
-    log('import finished');
-
-    navigate(`/admin/draft_groups/${draftGroupId}`);
   };
 
   return (
@@ -97,14 +99,19 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
       <DraftsTable lockups={data} token={token} />
       <br />
       <div>
-        <button disabled={data.length < 1} className="button noMargin" onClick={handleClickImport} type="button">
+        <button disabled={!(data.length >= 1 && !importProgress)} className="button noMargin" onClick={handleClickImport} type="button">
           Import
         </button>
       </div>
       <br />
-      <pre id="import-log">
-        {importLog.join('\n')}
-      </pre>
+      {(importLog.length > 0) && (
+        <div className="process-log">
+          {importLog.map((x) => (
+            <div>{x}</div>
+          ))}
+          {importProgress && (<LinearProgress color="inherit" style={{ marginTop: 10 }} />)}
+        </div>
+      )}
     </div>
   );
 }

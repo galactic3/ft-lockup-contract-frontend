@@ -67,6 +67,16 @@ code {
   padding: 0 7px;
 }
 
+div.process-log {
+  border-radius: 10px;
+  border: 1px solid var(--gray);
+  padding: 10px 20px;
+  background-color: var(--white);
+  font-size: 16px;
+  font-family: monospace;
+  line-height: 32px;
+}
+
 .draft-group-preview-wrapper {
   padding: 24px;
   display: inline-block;
