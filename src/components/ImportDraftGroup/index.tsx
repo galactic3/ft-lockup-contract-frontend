@@ -1,12 +1,12 @@
 import { TextareaAutosize } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LinearProgress from '@mui/material/LinearProgress';
 
 import DraftsTable from '../DraftsTable';
 import { parseRawSpreadsheetInput, Lockup } from '../../services/spreadsheetImport';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
+import ProcessLog from '../ProcessLog';
 
 function ImportDraftGroup({ token }: { token: TMetadata }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
@@ -105,12 +105,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
       </div>
       <br />
       {(importLog.length > 0) && (
-        <div className="process-log">
-          {importLog.map((x) => (
-            <div>{x}</div>
-          ))}
-          {importProgress && (<LinearProgress color="inherit" style={{ marginTop: 10 }} />)}
-        </div>
+        <ProcessLog lines={importLog} inProgress={importProgress} />
       )}
     </div>
   );
