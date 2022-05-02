@@ -159,6 +159,10 @@ class NearApi {
     return this.near;
   }
 
+  getWalletConnection(): WalletConnection {
+    return this.walletConnection;
+  }
+
   getContract(): TLockupContract {
     return this.contract as TLockupContract;
   }

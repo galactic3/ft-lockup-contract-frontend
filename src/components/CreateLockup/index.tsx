@@ -93,8 +93,6 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
       };
     }
 
-    debugger;
-
     near.tokenApi.ftTransferCall({
       receiver_id: lockupContractId,
       amount: lockupTotalAmount.toString(),

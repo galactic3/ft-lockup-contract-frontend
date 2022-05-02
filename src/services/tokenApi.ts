@@ -46,6 +46,10 @@ type TLockupCreate = {
   claimed_balance: TNearAmount,
 };
 
+type TDraftGroupFund = {
+  draft_group_id: number,
+};
+
 type TTokenContract = Contract & TTokenChangeMethods & TTokenViewMethods;
 
 class TokenApi {
@@ -63,11 +67,23 @@ class TokenApi {
     return this.contract;
   }
 
+  async fundDraftGroup(lockupContractId: string, draftGroupId: number, amount: string): Promise<void> {
+    const result = this.ftTransferCall({
+      receiver_id: lockupContractId,
+      amount,
+      msg: {
+        draft_group_id: draftGroupId,
+      },
+    });
+
+    return result;
+  }
+
   ftTransferCall(
     meta: {
       receiver_id: string,
       amount: string,
-      msg: TLockupCreate,
+      msg: TLockupCreate | TDraftGroupFund,
     },
     gas = MAX_GAS,
     deposit = ONE_YOKTO,
