@@ -77,8 +77,17 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
         Import Draft Group
       </h3>
       <div>
+        Copy lockups from a spreadsheet editor and paste into the area below.
+        See
+        {' '}
+        <a href={`${process.env.PUBLIC_URL}/lockup_import_example.xlsx`}>
+          example and format specifications
+        </a>
+        .
+      </div>
+      <div>
         <TextareaAutosize
-          style={{ width: '100%' }}
+          style={{ width: '100%', marginTop: 20 }}
           id="spreadsheet-input"
           placeholder="Excel input"
           maxRows={5}
