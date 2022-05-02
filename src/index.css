@@ -29,7 +29,8 @@ code {
   padding-left: 32px;
   margin-right: auto;
   margin-left: auto;
-  max-width: 1440px;
+  max-width: min(1440px, calc(100vw - 64px));
+  min-width: 720px;
   padding-bottom: 50px;
 }
 
