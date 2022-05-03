@@ -56,7 +56,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
       const chunkSize = 100;
       for (let i = 0; i < data.length; i += chunkSize) {
         const chunk = data.slice(i, i + chunkSize);
-        log(`adding drafts (${i}, ${data.length})...`);
+        log(`adding drafts (${i}/${data.length})...`);
         const drafts = chunk.map((lockup) => ({
           draft_group_id: draftGroupId,
           lockup,

@@ -9,5 +9,5 @@ export default function ProcessLog(params: { lines: string[], inProgress: boolea
       ))}
       {inProgress && (<LinearProgress color="inherit" style={{ marginTop: 10 }} />)}
     </div>
-  )
-};
+  );
+}
