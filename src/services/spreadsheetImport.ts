@@ -1,4 +1,5 @@
 import BN from 'bn.js';
+import Big from 'big.js';
 
 // TODO: replace with cleaner hack or another library
 BN.prototype.toJSON = function toJSON() {
@@ -39,7 +40,7 @@ export const parseValidAccountId = (accountId: string): ValidAccountId => {
 type TokenAmount = string;
 
 export const parseTokenAmount = (amount: string): TokenAmount => {
-  if (amount.match(/^[0-9]+$/)) {
+  if (amount.match(/^[0-9]+(\.[0-9]+)?$/)) {
     return amount;
   }
   throw new Error('invalid token amount');
@@ -233,7 +234,7 @@ export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmou
   if (!(tokenDecimals >= 0 && tokenDecimals === Math.floor(tokenDecimals))) {
     throw new Error('invalid token decimals');
   }
-  const decimalsMultiplier = new BN(10).pow(new BN(tokenDecimals));
+  const decimalsMultiplier = new Big(10).pow(tokenDecimals);
 
   const { timestampStart } = schedule;
   const timestampCliff = datePlusDurationMul(timestampStart, schedule.durationCliff, 1);
@@ -241,7 +242,7 @@ export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmou
   const timestampFinish = datePlusDurationMul(timestampStart, schedule.durationTotal, 1);
 
   // clone normalizes internal structure, needed for unit test equality
-  const totalAmount = new BN(inputTotalAmount).mul(decimalsMultiplier).clone();
+  const totalAmount = new BN(new Big(inputTotalAmount).mul(decimalsMultiplier).round(0, Big.roundDown).toString());
   const cliffAmount = new BN(totalAmount).muln(schedule.percentageCliff).divn(100).clone();
 
   if (cliffAmount.gt(totalAmount)) {

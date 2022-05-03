@@ -6,6 +6,8 @@ import { TMetadata } from '../../services/tokenApi';
 import { convertAmount } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import TokenAmountPreview from '../../components/TokenAmountPreview';
+import FundButton from '../../components/FundButton';
+import ProcessLog from '../../components/ProcessLog';
 
 export default function PageDraftGroup({ token }: { token: TMetadata }) {
   const draftGroupId = parseInt(useParams().draftGroupId || '', 10);
@@ -13,10 +15,14 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
   const [draftGroup, setDraftGroup] = useState<any>(null);
   const [drafts, setDrafts] = useState<any[]>([]);
   const [processLog, setProcessLog] = useState<string[]>([]);
+  const [inProgress, setInProgress] = useState<boolean>(false);
 
   const log = (message: string) => {
     console.log(message);
     setProcessLog((oldLog) => oldLog.concat([message]));
+  };
+  const clearLog = () => {
+    setProcessLog([]);
   };
 
   console.log(token);
@@ -63,23 +69,23 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
       if (!near) {
         throw new Error('near is null');
       }
-      log('convert started');
-      const draftIds = draftGroup.draft_indices;
-      const chunkSize = 100;
-      for (let i = 0; i < draftIds.length; i += chunkSize) {
-        const chunk = draftIds.slice(i, i + chunkSize);
-        log(`converting drafts from (${i}, ${i + chunk.length})`);
-        try {
-          const result = await near.api.convertDrafts(chunk);
-          log(`converted drafts to lockups from (${i}, ${i + chunk.length}): ${result}`);
-        } catch (e) {
-          log(`ERROR: ${e}`);
-          throw e;
+      try {
+        setInProgress(true);
+        clearLog();
+        const draftIds = draftGroup.draft_indices;
+        const chunkSize = 100;
+        for (let i = 0; i < draftIds.length; i += chunkSize) {
+          const chunk = draftIds.slice(i, i + chunkSize);
+          log(`converting drafts (${i}/${draftIds.length})...`);
+          await near.api.convertDrafts(chunk);
         }
+        log('conversion finished');
+        navigate('/admin/lockups');
+      } catch (e) {
+        log(`ERROR: ${e}`);
+      } finally {
+        setInProgress(false);
       }
-
-      log('convert finished');
-      navigate('/admin/lockups');
     };
 
     convertDrafts();
@@ -99,7 +105,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
 
         {!draftGroup.funded && (
           <div style={{ marginTop: 20 }}>
-            <Alert severity="warning">Not funded, fund group first!</Alert>
+            <FundButton draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} />
           </div>
         )}
         {draftGroup.funded && draftGroup.draft_indices.length > 0 && (
@@ -112,9 +118,9 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
         )}
       </div>
 
-      <pre id="import-log">
-        {processLog.join('\n')}
-      </pre>
+      {(processLog.length > 0) && (
+        <ProcessLog lines={processLog} inProgress={inProgress} />
+      )}
 
       {(!draftGroup.funded || draftGroup.draft_indices.length > 0) && (
         <DraftsTable lockups={drafts} token={token} />
