@@ -11,6 +11,7 @@ import About from '../../pages/About';
 import ImportDraftGroup from '../ImportDraftGroup';
 import PageDraftGroup from '../../pages/PageDraftGroup';
 import PageDraftGroupsIndex from '../../pages/PageDraftGroupsIndex';
+import NewLockupContract from '../../pages/NewLockupContract';
 import Lockups from '../../pages/Lockups';
 import UserLockups from '../../pages/UserLockups';
 import Header from '../Header';
@@ -102,6 +103,7 @@ export default function App() {
       <Routes>
         <Route path="/*" element={<Customer lockups={lockups} token={token} contractId={contractId} />} />
         <Route path="/admin/*" element={<Admin lockups={lockups} token={token} tokenContractId={contractId} />} />
+        <Route path="/new_lockup_contract" element={<NewLockupContract />} />
       </Routes>
     </HashRouter>
   );

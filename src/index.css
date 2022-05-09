@@ -66,6 +66,18 @@ code {
   padding: 0 7px;
 }
 
+div.container.new-lockup-contract .form-wrapper {
+  width: 100%;
+  background-color: var(--white);
+  border-radius: 10px;
+  padding: 30px;
+}
+
+div.container.new-lockup-contract .form-row {
+  padding: 10px 0px;
+}
+
+
 div.fine-print {
   color: var(--gray);
   font-size: 12px;

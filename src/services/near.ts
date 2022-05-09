@@ -5,6 +5,7 @@ import { restoreLocalStorage } from '../utils';
 import NearApi from './api';
 import NoLoginApi from './noLoginApi';
 import TokenApi from './tokenApi';
+import FactoryApi from './factoryApi';
 
 export interface INearProps {
   config: INearConfig;
@@ -14,6 +15,7 @@ export interface INearProps {
   isAdmin: boolean;
   signedAccountId: string | null;
   tokenApi: TokenApi;
+  factoryApi: FactoryApi;
 }
 
 export const NearContext = createContext<any>(null);
@@ -38,6 +40,12 @@ export const connectNear = async (): Promise<INearProps> => {
   const isAdmin = depositWhitelist.includes(signedAccountId);
   const tokenApi = new TokenApi(walletConnection, tokenContractId);
 
+  const factoryApi = new FactoryApi(
+    walletConnection,
+    config.factoryContractName,
+    config.factoryContractHash,
+  );
+
   console.log(depositWhitelist);
 
   return {
@@ -48,5 +56,6 @@ export const connectNear = async (): Promise<INearProps> => {
     isAdmin,
     signedAccountId,
     tokenApi,
+    factoryApi,
   };
 };
