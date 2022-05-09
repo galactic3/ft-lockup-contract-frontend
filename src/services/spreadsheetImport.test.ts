@@ -129,7 +129,6 @@ describe('.parseToSpreadsheetRow', () => {
       amount: '100000',
       lockup_schedule: '2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S',
       vesting_schedule: '2021-12-31T23:59:48Z|P4Y|P1Y:25|PT1S',
-      terminator_id: 'owner.near',
     };
     expect(parseToSpreadsheetRow(input))
       .toStrictEqual(
@@ -138,42 +137,8 @@ describe('.parseToSpreadsheetRow', () => {
           amount: '100000',
           lockup_schedule: parseHumanFriendlySchedule('2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S'),
           vesting_schedule: parseHumanFriendlySchedule('2021-12-31T23:59:48Z|P4Y|P1Y:25|PT1S'),
-          terminator_id: 'owner.near',
         },
       );
-
-    input = {
-      account_id: 'alice.near',
-      amount: '100000',
-      lockup_schedule: '2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S',
-      vesting_schedule: '2021-12-31T23:59:48Z|P4Y|P1Y:25|PT1S',
-      terminator_id: '',
-    };
-    // console.log(parseToSpreadsheetRow(input));
-    expect(() => parseToSpreadsheetRow(input))
-      .toThrow(/expected present terminator_id for present vesting_schedule/);
-
-    input = {
-      account_id: 'alice.near',
-      amount: '100000',
-      lockup_schedule: '2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S',
-      vesting_schedule: '',
-      terminator_id: 'owner.near',
-    };
-    // console.log(parseToSpreadsheetRow(input));
-    expect(() => parseToSpreadsheetRow(input))
-      .toThrow(/expected empty terminator_id for empty vesting_schedule/);
-
-    input = {
-      account_id: 'alice.near',
-      amount: '100000',
-      lockup_schedule: '2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S',
-      vesting_schedule: '',
-      terminator_id: '',
-    };
-    // console.log(parseToSpreadsheetRow(input));
-    expect(() => parseToSpreadsheetRow(input))
-      .not.toThrow(/expected empty terminator_id for empty vesting_schedule/);
   });
 });
 
@@ -182,8 +147,8 @@ describe('.parseToSpreadsheetRow', () => {
     let input: any;
 
     input = `
-      account_id	amount	lockup_schedule	vesting_schedule	terminator_id
-      alice.near	100000	2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S	2021-12-31T23:59:48Z|P4Y|P1Y:25|PT1S	owner.near
+      account_id	amount	lockup_schedule	vesting_schedule
+      alice.near	100000	2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S	2021-12-31T23:59:48Z|P4Y|P1Y:25|PT1S
     `
     expect(parseSpreadsheetToSpreadsheetRows(input))
       .toStrictEqual(
@@ -192,7 +157,6 @@ describe('.parseToSpreadsheetRow', () => {
           amount: '100000',
           lockup_schedule: parseHumanFriendlySchedule('2020-12-31T23:59:48Z|P4Y|P1Y:25|PT1S'),
           vesting_schedule: parseHumanFriendlySchedule('2021-12-31T23:59:48Z|P4Y|P1Y:25|PT1S'),
-          terminator_id: 'owner.near',
         }],
       );
   });
@@ -500,8 +464,7 @@ describe('.parseLockup', () => {
         amount: '60000',
         lockup_schedule: '1999-12-31T23:59:59Z|P4Y|P2Y:50|PT1S',
         vesting_schedule: '1999-12-31T23:59:59Z|P4Y|P1Y:25|PT1S',
-        terminator_id: 'owner.near',
-      }, 12),
+      }, 12, 'owner.near'),
     ).toStrictEqual(
       {
         account_id: "alice.near",
@@ -513,7 +476,7 @@ describe('.parseLockup', () => {
           { balance: "60000000000000000", timestamp: 1072915199 },
         ],
         termination_config: {
-          terminator_id: "owner.near",
+          payer_id: 'owner.near',
           vesting_schedule: {
             Schedule: [
               { balance: "0", timestamp: 946684799 },
@@ -532,10 +495,10 @@ describe('.parseRawSpreadsheetInput', () => {
   it('works', () => {
     expect(
       parseRawSpreadsheetInput(`
-        account_id	amount	lockup_schedule	vesting_schedule	terminator_id
-        alice.near	100000	2009-12-31T23:59:59Z|P4Y|P2Y:50|PT1S		
-        bob.near	60000	1999-12-31T23:59:59Z|P4Y|P2Y:50|PT1S	1999-12-31T23:59:59Z|P4Y|P2Y:50|PT1S	owner.near
-      `, 12),
+        account_id	amount	lockup_schedule	vesting_schedule
+        alice.near	100000	2009-12-31T23:59:59Z|P4Y|P2Y:50|PT1S	
+        bob.near	60000	1999-12-31T23:59:59Z|P4Y|P2Y:50|PT1S	1999-12-31T23:59:59Z|P4Y|P2Y:50|PT1S
+      `, 12, 'owner.near'),
     ).toStrictEqual([
       {
         account_id: "alice.near",
@@ -558,7 +521,7 @@ describe('.parseRawSpreadsheetInput', () => {
           {balance: '60000' + '000000000000', timestamp: 1072915199},
         ],
         termination_config: {
-          terminator_id: 'owner.near',
+          payer_id: 'owner.near',
           vesting_schedule: {
             Schedule: [
               {balance: '0', timestamp: 946684799},

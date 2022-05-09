@@ -3,6 +3,7 @@ import Big from 'big.js';
 export const MAX_GAS = 300_000_000_000_000;
 
 Big.DP = 40;
+Big.PE = 40;
 export const NEAR_ROUND_DIGITS = 2;
 
 export const toNear = (value: any) => Big(value).times(10 ** 24).round(0, Big.roundDown);

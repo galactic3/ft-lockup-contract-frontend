@@ -12,6 +12,7 @@ import {
   TextField,
 } from '@mui/material';
 import BN from 'bn.js';
+import Big from 'big.js';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -58,9 +59,10 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
     const lockupContractId = near?.api.getContract().contractId || '';
     const claimedBalance = '0';
     const userAccountId = account.value;
-    const lockupTotalAmount = amount.value * 10 ** token.decimals;
+    const lockupTotalAmount = new Big(amount.value).mul(new Big(10).pow(token.decimals))
+      .round(0, Big.roundDown).toString();
 
-    const getScheduleList = (date: Date, balanceInput: number, selected: string): [TSchedule, TSchedule | null] => {
+    const getScheduleList = (date: Date, balanceInput: string, selected: string): [TSchedule, TSchedule | null] => {
       const balance = new BN(balanceInput);
 
       const schedules: { [key: string]: TSchedule } = {
@@ -86,7 +88,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
 
     if (vestingSchedule) {
       terminationConfig = {
-        terminator_id: near.signedAccountId,
+        payer_id: near.signedAccountId,
         vesting_schedule: {
           Schedule: vestingSchedule,
         },

@@ -33,7 +33,7 @@ export type TMetadata = {
 };
 
 type TTerminationConfig = {
-  terminator_id: string,
+  payer_id: string,
   vesting_schedule: {
     Schedule: TSchedule,
   },
