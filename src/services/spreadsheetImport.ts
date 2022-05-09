@@ -149,7 +149,6 @@ type RawSpreadsheetRow = {
   amount: string,
   lockup_schedule: string,
   vesting_schedule: string,
-  terminator_id: string,
 };
 
 type SpreadsheetRow = {
@@ -157,7 +156,6 @@ type SpreadsheetRow = {
   amount: TokenAmount,
   lockup_schedule: HumanFriendlySchedule,
   vesting_schedule: HumanFriendlySchedule | null,
-  terminator_id: NearAccountId | null,
 };
 
 export const parseToSpreadsheetRow = (input: RawSpreadsheetRow): SpreadsheetRow => {
@@ -165,25 +163,12 @@ export const parseToSpreadsheetRow = (input: RawSpreadsheetRow): SpreadsheetRow 
   const amount = parseTokenAmount(input.amount);
   const lockupSchedule = parseHumanFriendlySchedule(input.lockup_schedule);
   const vestingSchedule = input.vesting_schedule === '' ? null : parseHumanFriendlySchedule(input.vesting_schedule);
-  let terminatorId = null;
-  if (vestingSchedule === null) {
-    if (input.terminator_id === '') {
-      terminatorId = null;
-    } else {
-      throw new Error('expected empty terminator_id for empty vesting_schedule');
-    }
-  } else if (input.terminator_id === '') {
-    throw new Error('expected present terminator_id for present vesting_schedule');
-  } else {
-    terminatorId = input.terminator_id;
-  }
 
   return {
     account_id: accountId,
     amount,
     lockup_schedule: lockupSchedule,
     vesting_schedule: vestingSchedule,
-    terminator_id: terminatorId,
   };
 };
 
@@ -202,14 +187,14 @@ type Checkpoint = {
 };
 type Schedule = Checkpoint[];
 type TerminationConfig = {
-  terminator_id: ValidAccountId,
+  payer_id: ValidAccountId,
   vesting_schedule: {
     Schedule: Schedule,
   },
 };
 
-export const buildTerminationConfig = (schedule: Schedule, terminator_id: ValidAccountId): TerminationConfig => ({
-  terminator_id,
+export const buildTerminationConfig = (schedule: Schedule, payer_id: ValidAccountId): TerminationConfig => ({
+  payer_id,
   vesting_schedule: {
     Schedule: schedule,
   },
@@ -338,12 +323,12 @@ export type Lockup = {
   termination_config: TerminationConfig | null,
 };
 
-export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals: number): Lockup => {
+export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals: number, payerId: NearAccountId): Lockup => {
   const row = parseToSpreadsheetRow(rawSpreadsheetRow);
 
   let terminationConfig;
-  if (row.vesting_schedule && row.terminator_id) {
-    terminationConfig = buildTerminationConfig(toLockupSchedule(row.vesting_schedule, row.amount, tokenDecimals), row.terminator_id);
+  if (row.vesting_schedule) {
+    terminationConfig = buildTerminationConfig(toLockupSchedule(row.vesting_schedule, row.amount, tokenDecimals), payerId);
   } else {
     terminationConfig = null;
   }
@@ -356,7 +341,7 @@ export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals:
   };
 };
 
-export const parseRawSpreadsheetInput = (spreadsheetInput: string, tokenDecimals: number): Lockup[] => {
+export const parseRawSpreadsheetInput = (spreadsheetInput: string, tokenDecimals: number, payerId: NearAccountId): Lockup[] => {
   const rows = parseSpreadsheetColumns(spreadsheetInput);
-  return rows.map((x) => parseLockup(x, tokenDecimals));
+  return rows.map((x) => parseLockup(x, tokenDecimals, payerId));
 };

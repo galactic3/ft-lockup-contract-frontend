@@ -16,7 +16,7 @@ function TerminateLockup(
   props: {
     adminControls: boolean,
     lockupIndex: number | undefined,
-    config: { terminator_id: String, vesting_schedule: [] | null } | null,
+    config: { payer_id: String, vesting_schedule: [] | null } | null,
   },
 ) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
@@ -31,8 +31,6 @@ function TerminateLockup(
     throw Error('Cannot access lockup api');
   }
 
-  const { signedAccountId } = near;
-
   if (lockupIndex === undefined) {
     throw Error('Cannot terminate lockup without lockupIndex');
   }
@@ -44,19 +42,30 @@ function TerminateLockup(
   };
 
   let message;
+  let payerMessage;
   if (!config) {
     message = 'No termination config';
-  } else if (adminControls && config.terminator_id === signedAccountId) {
-    message = 'Terminate';
+    payerMessage = 'This lockup cannot be terminated';
   } else {
-    message = `Terminator: ${config.terminator_id}`;
+    message = 'Terminate';
+    payerMessage = `Unvested amount will return to ${config.payer_id}`;
   }
 
-  const canTerminate = adminControls && config && config.terminator_id === signedAccountId;
+  const canTerminate = adminControls && config;
 
   return (
     <div>
-      <button className="button red fullWidth" disabled={!canTerminate} type="button" onClick={handleOpen}>{message}</button>
+      <button
+        className="button red fullWidth"
+        disabled={!canTerminate}
+        type="button"
+        onClick={handleOpen}
+      >
+        {message}
+      </button>
+      <div className="fine-print">
+        {payerMessage}
+      </div>
       <Dialog open={open} sx={{ padding: 2 }} maxWidth="xs" onClose={handleClose}>
         <form className="form-submit">
           <DialogTitle>

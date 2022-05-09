@@ -28,9 +28,12 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     try {
+      if (!near?.signedAccountId) {
+        throw new Error('expected present signedAccountId');
+      }
       console.log(token);
       const input = event.target.value;
-      const lockups = parseRawSpreadsheetInput(input, token.decimals);
+      const lockups = parseRawSpreadsheetInput(input, token.decimals, near.signedAccountId);
       setData(lockups);
     } catch (e) {
       if (e instanceof Error) {
