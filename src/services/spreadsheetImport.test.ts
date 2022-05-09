@@ -56,9 +56,9 @@ describe('.parseValidAccountId', () => {
 describe('.parseTokenAmount', () => {
   it('works', () => {
     expect(parseTokenAmount('123')).toBe('123');
+    expect(parseTokenAmount('123.456')).toBe('123.456');
     expect(() => parseTokenAmount('123.')).toThrow('invalid token amount');
     expect(() => parseTokenAmount('.456')).toThrow('invalid token amount');
-    expect(() => parseTokenAmount('123.456')).toThrow('invalid token amount');
   })
 });
 
@@ -345,7 +345,19 @@ describe('.toLockupSchedule', () => {
       { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: '60000' + '000000000000' },
     ]);
 
+    // decimals rounding
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('1999-12-31T23:59:59Z|PT0S|PT0S:25|PT1S'),
+        '9000.456789',
+        3,
+      )
+    ).toStrictEqual([
+      { timestamp: toUnix('1999-12-31T23:59:58Z'), balance: '0' },
+      { timestamp: toUnix('1999-12-31T23:59:59Z'), balance: '9000' + '456' },
+    ]);
     // controversial cases
+
     // cliff bigger than total duration
     expect(
       () => toLockupSchedule(

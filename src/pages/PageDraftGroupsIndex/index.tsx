@@ -65,11 +65,6 @@ export default function PageDraftGroupsIndex({ token }: { token: TMetadata }) {
         All draft groups
       </h1>
 
-      <div>
-        Total count:
-        {draftGroups.length}
-      </div>
-
       <Table className="main-table" aria-label="collapsible table">
         <TableHead className="table-head">
           <TableRow>
