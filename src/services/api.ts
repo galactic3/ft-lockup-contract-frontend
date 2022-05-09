@@ -144,12 +144,13 @@ class NearApi {
     return result;
   }
 
-  async terminate(lockupIndex: number): Promise<void> {
+  async terminate(lockupIndex: number, timestamp: number | null): Promise<void> {
     try {
-      await (this.contract as TLockupContract).terminate(
-        { lockup_index: lockupIndex },
+      const result = await this.contract.terminate(
+        { lockup_index: lockupIndex, termination_timestamp: timestamp },
         MAX_GAS,
       );
+      return result;
     } catch (e) {
       throw Error('Cannot terminate lockup');
     }

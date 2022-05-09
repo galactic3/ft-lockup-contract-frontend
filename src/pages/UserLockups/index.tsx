@@ -36,6 +36,7 @@ export default function UserLockups({ lockups: allLockups, token, adminControls 
               <TableCell align="left">Account ID</TableCell>
               <TableCell align="right">Start&nbsp;date</TableCell>
               <TableCell align="right">End&nbsp;date</TableCell>
+              <TableCell align="right">Terminatable</TableCell>
               <TableCell align="right">Total&nbsp;amount</TableCell>
               <TableCell align="center">Progress</TableCell>
             </TableRow>

@@ -20,6 +20,7 @@ export default function LockupsTable(
           <TableCell align="left">Account ID</TableCell>
           <TableCell align="right">Start&nbsp;date</TableCell>
           <TableCell align="right">End&nbsp;date</TableCell>
+          <TableCell align="center">Terminatable</TableCell>
           <TableCell align="right">Total&nbsp;amount</TableCell>
           <TableCell align="center">Progress</TableCell>
         </TableRow>

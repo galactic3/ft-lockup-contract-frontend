@@ -40,13 +40,18 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="left">{row.id}</TableCell>
+        <TableCell align="left">
+          {row.id}
+        </TableCell>
         <TableCell align="left"><Link to={`${row.account_id}`}>{row.account_id}</Link></TableCell>
         <TableCell align="right">
           {convertTimestamp(row.schedule[0].timestamp)}
         </TableCell>
         <TableCell align="right">
           {convertTimestamp(row.schedule[row.schedule.length - 1].timestamp)}
+        </TableCell>
+        <TableCell align="center">
+          {vestingSchedule ? 'Yes' : 'No'}
         </TableCell>
         <TableCell align="right">
           {convertAmount(row.total_balance, token.decimals)}
@@ -77,7 +82,7 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
         </TableCell>
       </TableRow>
       <TableRow sx={{ background: '#F4FAFF' }}>
-        <TableCell style={{ padding: 0 }} colSpan={7}>
+        <TableCell style={{ padding: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">
               <div style={{ display: 'flex', gap: 20 }}>
@@ -85,9 +90,9 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
                 {vestingSchedule && (
                   <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
                 )}
-              </div>
-              <div className="terminate">
-                <TerminateLockup adminControls={adminControls} lockupIndex={row.id} config={row.termination_config} />
+                <div className="terminate">
+                  <TerminateLockup adminControls={adminControls} lockupIndex={row.id} config={row.termination_config} />
+                </div>
               </div>
             </div>
           </Collapse>

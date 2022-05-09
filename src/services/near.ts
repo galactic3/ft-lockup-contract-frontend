@@ -38,6 +38,8 @@ export const connectNear = async (): Promise<INearProps> => {
   const isAdmin = depositWhitelist.includes(signedAccountId);
   const tokenApi = new TokenApi(walletConnection, tokenContractId);
 
+  console.log(depositWhitelist);
+
   return {
     config,
     api,

@@ -78,7 +78,7 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
         </TableCell>
       </TableRow>
       <TableRow sx={{ background: '#F4FAFF' }}>
-        <TableCell style={{ padding: 0 }} colSpan={7}>
+        <TableCell style={{ padding: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">
               <div style={{ display: 'flex', gap: 20 }}>

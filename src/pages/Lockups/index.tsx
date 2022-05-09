@@ -26,11 +26,12 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
   return (
     <div className="container">
 
+      {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
+
       <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }} component={Paper}>
         <LockupsTable lockups={lockups} token={token} adminControls={adminControls} />
       </TableContainer>
 
-      {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
     </div>
   );
 }
