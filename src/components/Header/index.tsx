@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { Box } from '@mui/material';
 import { INearProps, NearContext } from '../../services/near';
+import { CONTRACT_NAME } from '../../config';
 
 export default function Header({ adminControls }: { adminControls: boolean }) {
   const {
@@ -12,6 +13,8 @@ export default function Header({ adminControls }: { adminControls: boolean }) {
 
   if (!near) return null;
 
+  console.log(CONTRACT_NAME);
+
   const { signedIn, signedAccountId, isAdmin } = near;
 
   return (
@@ -19,9 +22,9 @@ export default function Header({ adminControls }: { adminControls: boolean }) {
       <div className="container">
         <Box sx={{ display: 'flex' }}>
           <div className="nav">
-            <Link className="nav-link" to={adminControls && isAdmin ? '/admin/lockups' : '/lockups'}>Lockups</Link>
-            <Link className="nav-link" to={adminControls ? '/admin/about' : '/about'}>About</Link>
-            {adminControls && (<Link className="nav-link" to="/admin/draft_groups">Draft Groups</Link>)}
+            <Link className="nav-link" to={adminControls && isAdmin ? `/${CONTRACT_NAME}/admin/lockups` : `/${CONTRACT_NAME}/lockups`}>Lockups</Link>
+            <Link className="nav-link" to={adminControls ? `/${CONTRACT_NAME}/admin/about` : `/${CONTRACT_NAME}/about`}>About</Link>
+            {adminControls && (<Link className="nav-link" to={`/${CONTRACT_NAME}/admin/draft_groups`}>Draft Groups</Link>)}
           </div>
           {adminControls && signedIn && (
             <Box sx={{ marginTop: '23px' }}>

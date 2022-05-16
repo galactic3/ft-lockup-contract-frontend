@@ -63,9 +63,9 @@ function TerminateLockup(
       >
         {message}
       </button>
-      <div className="fine-print">
+      <span className="fine-print">
         {payerMessage}
-      </div>
+      </span>
       <Dialog open={open} sx={{ padding: 2 }} maxWidth="xs" onClose={handleClose}>
         <form className="form-submit">
           <DialogTitle>

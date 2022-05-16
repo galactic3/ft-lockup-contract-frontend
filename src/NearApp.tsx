@@ -15,7 +15,11 @@ export default function NearApp() {
       setNear(nearConn);
     }
 
-    connect();
+    try {
+      connect();
+    } catch (e) {
+      console.log(e);
+    }
   }, []);
 
   const value = useMemo(() => ({

@@ -77,11 +77,12 @@ div.container.new-lockup-contract .form-row {
   padding: 10px 0px;
 }
 
-
-div.fine-print {
+.fine-print {
   color: var(--gray);
+  display: block;
+  margin: 10px 0 0;
   font-size: 12px;
-  font-weight: 100;
+  font-weight: 500;
   line-height: 20px;
 }
 

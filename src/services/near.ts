@@ -14,6 +14,7 @@ export interface INearProps {
   signedIn: boolean;
   isAdmin: boolean;
   signedAccountId: string | null;
+  tokenContractId: string;
   tokenApi: TokenApi;
   factoryApi: FactoryApi;
 }
@@ -35,22 +36,26 @@ export const connectNear = async (): Promise<INearProps> => {
 
   const walletConnection = new nearAPI.WalletConnection(near, config.contractName);
   const signedAccountId = walletConnection.getAccountId();
-  const tokenContractId = await api.getTokenAccountId();
-  const depositWhitelist = await api.getDepositWhitelist();
-  const isAdmin = depositWhitelist.includes(signedAccountId);
+  let tokenContractId: string = '';
+  let isAdmin: boolean = false;
+  try {
+    tokenContractId = await api.getTokenAccountId();
+    const depositWhitelist = await api.getDepositWhitelist();
+    isAdmin = depositWhitelist.includes(signedAccountId);
+  } catch (e) {
+    console.log(e);
+  }
   const tokenApi = new TokenApi(walletConnection, tokenContractId);
-
   const factoryApi = new FactoryApi(
     walletConnection,
     config.factoryContractName,
     config.factoryContractHash,
   );
 
-  console.log(depositWhitelist);
-
   return {
     config,
     api,
+    tokenContractId,
     noLoginApi,
     signedIn: !!signedAccountId,
     isAdmin,

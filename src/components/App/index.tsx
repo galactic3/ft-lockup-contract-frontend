@@ -19,14 +19,12 @@ import Authorize from '../Authorize';
 import RequireAuth from '../RequireAuth';
 import { TMetadata } from '../../services/tokenApi';
 
-function Customer({
-  lockups, token, contractId,
-}: { lockups: any[], token: TMetadata, contractId: string | null }) {
+function Customer({ lockups, token, contractId }: { lockups: any[], token: TMetadata, contractId: string | null }) {
   return (
     <>
       <Header adminControls={false} />
       <Routes>
-        <Route path="/" element={<Navigate replace to="/lockups" />} />
+        <Route path="/" element={<Navigate replace to="lockups" />} />
         <Route path="/about" element={<About lockups={lockups} token_account_id={contractId} />} />
         <Route path="/lockups" element={<Lockups lockups={lockups} token={token} adminControls={false} />} />
         <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} token={token} adminControls={false} />} />
@@ -80,7 +78,9 @@ export default function App() {
         setContractState({ lockups, name: 'name' });
       };
 
-      load();
+      if (near.tokenContractId) {
+        load();
+      }
     }
 
     return () => { active = false; };
@@ -101,8 +101,8 @@ export default function App() {
   return (
     <HashRouter>
       <Routes>
-        <Route path="/*" element={<Customer lockups={lockups} token={token} contractId={contractId} />} />
-        <Route path="/admin/*" element={<Admin lockups={lockups} token={token} tokenContractId={contractId} />} />
+        <Route path="/:cid/*" element={<Customer lockups={lockups} token={token} contractId={contractId} />} />
+        <Route path="/:cid/admin/*" element={<Admin lockups={lockups} token={token} tokenContractId={contractId} />} />
         <Route path="/new_lockup_contract" element={<NewLockupContract />} />
       </Routes>
     </HashRouter>

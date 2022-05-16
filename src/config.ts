@@ -9,9 +9,13 @@ export interface INearConfig {
   factoryContractHash: string,
 }
 
-const CONTRACT_NAME = process.env.REACT_APP_CONTRACT_NAME || 'ft-lockup.demo005.ft-lockup.testnet';
+// const CONTRACT_NAME = process.env.REACT_APP_CONTRACT_NAME || 'ft-lockup.demo005.ft-lockup.testnet';
 const FACTORY_CONTRACT_NAME = process.env.FACTORY_CONTRACT_NAME || 'factory0.ft-lockup.testnet';
 const FACTORY_CONTRACT_HASH = process.env.FACTORY_CONTRACT_HASH || 'C6w1pKPB9H6HcceqPG9qxS2bLTWgsBwQCj4T2xrz63a3';
+
+export const CONTRACT_NAME = window.location.hash.split('/')[1] || 'ft-lockup.demo005.ft-lockup.testnet';
+
+console.log(CONTRACT_NAME);
 
 // TODO: move these data to envs
 function getConfig(): INearConfig {
