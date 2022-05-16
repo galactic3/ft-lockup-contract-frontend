@@ -10,6 +10,7 @@ import { convertAmount } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import TokenAmountPreview from '../../components/TokenAmountPreview';
 import FundButton from '../../components/FundButton';
+import FundWithDaoButton from '../../components/FundWithDaoButton';
 
 export default function PageDraftGroup({ token }: { token: TMetadata }) {
   const location = useLocation();
@@ -118,6 +119,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
         {!draftGroup.funded && (
           <div style={{ marginTop: 20 }}>
             <FundButton draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} />
+            <FundWithDaoButton draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} />
           </div>
         )}
         {draftGroup.funded && draftGroup.draft_indices.length > 0 && (
