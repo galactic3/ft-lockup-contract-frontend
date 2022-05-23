@@ -10,10 +10,14 @@ import {
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 import { INearProps, NearContext } from '../../services/near';
+import { customFunctionCallProposalFormLink, ONE_YOKTO } from '../../services/astraDAOUtils';
 
 function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount: string | undefined }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const { draftGroupIndex, amount } = props;
+
+  const defaultDescription = `Fund draft group ${draftGroupIndex} with amount ${amount}. Draft group link: ${window.location.href}`;
+  const [description, setDescription] = useState(defaultDescription);
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -31,8 +35,34 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     throw Error('Cannot fund draft group without specified amount');
   }
 
+  const buildProposalLink = (): string => {
+    const details = encodeURIComponent(description);
+    const tokenContractAddress = near.tokenApi.getContract().contractId;
+    const methodName = 'ft_transfer_call';
+    const json = {
+      receiver_id: near.api.getContract().contractId,
+      amount,
+      msg: JSON.stringify({ draft_group_id: draftGroupIndex }),
+    };
+    const actionsGas = '100'; // with this amount transaction completes in one go (without resubmit with additional gas)
+    const actionDeposit = ONE_YOKTO;
+
+    return customFunctionCallProposalFormLink(
+      details,
+      tokenContractAddress,
+      methodName,
+      json,
+      actionsGas,
+      actionDeposit,
+    );
+  };
+
+  const handleChange = (e: any) => {
+    setDescription(e.target.value);
+  };
+
   const handleFund = () => {
-    alert('poopup');
+    window.open(buildProposalLink(), '_blank')?.focus();
   };
 
   return (
@@ -60,7 +90,8 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
               label="Proposal description"
               multiline
               minRows={5}
-              defaultValue={`Fund draft group ${draftGroupIndex} with amount ${amount}. Draft group link: ${window.location.href}`}
+              onChange={handleChange}
+              defaultValue={description}
             />
           </DialogContent>
           <DialogActions sx={{ padding: '14px 24px 24px' }}>
