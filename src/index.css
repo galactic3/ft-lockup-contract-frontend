@@ -5,6 +5,7 @@
   --white: #FFF;
   --main: #272A34;
   --gray: #636E95;
+  --light-gray: #97A0C3;
   --primary: #242F57;
 }
 
@@ -75,6 +76,37 @@ div.container.new-lockup-contract .form-wrapper {
 
 div.container.new-lockup-contract .form-row {
   padding: 10px 0px;
+}
+
+
+.form-row button {
+  display: inline-block;
+  width: 300px;
+  height: 38px;
+  font-size: 16px;
+}
+
+.form-row span {
+  display: inline-block;
+  font-weight: 600;
+  color: #636E95;
+  width: 250px;
+  margin-right: 20px;
+}
+
+.form-row strong {
+  display: inline-block;
+  width: 340px;
+  color: #636E95;
+}
+
+.form-row input {
+  width: 300px;
+  height: 43px;
+  border: 1px solid #8D8D8D;
+  border-radius: 4px;
+  font-size: 16px;
+  padding: 0 12px;
 }
 
 .fine-print {
@@ -279,6 +311,39 @@ div.process-log {
   cursor: pointer;
 }
 
+.button.large {
+  width: 710px;
+  font-size: 24px;
+  line-height: 20px;
+  height: auto;
+  padding: 24px;
+}
+
+.button.middle {
+  margin: 30px 0 0;
+  width: 250px;
+  font-size: 16px;
+  line-height: 20px;
+  height: auto;
+  padding: 14px;
+}
+
+.link-button {
+  display: inline-block;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.icon-button {
+  display: inline-flex;
+  height: 40px;
+  width: 40px;
+}
+
+.input-large {
+  width: 650px;
+}
+
 .button[disabled] {
   background: #97A0C3!important;
 }
@@ -289,6 +354,72 @@ div.process-log {
 
 .button.red {
   background: #ff2222;
+}
+
+.home-list {
+  margin: 100px 0 60px;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.home-list li {
+  width: 300px;
+  display: flex;
+  border-radius: 10px;
+  padding: 24px 32px;
+  background: #fff;
+  border: 1px solid #EAEDF7;
+}
+
+.home-list li div {
+  margin-left: 24px;
+  text-align: left;
+}
+
+.home-list li span {
+  color: var(--light-gray);
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.home-list li b {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.near-icon-bg {
+  background-color: #DAF7F0;
+  display: flex;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+}
+
+svg {
+  margin: auto;
+}
+
+.home {
+  text-align: center;
+}
+
+.white-block {
+  background-color: #fff;
+  padding: 20px 0;
+}
+
+.home h2 {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--gray);
+}
+
+.home p {
+  font-size: 18px;
+  margin-bottom: 40px;
+  color: var(--gray);
 }
 
 .login .button {

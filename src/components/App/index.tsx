@@ -18,6 +18,7 @@ import Header from '../Header';
 import Authorize from '../Authorize';
 import RequireAuth from '../RequireAuth';
 import { TMetadata } from '../../services/tokenApi';
+import Homepage from '../Homepage';
 
 function Customer({ lockups, token, contractId }: { lockups: any[], token: TMetadata, contractId: string | null }) {
   return (
@@ -28,6 +29,7 @@ function Customer({ lockups, token, contractId }: { lockups: any[], token: TMeta
         <Route path="/about" element={<About lockups={lockups} token_account_id={contractId} />} />
         <Route path="/lockups" element={<Lockups lockups={lockups} token={token} adminControls={false} />} />
         <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} token={token} adminControls={false} />} />
+        <Route path="/draft_groups/:draftGroupId" element={<RequireAuth><PageDraftGroup token={token} /></RequireAuth>} />
       </Routes>
     </>
   );
@@ -101,9 +103,10 @@ export default function App() {
   return (
     <HashRouter>
       <Routes>
+        <Route path="/" element={<Homepage lockups={lockups} />} />
+        <Route path="/new_lockup_contract/" element={<NewLockupContract />} />
         <Route path="/:cid/*" element={<Customer lockups={lockups} token={token} contractId={contractId} />} />
         <Route path="/:cid/admin/*" element={<Admin lockups={lockups} token={token} tokenContractId={contractId} />} />
-        <Route path="/new_lockup_contract" element={<NewLockupContract />} />
       </Routes>
     </HashRouter>
   );

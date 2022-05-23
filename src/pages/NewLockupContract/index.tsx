@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-
 import Header from '../../components/Header';
 import { INearProps, NearContext } from '../../services/near';
 
@@ -44,6 +43,7 @@ export default function NewLockupContract() {
         lockupSubaccountId,
         tokenAccountId,
         lockupOperators,
+        `/${lockupSubaccountId}/admin/lockups`,
       );
 
       console.log(result);
@@ -68,32 +68,29 @@ export default function NewLockupContract() {
 
         <form className="form-submit" onSubmit={handleDeployLockupContract}>
           <div className="form-wrapper">
-            On this page you can deploy your own copy of lockup contract. Some more elaborative description follows here.
 
             <div className="form-row">
               <span>Contract creator: </span>
-              <span>
-                {near.signedAccountId}
-                {' '}
-                <button className="button" type="button" onClick={signIn}>
-                  {near.signedAccountId && 'Login as someone else' || 'Login'}
-                </button>
-              </span>
+              <strong>{near.signedAccountId}</strong>
+              {' '}
+              <button className="button" type="button" onClick={signIn}>
+                {near.signedAccountId && 'Login as someone else' || 'Login'}
+              </button>
             </div>
             <div className="form-row">
               <span>Lockup operators: </span>
-              <input id="lockup_operators" />
+              <input type="text" id="lockup_operators" />
             </div>
             <div className="form-row">
               <span>Fungible token contract address: </span>
-              <input id="token_account_id" />
+              <input type="text" id="token_account_id" />
             </div>
             <div className="form-row">
               <span>New Lockup Contract Address: </span>
-              <input id="lockup_subaccount_id" />
+              <input type="text" id="lockup_subaccount_id" />
             </div>
 
-            <button className="button" type="submit" disabled={!near.signedAccountId}>
+            <button className="button middle" type="submit" disabled={!near.signedAccountId}>
               Deploy Contract
             </button>
           </div>

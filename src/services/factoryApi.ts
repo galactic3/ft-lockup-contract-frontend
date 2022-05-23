@@ -37,10 +37,11 @@ class FactoryApi {
     return this.contract;
   }
 
-  async create(name: string, tokenAccountId: string, depositWhitelist: string[]): Promise<void> {
+  async create(name: string, tokenAccountId: string, depositWhitelist: string[], callbackUrl: string): Promise<void> {
     const argsRaw = {
       token_account_id: tokenAccountId,
       deposit_whitelist: depositWhitelist,
+      callback_url: callbackUrl,
     };
     const argsPacked = btoa(JSON.stringify(argsRaw));
     const result = await this.contract.create({

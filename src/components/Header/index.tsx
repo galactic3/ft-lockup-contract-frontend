@@ -24,7 +24,7 @@ export default function Header({ adminControls }: { adminControls: boolean }) {
           <div className="nav">
             <Link className="nav-link" to={adminControls && isAdmin ? `/${CONTRACT_NAME}/admin/lockups` : `/${CONTRACT_NAME}/lockups`}>Lockups</Link>
             <Link className="nav-link" to={adminControls ? `/${CONTRACT_NAME}/admin/about` : `/${CONTRACT_NAME}/about`}>About</Link>
-            {adminControls && (<Link className="nav-link" to={`/${CONTRACT_NAME}/admin/draft_groups`}>Draft Groups</Link>)}
+            {adminControls && (<Link className="nav-link" to={`/${CONTRACT_NAME}/admin/draft_groups`}>Drafts</Link>)}
           </div>
           {adminControls && signedIn && (
             <Box sx={{ marginTop: '23px' }}>
