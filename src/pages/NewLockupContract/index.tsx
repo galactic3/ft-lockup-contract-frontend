@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import Header from '../../components/Header';
+import { FACTORY_CONTRACT_NAME } from '../../config';
 import { INearProps, NearContext } from '../../services/near';
 
 export default function NewLockupContract() {
@@ -43,7 +44,7 @@ export default function NewLockupContract() {
         lockupSubaccountId,
         tokenAccountId,
         lockupOperators,
-        `/${lockupSubaccountId}/admin/lockups`,
+        `${window.location.origin + window.location.pathname}#/${lockupSubaccountId}.${FACTORY_CONTRACT_NAME}/admin/lockups`,
       );
 
       console.log(result);
