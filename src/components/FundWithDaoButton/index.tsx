@@ -10,7 +10,7 @@ import {
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 import { INearProps, NearContext } from '../../services/near';
-import { customFunctionCallProposalFormLink, ONE_YOKTO } from '../../services/astraDAOUtils';
+import { customFunctionCallProposalFormLink, ONE_YOKTO } from '../../services/DAOs/astroDAO/utils';
 
 function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount: string | undefined }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
