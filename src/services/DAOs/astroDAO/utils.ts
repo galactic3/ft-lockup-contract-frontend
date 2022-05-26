@@ -1,5 +1,6 @@
-const DAO_HOST = 'https://dev.app.astrodao.com';
-const DAO_CONTRACT_ADDRESS = 'test-dao-001.sputnikv2.testnet';
+// TODO move to the .env
+const ASTRO_DAO_HOST = 'https://dev.app.astrodao.com';
+const ASTRO_DAO_CONTRACT_ADDRESS = 'test-dao-001.sputnikv2.testnet';
 
 export const MAX_GAS = '300';
 export const ONE_YOKTO = '0.000000000000000000000001';
@@ -25,7 +26,7 @@ export const buildProposalFormLink = (
     deposit: actionDeposit,
   };
 
-  return `${DAO_HOST}/dao/${DAO_CONTRACT_ADDRESS}/proposals?action=${action}&variant=${variant}&params=${JSON.stringify(params)}`;
+  return `${ASTRO_DAO_HOST}/dao/${ASTRO_DAO_CONTRACT_ADDRESS}/proposals?action=${action}&variant=${variant}&params=${JSON.stringify(params)}`;
 };
 
 export const customFunctionCallProposalFormLink = (
@@ -48,9 +49,9 @@ export const customFunctionCallProposalFormLink = (
   gas,
 );
 
-const astraDAOUtils = {
+const utils = {
   buildProposalFormLink,
   customFunctionCallProposalFormLink,
 };
 
-export default astraDAOUtils;
+export default utils;
