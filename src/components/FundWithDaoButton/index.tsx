@@ -18,6 +18,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
 
   const defaultDescription = `Fund draft group ${draftGroupIndex} with amount ${amount}. Draft group link: ${window.location.href}`;
   const [description, setDescription] = useState(defaultDescription);
+  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState('');
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -48,6 +49,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     const actionDeposit = ONE_YOKTO;
 
     return customFunctionCallProposalFormLink(
+      astroDAOContractAddress,
       details,
       tokenContractAddress,
       methodName,
@@ -57,7 +59,11 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     );
   };
 
-  const handleChange = (e: any) => {
+  const handleContractAddressChange = (e: any) => {
+    setAstroDAOContractAddress(e.target.value);
+  };
+
+  const handleDescriptionChange = (e: any) => {
     setDescription(e.target.value);
   };
 
@@ -68,7 +74,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
   return (
     <div>
       <button className="button fullWidth" type="button" onClick={handleOpen}>Fund with DAO</button>
-      <Dialog open={open} sx={{ padding: 1 }} maxWidth="xs" onClose={handleClose}>
+      <Dialog open={open} sx={{ padding: 1, minWidth: 1 / 3 }} onClose={handleClose}>
         <form className="form-submit" onSubmit={handleFund}>
           <DialogTitle>
             Fund with DAO
@@ -84,13 +90,21 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
               <CloseRoundedIcon />
             </IconButton>
           </DialogTitle>
-          <DialogContent style={{ paddingTop: '1.25em' }} sx={{ maxWidth: '320px' }}>
+          <DialogContent style={{ paddingTop: '1.25em' }}>
             <TextField
+              required
+              sx={{ marginBottom: 3, width: 1 }}
+              id="outlined-helperText"
+              label="DAO contract address"
+              onChange={handleContractAddressChange}
+            />
+            <TextField
+              sx={{ width: 1 }}
               id="outlined-multiline-static"
               label="Proposal description"
               multiline
               minRows={5}
-              onChange={handleChange}
+              onChange={handleDescriptionChange}
               defaultValue={description}
             />
           </DialogContent>
