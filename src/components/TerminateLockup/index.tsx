@@ -7,9 +7,12 @@ import {
   TextField,
 } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { useSnackbar } from 'notistack';
+import Big from 'big.js';
+import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 
 function TerminateLockup(
@@ -17,11 +20,18 @@ function TerminateLockup(
     adminControls: boolean,
     lockupIndex: number | undefined,
     config: { payer_id: String, vesting_schedule: [] | null } | null,
+    token: TMetadata,
   },
 ) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
-  const { adminControls, lockupIndex, config } = props;
+  const {
+    adminControls,
+    lockupIndex,
+    config,
+    token,
+  } = props;
 
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | null>(null);
   const handleOpen = () => setOpen(true);
@@ -36,9 +46,16 @@ function TerminateLockup(
   }
 
   const handleTerminateLockup = async () => {
+    if (!enqueueSnackbar) return;
+
     const ts = date ? date.getTime() / 1000 : null;
-    await near.api.terminate(lockupIndex, ts);
-    window.location.reload();
+    const result = await near.api.terminate(lockupIndex, ts);
+    const amount = new Big(result as any).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
+    console.log(amount);
+    debugger;
+    const message = `Terminated lockup #${lockupIndex}, refunded ${amount} ${token.symbol}`;
+    enqueueSnackbar(message);
+    setTimeout(() => window.location.reload(), 1000);
   };
 
   let message;

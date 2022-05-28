@@ -91,7 +91,7 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
                   <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
                 )}
                 <div className="terminate">
-                  <TerminateLockup adminControls={adminControls} lockupIndex={row.id} config={row.termination_config} />
+                  <TerminateLockup token={token} adminControls={adminControls} lockupIndex={row.id} config={row.termination_config} />
                 </div>
               </div>
             </div>

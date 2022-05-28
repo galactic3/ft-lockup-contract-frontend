@@ -1,6 +1,8 @@
 import Big from 'big.js';
+import { config } from './config';
 
 export const MAX_GAS = 300_000_000_000_000;
+export const ONE_YOCTO = 1;
 
 Big.DP = 40;
 Big.PE = 40;
@@ -46,3 +48,5 @@ export const restoreLocalStorage = (dumpKey: string = 'dump') => {
 
   dumpValue.forEach((record:string[]) => localStorage.setItem(record[0], record[1]));
 };
+
+export const txLinkInExplorer = (txHash: string) => `${config.explorerUrl}/transactions/${txHash}`;

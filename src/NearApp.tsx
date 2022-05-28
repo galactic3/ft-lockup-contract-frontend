@@ -1,6 +1,7 @@
 import {
   StrictMode, useEffect, useMemo, useState,
 } from 'react';
+import { SnackbarProvider } from 'notistack';
 import App from './components/App';
 import { NearContext, connectNear, INearProps } from './services/near';
 
@@ -40,7 +41,9 @@ export default function NearApp() {
   return (
     <StrictMode>
       <NearContext.Provider value={value}>
-        <App />
+        <SnackbarProvider autoHideDuration={null}>
+          <App />
+        </SnackbarProvider>
       </NearContext.Provider>
     </StrictMode>
   );

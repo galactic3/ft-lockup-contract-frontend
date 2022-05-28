@@ -17,6 +17,7 @@ export interface INearProps {
   tokenContractId: string;
   tokenApi: TokenApi;
   factoryApi: FactoryApi;
+  rpcProvider: nearAPI.providers.JsonRpcProvider;
 }
 
 export const NearContext = createContext<any>(null);
@@ -52,6 +53,10 @@ export const connectNear = async (): Promise<INearProps> => {
     config.factoryContractHash,
   );
 
+  const rpcProvider = new nearAPI.providers.JsonRpcProvider(
+    config.nodeUrl,
+  );
+
   return {
     config,
     api,
@@ -62,5 +67,6 @@ export const connectNear = async (): Promise<INearProps> => {
     signedAccountId,
     tokenApi,
     factoryApi,
+    rpcProvider,
   };
 };
