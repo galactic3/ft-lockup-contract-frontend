@@ -127,7 +127,7 @@ class NearApi {
   }
 
   async createDrafts(drafts: any[]): Promise<DraftIndex> {
-    const result = await this.contract.create_drafts({ drafts }, '200000000000000');
+    const result = await this.contract.create_drafts({ args: { drafts }, gas: '200000000000000' });
 
     return result;
   }

@@ -138,7 +138,6 @@ export default function App() {
           console.log(unpacked);
           const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
           enqueueSnackbar(`Terminated lockup #${args.lockup_index}, unvested amount: ${amount}`);
-          debugger;
           return;
         }
         enqueueSnackbar(`Terminate lockup failed: ${txLinkInExplorer(txHash)}`);
