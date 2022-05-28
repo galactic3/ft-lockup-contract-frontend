@@ -1,6 +1,6 @@
 import { TextareaAutosize } from '@mui/material';
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { LoadingButton } from '@mui/lab';
 
@@ -10,6 +10,7 @@ import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 
 function ImportDraftGroup({ token }: { token: TMetadata }) {
+  const location = useLocation();
   const { near }: { near: INearProps | null } = useContext(NearContext);
 
   const [data, setData] = useState<Lockup[]>([]);
@@ -79,7 +80,10 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
 
       enqueueSnackbar(`Created ${data.length} draft(s).`);
 
-      navigate(`/admin/draft_groups/${draftGroupId}`);
+      const currentContractName = location.pathname.split('/')[1];
+      const path = `/${currentContractName}/admin/draft_groups/${draftGroupId}`;
+
+      navigate(path);
     } catch (e) {
       setImportProgress(false);
     }

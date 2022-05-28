@@ -127,6 +127,19 @@ export default function App() {
           enqueueSnackbar(statusMessage);
           return;
         }
+        if (txMsg.draft_group_id) {
+          const unpacked = JSON.parse(atob(successValue));
+          const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
+          console.log(amount);
+          if (unpacked !== '0') {
+            const statusMessage = `Funded draft group ${txMsg.draft_group_id} with amount ${amount} ${token.symbol}`;
+            enqueueSnackbar(statusMessage);
+            return;
+          }
+          const statusMessage = `Failed to fund draft group ${txMsg.draft_group_id}: ${txLinkInExplorer(txHash)}`;
+          enqueueSnackbar(statusMessage);
+          return;
+        }
 
         enqueueSnackbar(`Transaction performed, TODO ${txHash}!`);
         return;
