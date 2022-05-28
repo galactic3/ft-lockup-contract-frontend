@@ -83,7 +83,7 @@ export default function PageDraftGroupsIndex({ token }: { token: TMetadata }) {
           {draftGroups.map((group) => (
             <TableRow>
               <TableCell align="left">
-                <Link to={`/admin/draft_groups/${group.id}`}>{group.id}</Link>
+                <Link to={`/${currentContractName}/draft_groups/${group.id}`}>{group.id}</Link>
               </TableCell>
               <TableCell align="center">{group.funded ? 'Yes' : 'No'}</TableCell>
               <TableCell align="right">{group.draft_indices.length}</TableCell>

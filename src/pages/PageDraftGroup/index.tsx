@@ -1,29 +1,24 @@
 import { useState, useEffect, useContext } from 'react';
 import { Alert } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { LoadingButton } from '@mui/lab';
+
 import DraftsTable from '../../components/DraftsTable';
 import { TMetadata } from '../../services/tokenApi';
 import { convertAmount } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import TokenAmountPreview from '../../components/TokenAmountPreview';
 import FundButton from '../../components/FundButton';
-import ProcessLog from '../../components/ProcessLog';
 
 export default function PageDraftGroup({ token }: { token: TMetadata }) {
+  const location = useLocation();
+  const { enqueueSnackbar } = useSnackbar();
   const draftGroupId = parseInt(useParams().draftGroupId || '', 10);
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [draftGroup, setDraftGroup] = useState<any>(null);
   const [drafts, setDrafts] = useState<any[]>([]);
-  const [processLog, setProcessLog] = useState<string[]>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
-
-  const log = (message: string) => {
-    console.log(message);
-    setProcessLog((oldLog) => oldLog.concat([message]));
-  };
-  const clearLog = () => {
-    setProcessLog([]);
-  };
 
   console.log(token);
   console.log(draftGroup);
@@ -64,6 +59,16 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
 
   const navigate = useNavigate();
 
+  const withNotification = async (name: string, func: () => any): Promise<any> => {
+    try {
+      const result = await func();
+      return result;
+    } catch (e) {
+      enqueueSnackbar(`${name} failed with error: '${e}'`);
+      throw e;
+    }
+  };
+
   const handleConvert = () => {
     const convertDrafts = async () => {
       if (!near) {
@@ -71,18 +76,25 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
       }
       try {
         setInProgress(true);
-        clearLog();
         const draftIds = draftGroup.draft_indices;
         const chunkSize = 100;
         for (let i = 0; i < draftIds.length; i += chunkSize) {
           const chunk = draftIds.slice(i, i + chunkSize);
-          log(`converting drafts (${i}/${draftIds.length})...`);
-          await near.api.convertDrafts(chunk);
+
+          await withNotification(
+            'Convert drafts',
+            async () => {
+              const result = await near.api.convertDrafts(chunk);
+              return result;
+            },
+          );
         }
-        log('conversion finished');
-        navigate('/admin/lockups');
+        debugger;
+        enqueueSnackbar(`Converted drafts for draft group ${draftGroupId}`);
+        const currentContractName = location.pathname.split('/')[1];
+        navigate(`/${currentContractName}/admin/lockups`);
       } catch (e) {
-        log(`ERROR: ${e}`);
+        console.log(`ERROR: ${e}`);
       } finally {
         setInProgress(false);
       }
@@ -109,7 +121,16 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
           </div>
         )}
         {draftGroup.funded && draftGroup.draft_indices.length > 0 && (
-          <button className="button fullWidth" type="button" onClick={handleConvert}>Convert</button>
+          <LoadingButton
+            className="button fullWidth"
+            type="button"
+            onClick={handleConvert}
+            loading={inProgress}
+            variant="contained"
+            color="success"
+          >
+            Convert
+          </LoadingButton>
         )}
         {draftGroup.funded && draftGroup.draft_indices.length === 0 && (
           <div style={{ marginTop: 20 }}>
@@ -117,10 +138,6 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
           </div>
         )}
       </div>
-
-      {(processLog.length > 0) && (
-        <ProcessLog lines={processLog} inProgress={inProgress} />
-      )}
 
       {(!draftGroup.funded || draftGroup.draft_indices.length > 0) && (
         <DraftsTable lockups={drafts} token={token} />
