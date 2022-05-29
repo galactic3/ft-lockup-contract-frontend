@@ -64,7 +64,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
       const result = await func();
       return result;
     } catch (e) {
-      enqueueSnackbar(`${name} failed with error: '${e}'`);
+      enqueueSnackbar(`${name} failed with error: '${e}'`, { variant: 'error' });
       throw e;
     }
   };
@@ -89,7 +89,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
             },
           );
         }
-        enqueueSnackbar(`Converted drafts for draft group ${draftGroupId}`);
+        enqueueSnackbar(`Converted drafts for draft group ${draftGroupId}`, { variant: 'success' });
         const currentContractName = location.pathname.split('/')[1];
         navigate(`/${currentContractName}/admin/lockups`);
       } catch (e) {
