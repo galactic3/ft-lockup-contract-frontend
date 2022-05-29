@@ -12,6 +12,12 @@ export default function Homepage(
     setAddress(e.target.value);
   };
 
+  const handleOpenLockupContract = () => {
+    const url = `${window.location.toString()}#/${address}/lockups`;
+    debugger;
+    window.location.assign(url);
+  };
+
   return (
     <div>
       <div className="container home">
@@ -50,7 +56,9 @@ export default function Homepage(
         <div className="container home">
           <h2>If you already have a lockup contract, enter its address below</h2>
           <TextField variant="outlined" value={address} onChange={handleChange} className="input-large" placeholder="Lockup contract address" />
-          <Link className="button link-button icon-button" to={`/${address}/lockups`}><ArrowForwardRoundedIcon /></Link>
+          <button className="button link-button icon-button" onClick={handleOpenLockupContract} aria-label="open" type="button" style={{ height: 56, width: 56 }}>
+            <ArrowForwardRoundedIcon />
+          </button>
         </div>
       </div>
     </div>
