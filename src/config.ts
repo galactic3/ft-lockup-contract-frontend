@@ -10,10 +10,17 @@ export interface INearConfig {
 }
 
 // const CONTRACT_NAME = process.env.REACT_APP_CONTRACT_NAME || 'ft-lockup.demo005.ft-lockup.testnet';
-export const FACTORY_CONTRACT_NAME = process.env.FACTORY_CONTRACT_NAME || 'factory0.ft-lockup.testnet';
-export const FACTORY_CONTRACT_HASH = process.env.FACTORY_CONTRACT_HASH || 'C6w1pKPB9H6HcceqPG9qxS2bLTWgsBwQCj4T2xrz63a3';
+export const FACTORY_CONTRACT_NAME = process.env.FACTORY_CONTRACT_NAME || 'factory1.ft-lockup.testnet';
+export const FACTORY_CONTRACT_HASH = process.env.FACTORY_CONTRACT_HASH || '9p86zuCX9K9XX56m9VwkAGdnL4PS1rj763JPuzmap4Rf';
 
-export const CONTRACT_NAME = window.location.hash.split('/')[1] || 'ft-lockup.demo005.ft-lockup.testnet';
+const getCurrentContractName = (): string => {
+  const contractNameFromUrl = window.location.hash.split('/')[1];
+  if (contractNameFromUrl === 'new_lockup_contract') return FACTORY_CONTRACT_NAME;
+
+  return contractNameFromUrl;
+};
+
+export const CONTRACT_NAME = getCurrentContractName();
 
 console.log(CONTRACT_NAME);
 

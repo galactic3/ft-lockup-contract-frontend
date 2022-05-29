@@ -35,7 +35,7 @@ export default function Homepage(
             <span className="near-icon-bg"><Logo /></span>
             <div>
               <span>Total lockups</span>
-              <b>{lockups.length}</b>
+              <b>{lockups?.length || 42}</b>
             </div>
           </li>
         </ul>

@@ -52,7 +52,6 @@ function TerminateLockup(
     const result = await near.api.terminate(lockupIndex, ts);
     const amount = new Big(result as any).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
     console.log(amount);
-    debugger;
     const message = `Terminated lockup #${lockupIndex}, refunded ${amount} ${token.symbol}`;
     enqueueSnackbar(message);
     setTimeout(() => window.location.reload(), 1000);

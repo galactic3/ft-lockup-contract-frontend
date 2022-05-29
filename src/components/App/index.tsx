@@ -24,7 +24,9 @@ import RequireAuth from '../RequireAuth';
 import { TMetadata } from '../../services/tokenApi';
 import Homepage from '../Homepage';
 
-function Customer({ lockups, token, contractId }: { lockups: any[], token: TMetadata, contractId: string | null }) {
+function Customer({ lockups, token, contractId }: { lockups: any, token: TMetadata, contractId: string | null }) {
+  if (!lockups) return null;
+
   return (
     <>
       <Header adminControls={false} />
@@ -39,7 +41,9 @@ function Customer({ lockups, token, contractId }: { lockups: any[], token: TMeta
   );
 }
 
-function Admin({ lockups, token, tokenContractId }: { lockups: any[], token: TMetadata, tokenContractId: string | null }) {
+function Admin({ lockups, token, tokenContractId }: { lockups: any, token: TMetadata, tokenContractId: string | null }) {
+  if (!lockups) return null;
+
   return (
     <>
       <Header adminControls />
@@ -127,7 +131,7 @@ export default function App() {
           enqueueSnackbar(statusMessage);
           return;
         }
-        if (txMsg.draft_group_id) {
+        if (txMsg.draft_group_id !== null) {
           const unpacked = JSON.parse(atob(successValue));
           const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
           console.log(amount);
@@ -192,8 +196,6 @@ export default function App() {
 
     return () => {};
   }, [near]);
-
-  if (Object.keys(contractState).length === 0) return null;
 
   const { lockups }: any = contractState as any;
 

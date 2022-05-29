@@ -1,5 +1,7 @@
 import { useContext } from 'react';
-import Header from '../../components/Header';
+import { Link } from 'react-router-dom';
+import { Box } from '@mui/material';
+
 import { FACTORY_CONTRACT_NAME } from '../../config';
 import { INearProps, NearContext } from '../../services/near';
 
@@ -61,7 +63,16 @@ export default function NewLockupContract() {
 
   return (
     <div>
-      <Header adminControls={false} />
+      <div className="header">
+        <div className="container">
+          <Box sx={{ display: 'flex' }}>
+            <div className="nav">
+              <Link className="nav-link" to="/">Home</Link>
+            </div>
+          </Box>
+        </div>
+      </div>
+
       <div className="container new-lockup-contract">
         <h1>
           Create Lockup Contract for your Fungible Tokens

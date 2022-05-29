@@ -89,7 +89,6 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
             },
           );
         }
-        debugger;
         enqueueSnackbar(`Converted drafts for draft group ${draftGroupId}`);
         const currentContractName = location.pathname.split('/')[1];
         navigate(`/${currentContractName}/admin/lockups`);
