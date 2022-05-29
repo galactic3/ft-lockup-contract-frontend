@@ -7,7 +7,8 @@ import {
 } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+
 import { convertAmount, convertTimestamp } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
@@ -15,6 +16,7 @@ import TokenIcon from '../TokenIcon';
 import ScheduleTable from '../ScheduleTable';
 
 export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMetadata }) {
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const { row, token } = props;
   const {
@@ -29,6 +31,8 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
 
   const vestingSchedule = row?.termination_config?.vesting_schedule?.Schedule;
 
+  const currentContractName = location.pathname.split('/')[1];
+
   return (
     <>
       <TableRow className={open ? 'expanded exp-row' : 'exp-row'} sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -42,7 +46,11 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
           </IconButton>
         </TableCell>
         <TableCell align="left">{row.id}</TableCell>
-        <TableCell align="left"><Link to={signedIn ? `/admin/lockups/${row.account_id}` : `/lockups/${row.account_id}`}>{row.account_id}</Link></TableCell>
+        <TableCell align="left">
+          <Link to={signedIn ? `${currentContractName}/admin/lockups/${row.account_id}` : `${currentContractName}/lockups/${row.account_id}`}>
+            {row.account_id}
+          </Link>
+        </TableCell>
         <TableCell align="right">
           {convertTimestamp(row.schedule[0].timestamp)}
         </TableCell>

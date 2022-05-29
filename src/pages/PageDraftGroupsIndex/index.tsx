@@ -6,7 +6,7 @@ import {
   TableBody,
   TableRow,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
@@ -14,6 +14,8 @@ import { convertAmount } from '../../utils';
 import TokenIcon from '../../components/TokenIcon';
 
 export default function PageDraftGroupsIndex({ token }: { token: TMetadata }) {
+  const location = useLocation();
+  console.log(location);
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [draftGroups, setDraftGroups] = useState<any[]>([]);
   // const [drafts, setDrafts] = useState<any[]>([]);
@@ -59,6 +61,9 @@ export default function PageDraftGroupsIndex({ token }: { token: TMetadata }) {
   //   return null;
   // }
 
+  const currentContractName = location.pathname.split('/')[1];
+  const importDraftGroupPath = `/${currentContractName}/admin/import_draft_group`;
+
   return (
     <div className="container">
       <h1>
@@ -78,7 +83,7 @@ export default function PageDraftGroupsIndex({ token }: { token: TMetadata }) {
           {draftGroups.map((group) => (
             <TableRow>
               <TableCell align="left">
-                <Link to={`/admin/draft_groups/${group.id}`}>{group.id}</Link>
+                <Link to={`/${currentContractName}/draft_groups/${group.id}`}>{group.id}</Link>
               </TableCell>
               <TableCell align="center">{group.funded ? 'Yes' : 'No'}</TableCell>
               <TableCell align="right">{group.draft_indices.length}</TableCell>
@@ -96,7 +101,7 @@ export default function PageDraftGroupsIndex({ token }: { token: TMetadata }) {
 
       <br />
 
-      <Link to="/admin/import_draft_group">
+      <Link to={importDraftGroupPath}>
         <button className="button" type="button">Import Draft Group</button>
       </Link>
     </div>

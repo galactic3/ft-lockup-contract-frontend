@@ -6,6 +6,10 @@ import {
 import {
   Routes, Route, HashRouter, Navigate,
 } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import Big from 'big.js';
+
+import { txLinkInExplorer } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import About from '../../pages/About';
 import ImportDraftGroup from '../ImportDraftGroup';
@@ -20,7 +24,9 @@ import RequireAuth from '../RequireAuth';
 import { TMetadata } from '../../services/tokenApi';
 import Homepage from '../Homepage';
 
-function Customer({ lockups, token, contractId }: { lockups: any[], token: TMetadata, contractId: string | null }) {
+function Customer({ lockups, token, contractId }: { lockups: any, token: TMetadata, contractId: string | null }) {
+  if (!lockups) return null;
+
   return (
     <>
       <Header adminControls={false} />
@@ -35,7 +41,9 @@ function Customer({ lockups, token, contractId }: { lockups: any[], token: TMeta
   );
 }
 
-function Admin({ lockups, token, tokenContractId }: { lockups: any[], token: TMetadata, tokenContractId: string | null }) {
+function Admin({ lockups, token, tokenContractId }: { lockups: any, token: TMetadata, tokenContractId: string | null }) {
+  if (!lockups) return null;
+
   return (
     <>
       <Header adminControls />
@@ -53,6 +61,7 @@ function Admin({ lockups, token, tokenContractId }: { lockups: any[], token: TMe
 }
 
 export default function App() {
+  const { enqueueSnackbar } = useSnackbar();
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [contractState, setContractState] = useState({});
   const [contractId, setContractId] = useState<string | null>(null);
@@ -65,6 +74,98 @@ export default function App() {
     spec: '',
     symbol: '',
   });
+
+  useEffect(() => {
+    if (!enqueueSnackbar) return;
+    if (!near) return;
+    if (!token) return;
+    if (token.spec === '') {
+      return;
+    }
+
+    const perform = async () => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const transactionHashesRaw: string | null = searchParams.get('transactionHashes');
+      if (!transactionHashesRaw) {
+        return;
+      }
+      const txHash = transactionHashesRaw.split(',')[0];
+      console.log('txHash', txHash);
+      const txStatus = await near.rpcProvider.txStatus(txHash, 'sender.testnet');
+      console.log(txStatus);
+
+      const methodName = txStatus.transaction.actions[0].FunctionCall.method_name;
+
+      const successValue = (txStatus.status as any).SuccessValue;
+
+      const args = JSON.parse(atob(txStatus.transaction.actions[0].FunctionCall.args));
+
+      if (methodName === 'claim') {
+        if (successValue) {
+          const unpacked = JSON.parse(atob(successValue));
+          if (unpacked !== '0') {
+            const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
+            enqueueSnackbar(`Claimed ${amount} ${token.symbol}`);
+            return;
+          }
+        }
+        enqueueSnackbar(`Claim failed: ${txLinkInExplorer(txHash)}`);
+        return;
+      }
+
+      if (methodName === 'ft_transfer_call') {
+        const txMsg = JSON.parse(args.msg);
+        console.log(txMsg);
+        if (txMsg.schedule) {
+          const unpacked = JSON.parse(atob(successValue));
+          const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
+          console.log(amount);
+          const totalBalance = txMsg.schedule[txMsg.schedule.length - 1].balance;
+          if (totalBalance === unpacked) {
+            const statusMessage = `Created lockup for ${txMsg.account_id} with amount ${amount} ${token.symbol}`;
+            enqueueSnackbar(statusMessage);
+            return;
+          }
+
+          const statusMessage = `Failed to create lockup for ${txMsg.account_id}: ${txLinkInExplorer(txHash)}`;
+          enqueueSnackbar(statusMessage);
+          return;
+        }
+        if (txMsg.draft_group_id !== null) {
+          const unpacked = JSON.parse(atob(successValue));
+          const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
+          console.log(amount);
+          if (unpacked !== '0') {
+            const statusMessage = `Funded draft group ${txMsg.draft_group_id} with amount ${amount} ${token.symbol}`;
+            enqueueSnackbar(statusMessage);
+            return;
+          }
+          const statusMessage = `Failed to fund draft group ${txMsg.draft_group_id}: ${txLinkInExplorer(txHash)}`;
+          enqueueSnackbar(statusMessage);
+          return;
+        }
+
+        enqueueSnackbar(`Transaction performed, TODO ${txHash}!`);
+        return;
+      }
+
+      if (methodName === 'terminate') {
+        if (successValue) {
+          const unpacked = JSON.parse(atob(successValue));
+          console.log(unpacked);
+          const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
+          enqueueSnackbar(`Terminated lockup #${args.lockup_index}, unvested amount: ${amount}`);
+          return;
+        }
+        enqueueSnackbar(`Terminate lockup failed: ${txLinkInExplorer(txHash)}`);
+        return;
+      }
+
+      enqueueSnackbar(`UNHANDLED Transaction "${methodName}" : ${txLinkInExplorer(txHash)}`);
+    };
+
+    perform();
+  }, [enqueueSnackbar, near, token]);
 
   useEffect(() => {
     let active = true;
@@ -95,8 +196,6 @@ export default function App() {
 
     return () => {};
   }, [near]);
-
-  if (Object.keys(contractState).length === 0) return null;
 
   const { lockups }: any = contractState as any;
 

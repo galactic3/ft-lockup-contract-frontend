@@ -1,7 +1,7 @@
 import {
   Near, Account, Contract, WalletConnection, utils,
 } from 'near-api-js';
-import { MAX_GAS } from '../utils';
+import { MAX_GAS, ONE_YOCTO } from '../utils';
 
 export const fromNear = (amount: string): number => parseFloat(utils.format.formatNearAmount(amount || '0'));
 export const toYoctoNear = (amount: number): string => utils.format.parseNearAmount(String(amount)) || '0';
@@ -127,7 +127,7 @@ class NearApi {
   }
 
   async createDrafts(drafts: any[]): Promise<DraftIndex> {
-    const result = await this.contract.create_drafts({ drafts }, '200000000000000');
+    const result = await this.contract.create_drafts({ args: { drafts }, gas: '200000000000000' });
 
     return result;
   }
@@ -139,19 +139,21 @@ class NearApi {
   }
 
   async convertDrafts(indices: DraftIndex[]): Promise<LockupIndex[]> {
-    const result = await this.contract.convert_drafts({ draft_ids: indices }, '200000000000000');
+    const result = await this.contract.convert_drafts({ args: { draft_ids: indices }, gas: '200000000000000' });
 
     return result;
   }
 
   async terminate(lockupIndex: number, timestamp: number | null): Promise<void> {
     try {
-      const result = await this.contract.terminate(
-        { lockup_index: lockupIndex, termination_timestamp: timestamp },
-        MAX_GAS,
-      );
+      const result = await this.contract.terminate({
+        args: { lockup_index: lockupIndex, termination_timestamp: timestamp },
+        gas: MAX_GAS,
+        amount: ONE_YOCTO,
+      });
       return result;
     } catch (e) {
+      console.log(e);
       throw Error('Cannot terminate lockup');
     }
   }

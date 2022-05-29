@@ -1,30 +1,20 @@
 import { TextareaAutosize } from '@mui/material';
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { LoadingButton } from '@mui/lab';
 
 import DraftsTable from '../DraftsTable';
 import { parseRawSpreadsheetInput, Lockup } from '../../services/spreadsheetImport';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
-import ProcessLog from '../ProcessLog';
 
 function ImportDraftGroup({ token }: { token: TMetadata }) {
+  const location = useLocation();
   const { near }: { near: INearProps | null } = useContext(NearContext);
 
   const [data, setData] = useState<Lockup[]>([]);
-  const [importLog, setImportLog] = useState<string[]>([]);
   const [importProgress, setImportProgress] = useState<boolean>(false);
-
-  const log = (message: string) => {
-    console.log(message);
-    setImportLog((currentLog) => currentLog.concat([message]));
-  };
-
-  const clearLog = () => {
-    setImportLog([]);
-  };
-
-  console.log(setData);
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     try {
@@ -44,34 +34,57 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
 
   const navigate = useNavigate();
 
-  const handleClickImport = async () => {
-    if (!near) {
-      throw new Error('near is null');
-    }
-    setImportProgress(true);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const withNotification = async (name: string, func: () => any): Promise<any> => {
     try {
-      clearLog();
-      log('creating draft group...');
-      const draftGroupId = await near.api.createDraftGroup();
-      const msg = `created draft group id: ${draftGroupId}`;
-      log(msg);
+      const result = await func();
+      return result;
+    } catch (e) {
+      enqueueSnackbar(`${name} failed with error: '${e}'`);
+      throw e;
+    }
+  };
+
+  const handleClickImport = async () => {
+    try {
+      if (!near) {
+        throw new Error('near is null');
+      }
+      setImportProgress(true);
+      const draftGroupId = await withNotification(
+        'Create draft group',
+        async () => {
+          const result = await near.api.createDraftGroup();
+          return result;
+        },
+      );
+      const msg = `Created draft group id: ${draftGroupId}`;
+      enqueueSnackbar(msg);
 
       const chunkSize = 100;
       for (let i = 0; i < data.length; i += chunkSize) {
         const chunk = data.slice(i, i + chunkSize);
-        log(`adding drafts (${i}/${data.length})...`);
         const drafts = chunk.map((lockup) => ({
           draft_group_id: draftGroupId,
           lockup,
         }));
-        await near.api.createDrafts(drafts);
+        await withNotification(
+          'Create drafts',
+          async () => {
+            const result = await near.api.createDrafts(drafts);
+            return result;
+          },
+        );
       }
 
-      log(`added lockups (${data.length})`);
+      enqueueSnackbar(`Created ${data.length} draft(s).`);
 
-      navigate(`/admin/draft_groups/${draftGroupId}`);
+      const currentContractName = location.pathname.split('/')[1];
+      const path = `/${currentContractName}/admin/draft_groups/${draftGroupId}`;
+
+      navigate(path);
     } catch (e) {
-      log(`ERROR: ${e}`);
       setImportProgress(false);
     }
   };
@@ -102,14 +115,17 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
       <DraftsTable lockups={data} token={token} />
       <br />
       <div>
-        <button disabled={!(data.length >= 1 && !importProgress)} className="button noMargin" onClick={handleClickImport} type="button">
+        <LoadingButton
+          disabled={!(data.length >= 1 && !importProgress)}
+          loading={importProgress}
+          onClick={handleClickImport}
+          color="success"
+          type="button"
+          variant="contained"
+        >
           Import
-        </button>
+        </LoadingButton>
       </div>
-      <br />
-      {(importLog.length > 0) && (
-        <ProcessLog lines={importLog} inProgress={importProgress} />
-      )}
     </div>
   );
 }
