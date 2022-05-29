@@ -8,18 +8,22 @@ const ONE_YOKTO = 1;
 
 const TOKEN_VIEW_METHODS = [
   'ft_metadata',
+  'storage_balance_of',
 ];
 
 const TOKEN_CHANGE_METHODS = [
   'ft_transfer_call', // redirects to wallet
+  'storage_deposit',
 ];
 
 type TTokenChangeMethods = {
-  'ft_transfer_call': any
+  'ft_transfer_call': any,
+  'storage_deposit': any,
 };
 
 type TTokenViewMethods = {
-  'ft_metadata': any
+  'ft_metadata': any,
+  'storage_balance_of': any,
 };
 
 export type TMetadata = {
@@ -97,8 +101,20 @@ class TokenApi {
     );
   }
 
+  storageDeposit(accountId: String, amount: String): Promise<any> {
+    return this.contract.storage_deposit({
+      args: { account_id: accountId },
+      gas: MAX_GAS,
+      amount,
+    });
+  }
+
   ftMetadata(): Promise<TMetadata> {
     return this.contract.ft_metadata({});
+  }
+
+  storageBalanceOf(accountId: String): Promise<String> {
+    return this.contract.storage_balance_of({ account_id: accountId });
   }
 }
 
