@@ -7,7 +7,7 @@ import { ReactComponent as Logo } from '../../assets/images/near.svg';
 export default function Homepage(
   { lockups }: { lockups: any[] },
 ) {
-  const [address, setAddress] = useState('ft-lockup.demo005.ft-lockup.testnet');
+  const [address, setAddress] = useState('ft-lockup.demo006.ft-lockup.testnet');
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
   };
