@@ -41,7 +41,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
       const result = await func();
       return result;
     } catch (e) {
-      enqueueSnackbar(`${name} failed with error: '${e}'`);
+      enqueueSnackbar(`${name} failed with error: '${e}'`, { variant: 'error' });
       throw e;
     }
   };
@@ -60,7 +60,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
         },
       );
       const msg = `Created draft group id: ${draftGroupId}`;
-      enqueueSnackbar(msg);
+      enqueueSnackbar(msg, { variant: 'success' });
 
       const chunkSize = 100;
       for (let i = 0; i < data.length; i += chunkSize) {
@@ -78,7 +78,8 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
         );
       }
 
-      enqueueSnackbar(`Created ${data.length} draft(s).`);
+      const message = `Created ${data.length} draft${data.length > 1 ? 's' : ''}.`;
+      enqueueSnackbar(message, { variant: 'success' });
 
       const currentContractName = location.pathname.split('/')[1];
       const path = `/${currentContractName}/admin/draft_groups/${draftGroupId}`;

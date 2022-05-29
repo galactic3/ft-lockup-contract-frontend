@@ -105,11 +105,11 @@ export default function App() {
           const unpacked = JSON.parse(atob(successValue));
           if (unpacked !== '0') {
             const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
-            enqueueSnackbar(`Claimed ${amount} ${token.symbol}`);
+            enqueueSnackbar(`Claimed ${amount} ${token.symbol}`, { variant: 'success' });
             return;
           }
         }
-        enqueueSnackbar(`Claim failed: ${txLinkInExplorer(txHash)}`);
+        enqueueSnackbar(`Claim failed: ${txLinkInExplorer(txHash)}`, { variant: 'error' });
         return;
       }
 
@@ -123,12 +123,12 @@ export default function App() {
           const totalBalance = txMsg.schedule[txMsg.schedule.length - 1].balance;
           if (totalBalance === unpacked) {
             const statusMessage = `Created lockup for ${txMsg.account_id} with amount ${amount} ${token.symbol}`;
-            enqueueSnackbar(statusMessage);
+            enqueueSnackbar(statusMessage, { variant: 'success' });
             return;
           }
 
           const statusMessage = `Failed to create lockup for ${txMsg.account_id}: ${txLinkInExplorer(txHash)}`;
-          enqueueSnackbar(statusMessage);
+          enqueueSnackbar(statusMessage, { variant: 'error' });
           return;
         }
         if (txMsg.draft_group_id !== null) {
@@ -137,15 +137,15 @@ export default function App() {
           console.log(amount);
           if (unpacked !== '0') {
             const statusMessage = `Funded draft group ${txMsg.draft_group_id} with amount ${amount} ${token.symbol}`;
-            enqueueSnackbar(statusMessage);
+            enqueueSnackbar(statusMessage, { variant: 'success' });
             return;
           }
           const statusMessage = `Failed to fund draft group ${txMsg.draft_group_id}: ${txLinkInExplorer(txHash)}`;
-          enqueueSnackbar(statusMessage);
+          enqueueSnackbar(statusMessage, { variant: 'error' });
           return;
         }
 
-        enqueueSnackbar(`Transaction performed, TODO ${txHash}!`);
+        enqueueSnackbar(`Transaction performed, TODO ${txHash}!`, { variant: 'warning' });
         return;
       }
 
@@ -154,14 +154,16 @@ export default function App() {
           const unpacked = JSON.parse(atob(successValue));
           console.log(unpacked);
           const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
-          enqueueSnackbar(`Terminated lockup #${args.lockup_index}, unvested amount: ${amount}`);
+          const message = `Terminated lockup #${args.lockup_index}, unvested amount: ${amount}`;
+          enqueueSnackbar(message, { variant: 'success' });
           return;
         }
-        enqueueSnackbar(`Terminate lockup failed: ${txLinkInExplorer(txHash)}`);
+        enqueueSnackbar(`Terminate lockup failed: ${txLinkInExplorer(txHash)}`, { variant: 'error' });
         return;
       }
 
-      enqueueSnackbar(`UNHANDLED Transaction "${methodName}" : ${txLinkInExplorer(txHash)}`);
+      const message = `UNHANDLED Transaction "${methodName}" : ${txLinkInExplorer(txHash)}`;
+      enqueueSnackbar(message, { variant: 'warning' });
     };
 
     perform();

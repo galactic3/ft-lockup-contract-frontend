@@ -53,7 +53,7 @@ function TerminateLockup(
     const amount = new Big(result as any).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
     console.log(amount);
     const message = `Terminated lockup #${lockupIndex}, refunded ${amount} ${token.symbol}`;
-    enqueueSnackbar(message);
+    enqueueSnackbar(message, { variant: 'success' });
     setTimeout(() => window.location.reload(), 1000);
   };
 
