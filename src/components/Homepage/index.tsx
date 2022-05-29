@@ -13,9 +13,9 @@ export default function Homepage(
   };
 
   const handleOpenLockupContract = () => {
-    const url = `${window.location.toString()}#/${address}/lockups`;
-    debugger;
+    const url = `${window.location.origin.toString()}#/${address}/lockups`;
     window.location.assign(url);
+    window.location.reload();
   };
 
   return (
