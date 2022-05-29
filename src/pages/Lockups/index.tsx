@@ -3,6 +3,9 @@ import {
   TableContainer,
 } from '@mui/material';
 import { useContext } from 'react';
+
+import { Link } from 'react-router-dom';
+
 import CreateLockup from '../../components/CreateLockup';
 import LockupsTable from '../../components/LockupsTable';
 import { INearProps, NearContext } from '../../services/near';
@@ -28,10 +31,23 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
 
       {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
 
-      <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }} component={Paper}>
-        <LockupsTable lockups={lockups} token={token} adminControls={adminControls} />
-      </TableContainer>
-
+      {lockups.length === 0 ? (
+        <div>
+          There are no lockups yet.
+          {adminControls && (
+            <div>
+              Create single lockup or create batch of them via
+              {' '}
+              <Link to={`/${near.lockupContractId}/admin/draft_groups`}>Draft Groups</Link>
+              .
+            </div>
+          )}
+        </div>
+      ) : (
+        <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }} component={Paper}>
+          <LockupsTable lockups={lockups} token={token} adminControls={adminControls} />
+        </TableContainer>
+      )}
     </div>
   );
 }

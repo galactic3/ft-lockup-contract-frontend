@@ -9,7 +9,7 @@ import {
 import { useSnackbar } from 'notistack';
 import Big from 'big.js';
 
-import { txLinkInExplorer } from '../../utils';
+import { txLinkInExplorer, nearTo } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import About from '../../pages/About';
 import ImportDraftGroup from '../ImportDraftGroup';
@@ -110,6 +110,16 @@ export default function App() {
           }
         }
         enqueueSnackbar(`Claim failed: ${txLinkInExplorer(txHash)}`, { variant: 'error' });
+        return;
+      }
+
+      if (methodName === 'storage_deposit') {
+        const unpacked = JSON.parse(atob(successValue));
+        const amount = parseFloat(nearTo(unpacked.total, 9)).toString();
+        console.log(amount);
+        const accountId = args.account_id;
+        const message = `Successfully paid ${amount}N for FT storage of ${accountId}`;
+        enqueueSnackbar(message, { variant: 'success' });
         return;
       }
 

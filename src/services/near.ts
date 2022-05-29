@@ -15,9 +15,11 @@ export interface INearProps {
   isAdmin: boolean;
   signedAccountId: string | null;
   tokenContractId: string;
+  lockupContractId: string;
   tokenApi: TokenApi;
   factoryApi: FactoryApi;
   rpcProvider: nearAPI.providers.JsonRpcProvider;
+  isContractFtStoragePaid: boolean;
 }
 
 export const NearContext = createContext<any>(null);
@@ -47,6 +49,18 @@ export const connectNear = async (): Promise<INearProps> => {
     console.log(e);
   }
   const tokenApi = new TokenApi(walletConnection, tokenContractId);
+
+  let isContractFtStoragePaid = false;
+  const lockupContractId = window.location.hash.split('/')[1];
+
+  try {
+    const storageBalance = await tokenApi.storageBalanceOf(lockupContractId);
+    isContractFtStoragePaid = (storageBalance !== null) && true;
+    console.log(isContractFtStoragePaid);
+  } catch (e) {
+    console.log(e);
+  }
+
   const factoryApi = new FactoryApi(
     walletConnection,
     config.factoryContractName,
@@ -68,5 +82,7 @@ export const connectNear = async (): Promise<INearProps> => {
     tokenApi,
     factoryApi,
     rpcProvider,
+    isContractFtStoragePaid,
+    lockupContractId,
   };
 };

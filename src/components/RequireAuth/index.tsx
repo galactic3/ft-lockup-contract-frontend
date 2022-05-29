@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { INearProps, NearContext } from '../../services/near';
+import PayForContractStorage from '../PayForContractStorage';
 
 export default function RequireAuth({ children }: { children: JSX.Element }) {
   const location = useLocation();
@@ -18,6 +19,14 @@ export default function RequireAuth({ children }: { children: JSX.Element }) {
 
   if (!signedIn || !isAdmin) {
     return <Navigate to={`/${currentContractName}/admin`} replace />;
+  }
+
+  if (!near.isContractFtStoragePaid) {
+    return (
+      <div className="container">
+        <PayForContractStorage />
+      </div>
+    );
   }
 
   return children;
