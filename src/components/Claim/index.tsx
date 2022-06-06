@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import TokenAmountPreview from '../TokenAmountPreview';
@@ -16,7 +17,24 @@ function ClaimAllLockups(params: { accountId: string | undefined, token: TMetada
   }
 
   const handleClaimAllLockups = () => {
-    near.noLoginApi.claim(accountId);
+    const perform = async () => {
+      if (!near) return;
+      if (!near.tokenApi) return;
+      if (!near.noLoginTokenApi) return;
+      if (!near.tokenContractId) return;
+
+      const storageBalance = await near.tokenApi.storageBalanceOf(accountId);
+      const isStoragePaid = (storageBalance !== null) && true;
+      if (isStoragePaid) {
+        near.noLoginApi.claim(accountId);
+      } else {
+        const bounds = await near.tokenApi.storageBalanceBounds();
+        const amount = bounds.max;
+        near.noLoginTokenApi.storageDeposit(near.tokenContractId, accountId, amount);
+      }
+    };
+
+    perform();
   };
 
   return (

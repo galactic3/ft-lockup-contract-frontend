@@ -9,6 +9,7 @@ const ONE_YOKTO = 1;
 const TOKEN_VIEW_METHODS = [
   'ft_metadata',
   'storage_balance_of',
+  'storage_balance_bounds',
 ];
 
 const TOKEN_CHANGE_METHODS = [
@@ -24,6 +25,7 @@ type TTokenChangeMethods = {
 type TTokenViewMethods = {
   'ft_metadata': any,
   'storage_balance_of': any,
+  'storage_balance_bounds': any,
 };
 
 export type TMetadata = {
@@ -115,6 +117,10 @@ class TokenApi {
 
   storageBalanceOf(accountId: String): Promise<String> {
     return this.contract.storage_balance_of({ account_id: accountId });
+  }
+
+  storageBalanceBounds(): Promise<{ min: string, max: string }> {
+    return this.contract.storage_balance_bounds();
   }
 }
 
