@@ -19,7 +19,7 @@ function TerminateLockup(
   props: {
     adminControls: boolean,
     lockupIndex: number | undefined,
-    config: { payer_id: String, vesting_schedule: [] | null } | null,
+    config: { beneficiary_id: String, vesting_schedule: [] | null } | null,
     token: TMetadata,
   },
 ) {
@@ -64,7 +64,7 @@ function TerminateLockup(
     payerMessage = 'This lockup cannot be terminated';
   } else {
     message = 'Terminate';
-    payerMessage = `Unvested amount will return to ${config.payer_id}`;
+    payerMessage = `Unvested amount will return to ${config.beneficiary_id}`;
   }
 
   const canTerminate = adminControls && config;
