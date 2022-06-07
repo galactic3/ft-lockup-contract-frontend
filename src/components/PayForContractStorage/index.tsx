@@ -1,8 +1,5 @@
 import { useContext } from 'react';
-import { toNear } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
-
-const FT_STORAGE_PRICE = '0.00125';
 
 export default function PayForContractStorage() {
   const { near }: { near: INearProps | null } = useContext(NearContext);
@@ -15,9 +12,11 @@ export default function PayForContractStorage() {
       if (!near.tokenApi) {
         return;
       }
-      const amount = toNear(FT_STORAGE_PRICE);
+      const bounds = await near.tokenApi.storageBalanceBounds();
+      const amount = bounds.max;
+
       console.log(amount);
-      const result = await near.tokenApi.storageDeposit(near.lockupContractId, amount.toString());
+      const result = await near.tokenApi.storageDeposit(near.lockupContractId, amount);
       console.log(result);
     };
     perform();
@@ -36,10 +35,6 @@ export default function PayForContractStorage() {
 
         <button className="button fullWidth" type="button" onClick={handlePay}>
           Pay
-          {' '}
-          {FT_STORAGE_PRICE}
-          {' '}
-          N
         </button>
       </div>
     </div>
