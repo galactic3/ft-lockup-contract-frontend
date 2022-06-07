@@ -29,7 +29,7 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
 
   const { signedIn } = near;
 
-  const vestingSchedule = row?.termination_config?.vesting_schedule?.Schedule;
+  const vestingSchedule = row?.vesting_schedule?.Schedule;
 
   const currentContractName = location.pathname.split('/')[1];
 

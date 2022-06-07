@@ -23,7 +23,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
       }
       console.log(token);
       const input = event.target.value;
-      const lockups = parseRawSpreadsheetInput(input, token.decimals, near.signedAccountId);
+      const lockups = parseRawSpreadsheetInput(input, token.decimals);
       setData(lockups);
     } catch (e) {
       if (e instanceof Error) {
