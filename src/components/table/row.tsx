@@ -25,6 +25,7 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
   } = useContext(NearContext);
 
   if (!near) return null;
+  console.log('row', row);
 
   const vestingSchedule = row?.termination_config?.vesting_schedule?.Schedule;
 

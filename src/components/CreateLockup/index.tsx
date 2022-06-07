@@ -83,23 +83,12 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
 
     const [lockupSchedule, vestingSchedule] = getScheduleList(startDate, lockupTotalAmount, schedule);
 
-    let terminationConfig = null;
-
-    if (vestingSchedule) {
-      terminationConfig = {
-        payer_id: near.signedAccountId,
-        vesting_schedule: {
-          Schedule: vestingSchedule,
-        },
-      };
-    }
-
     near.tokenApi.createLockup(
       lockupContractId,
       lockupTotalAmount.toString(),
       userAccountId,
       lockupSchedule,
-      terminationConfig,
+      vestingSchedule,
     );
   };
 

@@ -1,7 +1,7 @@
 import {
   Contract, WalletConnection,
 } from 'near-api-js';
-import { TSchedule, TNearAmount } from './api';
+import { TSchedule } from './api';
 
 const MAX_GAS = 300_000_000_000_000;
 const ONE_YOKTO = 1;
@@ -38,18 +38,12 @@ export type TMetadata = {
   decimals: number,
 };
 
-type TTerminationConfig = {
-  payer_id: string,
-  vesting_schedule: {
-    Schedule: TSchedule,
-  },
-};
-
 type TLockupCreate = {
   account_id: string,
   schedule: TSchedule,
-  termination_config: TTerminationConfig | null,
-  claimed_balance: TNearAmount,
+  vesting_schedule: {
+    Schedule: TSchedule | null,
+  }
 };
 
 type TDraftGroupFund = {
@@ -78,8 +72,7 @@ class TokenApi {
     lockupTotalAmount: string,
     userAccountId: string,
     lockupSchedule: any[],
-    terminationConfig: TTerminationConfig | null,
-    claimedBalance: string = '0',
+    vestingSchedule: TSchedule | null,
   ): Promise<void> {
     const result = await this.ftTransferCall({
       receiver_id: lockupContractId,
@@ -87,8 +80,7 @@ class TokenApi {
       msg: {
         account_id: userAccountId,
         schedule: lockupSchedule,
-        termination_config: terminationConfig,
-        claimed_balance: claimedBalance,
+        vesting_schedule: { Schedule: vestingSchedule },
       },
     });
 
