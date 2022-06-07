@@ -73,8 +73,30 @@ class TokenApi {
     return this.contract;
   }
 
+  async createLockup(
+    lockupContractId: string,
+    lockupTotalAmount: string,
+    userAccountId: string,
+    lockupSchedule: any[],
+    terminationConfig: TTerminationConfig | null,
+    claimedBalance: string = '0',
+  ): Promise<void> {
+    const result = await this.ftTransferCall({
+      receiver_id: lockupContractId,
+      amount: lockupTotalAmount.toString(),
+      msg: {
+        account_id: userAccountId,
+        schedule: lockupSchedule,
+        termination_config: terminationConfig,
+        claimed_balance: claimedBalance,
+      },
+    });
+
+    return result;
+  }
+
   async fundDraftGroup(lockupContractId: string, draftGroupId: number, amount: string): Promise<void> {
-    const result = this.ftTransferCall({
+    const result = await this.ftTransferCall({
       receiver_id: lockupContractId,
       amount,
       msg: {
@@ -85,7 +107,7 @@ class TokenApi {
     return result;
   }
 
-  ftTransferCall(
+  async ftTransferCall(
     meta: {
       receiver_id: string,
       amount: string,
@@ -93,10 +115,10 @@ class TokenApi {
     },
     gas = MAX_GAS,
     deposit = ONE_YOKTO,
-  ): void {
+  ): Promise<void> {
     const { msg, ...rest } = meta;
 
-    this.contract.ft_transfer_call(
+    await this.contract.ft_transfer_call(
       { msg: JSON.stringify(msg), ...rest },
       gas,
       deposit,
