@@ -67,7 +67,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
         const chunk = data.slice(i, i + chunkSize);
         const drafts = chunk.map((lockup) => ({
           draft_group_id: draftGroupId,
-          lockup,
+          lockup_create: lockup,
         }));
         await withNotification(
           'Create drafts',
