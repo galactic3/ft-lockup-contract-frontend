@@ -41,9 +41,7 @@ export type TMetadata = {
 type TLockupCreate = {
   account_id: string,
   schedule: TSchedule,
-  vesting_schedule: {
-    Schedule: TSchedule | null,
-  }
+  vesting_schedule: { Schedule: TSchedule } | null,
 };
 
 type TDraftGroupFund = {
@@ -80,7 +78,7 @@ class TokenApi {
       msg: {
         account_id: userAccountId,
         schedule: lockupSchedule,
-        vesting_schedule: { Schedule: vestingSchedule },
+        vesting_schedule: vestingSchedule ? { Schedule: vestingSchedule } : null,
       },
     });
 
