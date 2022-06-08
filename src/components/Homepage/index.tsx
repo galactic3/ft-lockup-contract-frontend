@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { ChangeEvent, useState } from 'react';
 import { ReactComponent as Logo } from '../../assets/images/near.svg';
+import { DEFAULT_CONTRACT_NAME } from '../../config';
 
 export default function Homepage(
   { lockups }: { lockups: any[] },
 ) {
-  const [address, setAddress] = useState('ft-lockup.demo006.ft-lockup.testnet');
+  const [address, setAddress] = useState(DEFAULT_CONTRACT_NAME);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
   };
