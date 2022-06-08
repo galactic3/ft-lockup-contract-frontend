@@ -1,57 +1,65 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { useSnackbar } from 'notistack';
 
 import { FACTORY_CONTRACT_NAME } from '../../config';
 import { INearProps, NearContext } from '../../services/near';
 
 export default function NewLockupContract() {
+  const { enqueueSnackbar } = useSnackbar();
   const { near, signIn }: { near: INearProps | null, signIn: () => void } = useContext(NearContext);
 
   const handleDeployLockupContract = (e: any) => {
     e.preventDefault();
 
     const perform = async () => {
-      if (!near?.signedAccountId) {
-        throw new Error('expected signedAccountId to be present');
+      try {
+        if (!near?.signedAccountId) {
+          throw new Error('expected signedAccountId to be present');
+        }
+
+        // const lockupCreator: string = near.signedAccountId;
+        const lockupOperators: string[] = e.target.elements.lockup_operators.value
+          .split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0);
+        const tokenAccountId: string = e.target.elements.token_account_id.value;
+        const lockupSubaccountId: string = e.target.elements.lockup_subaccount_id.value;
+
+        if (lockupOperators.length === 0) {
+          throw new Error('empty lockup operators');
+        }
+
+        if (tokenAccountId.length === 0) {
+          throw new Error('empty tokenAccountId');
+        }
+
+        if (lockupSubaccountId.length === 0) {
+          throw new Error('empty lockupSubaccountId');
+        }
+
+        // const message = `
+        //   lockup_creator: ${lockupCreator}
+        //   lockup_operators: ${JSON.stringify(lockupOperators)}
+        //   token_account_id: ${tokenAccountId}
+        //   lockup_subaccount_id: ${lockupSubaccountId}
+        // `;
+        // alert(message);
+
+        const result = await near.factoryApi.create(
+          lockupSubaccountId,
+          tokenAccountId,
+          lockupOperators,
+          `${window.location.origin + window.location.pathname}#/${lockupSubaccountId}.${FACTORY_CONTRACT_NAME}/admin/lockups`,
+        );
+
+        console.log(result);
+
+        return result;
+      } catch (error) {
+        console.log(error);
+        enqueueSnackbar((error as any).toString(), { variant: 'error' });
+        return null;
       }
-
-      // const lockupCreator: string = near.signedAccountId;
-      const lockupOperators: string[] = e.target.elements.lockup_operators.value
-        .split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0);
-      const tokenAccountId: string = e.target.elements.token_account_id.value;
-      const lockupSubaccountId: string = e.target.elements.lockup_subaccount_id.value;
-
-      if (lockupOperators.length === 0) {
-        throw new Error('empty lockup operators');
-      }
-
-      if (tokenAccountId.length === 0) {
-        throw new Error('empty tokenAccountId');
-      }
-
-      if (lockupSubaccountId.length === 0) {
-        throw new Error('empty lockupSubaccountId');
-      }
-
-      // const message = `
-      //   lockup_creator: ${lockupCreator}
-      //   lockup_operators: ${JSON.stringify(lockupOperators)}
-      //   token_account_id: ${tokenAccountId}
-      //   lockup_subaccount_id: ${lockupSubaccountId}
-      // `;
-      // alert(message);
-
-      const result = await near.factoryApi.create(
-        lockupSubaccountId,
-        tokenAccountId,
-        lockupOperators,
-        `${window.location.origin + window.location.pathname}#/${lockupSubaccountId}.${FACTORY_CONTRACT_NAME}/admin/lockups`,
-      );
-
-      console.log(result);
-
-      return result;
     };
 
     perform();

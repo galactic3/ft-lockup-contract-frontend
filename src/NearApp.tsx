@@ -54,12 +54,22 @@ export default function NearApp() {
     },
   }), [near]);
 
+  const handleClose = () => {
+    const url = new URL(window.location.href);
+    const sp = new URLSearchParams(url.search);
+    sp.delete('transactionHashes');
+    url.search = sp.toString();
+    console.log(url);
+    window.history.pushState({}, null as any, url.toString());
+  };
+
   return (
     <StrictMode>
       <NearContext.Provider value={value}>
         <SnackbarProvider
           autoHideDuration={null}
           action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}
+          onClose={handleClose}
         >
           <App />
         </SnackbarProvider>
