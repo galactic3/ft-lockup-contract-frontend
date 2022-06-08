@@ -9,8 +9,8 @@ export interface INearConfig {
   factoryContractHash: string,
 }
 
-export const FACTORY_CONTRACT_NAME = process.env.FACTORY_CONTRACT_NAME || 'factory1.ft-lockup.testnet';
-export const FACTORY_CONTRACT_HASH = process.env.FACTORY_CONTRACT_HASH || '9p86zuCX9K9XX56m9VwkAGdnL4PS1rj763JPuzmap4Rf';
+export const FACTORY_CONTRACT_NAME = process.env.FACTORY_CONTRACT_NAME || 'factory008.ft-lockup.testnet';
+export const FACTORY_CONTRACT_HASH = process.env.FACTORY_CONTRACT_HASH || 'DPDYZYHjRqLKZLGpvZYTLKudRrKWmN6a43Pc4MD2t9dg';
 
 const getCurrentContractName = (): string => {
   const contractNameFromUrl = window.location.hash.split('/')[1];

@@ -52,7 +52,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
       }
       const result = await near.api.getDrafts(draftGroup.draft_indices);
       console.log(result);
-      setDrafts(result.map((x: any) => Object.assign(x[1].lockup, { id: x[0] })));
+      setDrafts(result.map((x: any) => Object.assign(x[1].lockup_create, { id: x[0] })));
     };
 
     fetchDrafts(); // .catch(console.error);

@@ -1,7 +1,7 @@
 import {
   Contract, WalletConnection,
 } from 'near-api-js';
-import { TSchedule, TNearAmount } from './api';
+import { TSchedule } from './api';
 
 const MAX_GAS = 300_000_000_000_000;
 const ONE_YOKTO = 1;
@@ -38,18 +38,10 @@ export type TMetadata = {
   decimals: number,
 };
 
-type TTerminationConfig = {
-  payer_id: string,
-  vesting_schedule: {
-    Schedule: TSchedule,
-  },
-};
-
 type TLockupCreate = {
   account_id: string,
   schedule: TSchedule,
-  termination_config: TTerminationConfig | null,
-  claimed_balance: TNearAmount,
+  vesting_schedule: { Schedule: TSchedule } | null,
 };
 
 type TDraftGroupFund = {
@@ -73,8 +65,28 @@ class TokenApi {
     return this.contract;
   }
 
+  async createLockup(
+    lockupContractId: string,
+    lockupTotalAmount: string,
+    userAccountId: string,
+    lockupSchedule: any[],
+    vestingSchedule: TSchedule | null,
+  ): Promise<void> {
+    const result = await this.ftTransferCall({
+      receiver_id: lockupContractId,
+      amount: lockupTotalAmount.toString(),
+      msg: {
+        account_id: userAccountId,
+        schedule: lockupSchedule,
+        vesting_schedule: vestingSchedule ? { Schedule: vestingSchedule } : null,
+      },
+    });
+
+    return result;
+  }
+
   async fundDraftGroup(lockupContractId: string, draftGroupId: number, amount: string): Promise<void> {
-    const result = this.ftTransferCall({
+    const result = await this.ftTransferCall({
       receiver_id: lockupContractId,
       amount,
       msg: {
@@ -85,7 +97,7 @@ class TokenApi {
     return result;
   }
 
-  ftTransferCall(
+  async ftTransferCall(
     meta: {
       receiver_id: string,
       amount: string,
@@ -93,10 +105,10 @@ class TokenApi {
     },
     gas = MAX_GAS,
     deposit = ONE_YOKTO,
-  ): void {
+  ): Promise<void> {
     const { msg, ...rest } = meta;
 
-    this.contract.ft_transfer_call(
+    await this.contract.ft_transfer_call(
       { msg: JSON.stringify(msg), ...rest },
       gas,
       deposit,

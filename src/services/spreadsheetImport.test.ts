@@ -468,23 +468,19 @@ describe('.parseLockup', () => {
     ).toStrictEqual(
       {
         account_id: "alice.near",
-        claimed_balance: "0",
         schedule: [
           { balance: "0", timestamp: 946684799 },
           { balance: "0", timestamp: 1009843198 },
           { balance: "30000000000000000", timestamp: 1009843199 },
           { balance: "60000000000000000", timestamp: 1072915199 },
         ],
-        termination_config: {
-          payer_id: 'owner.near',
-          vesting_schedule: {
-            Schedule: [
-              { balance: "0", timestamp: 946684799 },
-              { balance: "0", timestamp: 978307198 },
-              { balance: "15000000000000000", timestamp: 978307199 },
-              { balance: "60000000000000000", timestamp: 1072915199 },
-            ],
-          },
+        vesting_schedule: {
+          Schedule: [
+            { balance: "0", timestamp: 946684799 },
+            { balance: "0", timestamp: 978307198 },
+            { balance: "15000000000000000", timestamp: 978307199 },
+            { balance: "60000000000000000", timestamp: 1072915199 },
+          ],
         },
       },
     );
@@ -502,34 +498,29 @@ describe('.parseRawSpreadsheetInput', () => {
     ).toStrictEqual([
       {
         account_id: "alice.near",
-        claimed_balance: '0',
         schedule: [
           { balance: '0', timestamp: 1262303999 },
           { balance: '0', timestamp: 1325375998 },
           { balance: '50000' + '000000000000', timestamp: 1325375999 },
           { balance: '100000' + '000000000000', timestamp: 1388534399 },
         ],
-        termination_config: null,
+        vesting_schedule: null,
       },
       {
         account_id: 'bob.near',
-        claimed_balance: '0',
         schedule: [
           {balance: '0', timestamp: 946684799},
           {balance: '0', timestamp: 1009843198},
           {balance: '30000' + '000000000000', timestamp: 1009843199},
           {balance: '60000' + '000000000000', timestamp: 1072915199},
         ],
-        termination_config: {
-          payer_id: 'owner.near',
-          vesting_schedule: {
-            Schedule: [
-              {balance: '0', timestamp: 946684799},
-              {balance: '0', timestamp: 1009843198},
-              {balance: '30000' + '000000000000', timestamp: 1009843199},
-              {balance: '60000' + '000000000000', timestamp: 1072915199},
-            ],
-          },
+        vesting_schedule: {
+          Schedule: [
+            {balance: '0', timestamp: 946684799},
+            {balance: '0', timestamp: 1009843198},
+            {balance: '30000' + '000000000000', timestamp: 1009843199},
+            {balance: '60000' + '000000000000', timestamp: 1072915199},
+          ],
         },
       },
     ]);

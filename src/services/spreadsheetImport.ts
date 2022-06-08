@@ -186,19 +186,6 @@ type Checkpoint = {
   balance: Balance,
 };
 type Schedule = Checkpoint[];
-type TerminationConfig = {
-  payer_id: ValidAccountId,
-  vesting_schedule: {
-    Schedule: Schedule,
-  },
-};
-
-export const buildTerminationConfig = (schedule: Schedule, payer_id: ValidAccountId): TerminationConfig => ({
-  payer_id,
-  vesting_schedule: {
-    Schedule: schedule,
-  },
-});
 
 export const datePlusDurationMul = (date: Date, duration: IsoDuration, mulInput: number): Date => {
   const mul = Math.floor(mulInput);
@@ -319,29 +306,26 @@ export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmou
 export type Lockup = {
   account_id: ValidAccountId,
   schedule: Schedule,
-  claimed_balance: Balance,
-  termination_config: TerminationConfig | null,
+  vesting_schedule: { Schedule: Schedule } | null,
 };
 
-export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals: number, payerId: NearAccountId): Lockup => {
+export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals: number): Lockup => {
   const row = parseToSpreadsheetRow(rawSpreadsheetRow);
 
-  let terminationConfig;
+  let vestingSchedule = null;
+
   if (row.vesting_schedule) {
-    terminationConfig = buildTerminationConfig(toLockupSchedule(row.vesting_schedule, row.amount, tokenDecimals), payerId);
-  } else {
-    terminationConfig = null;
+    vestingSchedule = { Schedule: toLockupSchedule(row.vesting_schedule, row.amount, tokenDecimals) };
   }
 
   return {
     account_id: row.account_id,
     schedule: toLockupSchedule(row.lockup_schedule, row.amount, tokenDecimals),
-    claimed_balance: new BN(0).toString(),
-    termination_config: terminationConfig,
+    vesting_schedule: vestingSchedule,
   };
 };
 
-export const parseRawSpreadsheetInput = (spreadsheetInput: string, tokenDecimals: number, payerId: NearAccountId): Lockup[] => {
+export const parseRawSpreadsheetInput = (spreadsheetInput: string, tokenDecimals: number): Lockup[] => {
   const rows = parseSpreadsheetColumns(spreadsheetInput);
-  return rows.map((x) => parseLockup(x, tokenDecimals, payerId));
+  return rows.map((x) => parseLockup(x, tokenDecimals));
 };

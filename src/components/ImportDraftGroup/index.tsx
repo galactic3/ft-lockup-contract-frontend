@@ -23,7 +23,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
       }
       console.log(token);
       const input = event.target.value;
-      const lockups = parseRawSpreadsheetInput(input, token.decimals, near.signedAccountId);
+      const lockups = parseRawSpreadsheetInput(input, token.decimals);
       setData(lockups);
     } catch (e) {
       if (e instanceof Error) {
@@ -67,7 +67,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
         const chunk = data.slice(i, i + chunkSize);
         const drafts = chunk.map((lockup) => ({
           draft_group_id: draftGroupId,
-          lockup,
+          lockup_create: lockup,
         }));
         await withNotification(
           'Create drafts',

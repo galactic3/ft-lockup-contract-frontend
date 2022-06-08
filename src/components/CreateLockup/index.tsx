@@ -57,7 +57,6 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
     console.log(account.value, amount.value);
 
     const lockupContractId = near?.api.getContract().contractId || '';
-    const claimedBalance = '0';
     const userAccountId = account.value;
     const lockupTotalAmount = new Big(amount.value).mul(new Big(10).pow(token.decimals))
       .round(0, Big.roundDown).toString();
@@ -84,27 +83,13 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
 
     const [lockupSchedule, vestingSchedule] = getScheduleList(startDate, lockupTotalAmount, schedule);
 
-    let terminationConfig = null;
-
-    if (vestingSchedule) {
-      terminationConfig = {
-        payer_id: near.signedAccountId,
-        vesting_schedule: {
-          Schedule: vestingSchedule,
-        },
-      };
-    }
-
-    near.tokenApi.ftTransferCall({
-      receiver_id: lockupContractId,
-      amount: lockupTotalAmount.toString(),
-      msg: {
-        account_id: userAccountId,
-        schedule: lockupSchedule,
-        termination_config: terminationConfig,
-        claimed_balance: claimedBalance,
-      },
-    });
+    near.tokenApi.createLockup(
+      lockupContractId,
+      lockupTotalAmount.toString(),
+      userAccountId,
+      lockupSchedule,
+      vestingSchedule,
+    );
   };
 
   return (
