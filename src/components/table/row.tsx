@@ -25,9 +25,10 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
   } = useContext(NearContext);
 
   if (!near) return null;
-  console.log('row', row);
 
   const vestingSchedule = row?.termination_config?.vesting_schedule?.Schedule;
+
+  const selectedAccountPage = window.location.href.split('/').pop() === row.account_id;
 
   return (
     <>
@@ -44,7 +45,7 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
         <TableCell align="left">
           {row.id}
         </TableCell>
-        <TableCell align="left"><Link to={`${row.account_id}`}>{row.account_id}</Link></TableCell>
+        <TableCell align="left"><Link to={`${selectedAccountPage ? '' : row.account_id}`}>{row.account_id}</Link></TableCell>
         <TableCell align="right">
           {convertTimestamp(row.schedule[0].timestamp)}
         </TableCell>
