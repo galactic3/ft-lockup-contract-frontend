@@ -1,7 +1,8 @@
-import AstroDaoApi from "./api";
 import {
   Near,
 } from 'near-api-js';
+
+import AstroDaoApi from './api';
 
 // TODO move to the .env
 const ASTRO_DAO_HOST = 'https://dev.app.astrodao.com';
@@ -65,7 +66,7 @@ const daoCouncilMember = async (near: Near, accountAddress: string, daoContractA
   const allMembersAddresses = await astroDaoApi.getCouncilsMembers();
 
   return allMembersAddresses.filter((memberAddress: string) => memberAddress === accountAddress).count > 0;
-}
+};
 
 const utils = {
   buildProposalFormLink,
