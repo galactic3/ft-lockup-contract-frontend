@@ -7,10 +7,6 @@ import AstroDaoApi from './api';
 // TODO move to the .env
 const ASTRO_DAO_HOST = 'https://dev.app.astrodao.com';
 
-const ASTRO_DAO_CONTRACTS_ADDRESSES = [
-  'test-dao-001.sputnikv2.testnet',
-];
-
 export const MAX_GAS = '300';
 export const ONE_YOKTO = '0.000000000000000000000001';
 
@@ -61,17 +57,22 @@ export const customFunctionCallProposalFormLink = (
   gas,
 );
 
-const daoCouncilMember = async (near: Near, accountAddress: string, daoContractAddress: string = ASTRO_DAO_CONTRACTS_ADDRESSES[0]): Promise<boolean> => {
-  const astroDaoApi = new AstroDaoApi(near, daoContractAddress);
-  const allMembersAddresses = await astroDaoApi.getCouncilsMembers();
+export const daoCouncilMembers = async (near: Near, accountAddress: string): Promise<string[]> => {
+  try {
+    const api = new AstroDaoApi(near, accountAddress);
+    const councilsMembers = await api.getCouncilMembers();
 
-  return allMembersAddresses.filter((memberAddress: string) => memberAddress === accountAddress).count > 0;
+    return councilsMembers;
+  } catch (e) {
+    console.log('isDAO ERROR:', e);
+    return [];
+  }
 };
 
 const utils = {
   buildProposalFormLink,
   customFunctionCallProposalFormLink,
-  daoCouncilMember,
+  daoCouncilMembers,
 };
 
 export default utils;

@@ -20,7 +20,7 @@ class AstroDaoApi {
   constructor(near: Near, contractId: string) {
     this.near = near;
     this.contract = new Contract(
-      (new WalletConnection(this.near, this.near.config.contractName)).account(),
+      (new WalletConnection(this.near, contractId)).account(),
       contractId,
       { viewMethods: DAO_VIEW_METHODS, changeMethods: [] },
     ) as TAstroDaoContract;
@@ -30,13 +30,11 @@ class AstroDaoApi {
     return this.contract;
   }
 
-  async getCouncilsMembers(): Promise<any> {
-    const policy = JSON.parse(await this.contract.get_policy());
+  async getCouncilMembers(): Promise<string[]> {
+    const policy = await this.contract.get_policy();
 
-    const councils = policy.roles.filter((role: any) => role.name === 'council');
-    const councilsMembers = councils.map((council: any) => council.Groups).flat();
-
-    return councilsMembers;
+    const councilRole = policy.roles.filter((role: any) => role?.name === 'council').pop();
+    return councilRole?.kind?.Group;
   }
 }
 

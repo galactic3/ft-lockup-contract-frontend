@@ -15,14 +15,23 @@ export default function Header({ adminControls }: { adminControls: boolean }) {
 
   if (!near) return null;
 
-  const { signedIn, signedAccountId, isAdmin } = near;
+  const {
+    signedIn,
+    signedAccountId,
+    isAdmin,
+    isCouncilMember,
+  } = near;
+
+  console.log('Header isCouncilMember', isCouncilMember);
+
+  const lockupsPageViewPolicy = (adminControls && isAdmin) || (adminControls && isCouncilMember);
 
   return (
     <div className="header">
       <div className="container">
         <Box sx={{ display: 'flex' }}>
           <div className="nav">
-            <Link className="nav-link" to={adminControls && isAdmin ? `/${currentContractName}/admin/lockups` : `/${currentContractName}/lockups`}>Lockups</Link>
+            <Link className="nav-link" to={lockupsPageViewPolicy ? `/${currentContractName}/admin/lockups` : `/${currentContractName}/lockups`}>Lockups</Link>
             <Link className="nav-link" to={adminControls ? `/${currentContractName}/admin/about` : `/${currentContractName}/about`}>About</Link>
             {adminControls && (<Link className="nav-link" to={`/${currentContractName}/admin/draft_groups`}>Drafts</Link>)}
           </div>
