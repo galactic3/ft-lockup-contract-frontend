@@ -13,11 +13,11 @@ export default function RequireAuth({ children }: { children: JSX.Element }) {
 
   if (!near) return null;
 
-  const { signedIn, isAdmin } = near;
+  const { signedIn, isAdmin, isCouncilMember } = near;
 
   const currentContractName = location.pathname.split('/')[1];
 
-  if (!signedIn || !isAdmin) {
+  if (!signedIn || !(isAdmin || isCouncilMember)) {
     return <Navigate to={`/${currentContractName}/admin`} replace />;
   }
 

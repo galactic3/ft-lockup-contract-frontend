@@ -16,16 +16,16 @@ function Authorize() {
 
   if (!near) return null;
 
-  const { signedIn, isAdmin } = near;
+  const { signedIn, isAdmin, isCouncilMember } = near;
 
-  const showAlertForUser = (signedIn && !isAdmin);
-  const showLockupsForAdmin = signedIn && isAdmin;
+  const showAlertForUser = signedIn && !(isAdmin || isCouncilMember);
+  const showLockups = signedIn && (isAdmin || isCouncilMember);
 
   return (
     <Auth>
       { showAlertForUser && <Alert sx={{ margin: 2, width: '500px' }} severity="error">You are not admin</Alert>}
       { !signedIn && <button className="button" type="button" onClick={signIn}>Sign In</button> }
-      { showLockupsForAdmin && <Navigate to="lockups" replace />}
+      { showLockups && <Navigate to="lockups" replace />}
     </Auth>
   );
 }

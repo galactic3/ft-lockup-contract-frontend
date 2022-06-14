@@ -32,9 +32,15 @@ class AstroDaoApi {
 
   async getCouncilMembers(): Promise<string[]> {
     const policy = await this.contract.get_policy();
+    const canProposalRoles = policy.roles.filter((role: any) => role?.permissions?.includes('call:AddProposal'));
 
-    const councilRole = policy.roles.filter((role: any) => role?.name === 'council').pop();
-    return councilRole?.kind?.Group;
+    if (canProposalRoles.length === 0) {
+      return [];
+    }
+
+    const canProposalGroups = canProposalRoles.map((role: any) => role?.kind?.Group);
+
+    return canProposalGroups.flat().filter((member: any) => member);
   }
 }
 
