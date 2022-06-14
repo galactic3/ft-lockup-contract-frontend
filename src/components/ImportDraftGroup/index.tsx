@@ -18,7 +18,7 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     try {
-      if (!near?.signedAccountId) {
+      if (!near?.currentUser?.signedAccountId) {
         throw new Error('expected present signedAccountId');
       }
       console.log(token);

@@ -13,10 +13,12 @@ export interface INearProps {
   config: INearConfig;
   api: NearApi;
   noLoginApi: NoLoginApi
-  signedIn: boolean;
-  isAdmin: boolean;
-  isCouncilMember: boolean;
-  signedAccountId: string | null;
+  currentUser: {
+    signedIn: boolean;
+    isAdmin: boolean;
+    isCouncilMember: boolean;
+    signedAccountId: string | null;
+  }
   tokenContractId: string;
   lockupContractId: string;
   tokenApi: TokenApi;
@@ -89,10 +91,12 @@ export const connectNear = async (): Promise<INearProps> => {
     api,
     tokenContractId,
     noLoginApi,
-    signedIn: !!signedAccountId,
-    isAdmin,
-    isCouncilMember,
-    signedAccountId,
+    currentUser: {
+      signedIn: !!signedAccountId,
+      isAdmin,
+      isCouncilMember,
+      signedAccountId,
+    },
     tokenApi,
     noLoginTokenApi,
     factoryApi,

@@ -16,7 +16,7 @@ function Authorize() {
 
   if (!near) return null;
 
-  const { signedIn, isAdmin, isCouncilMember } = near;
+  const { signedIn, isAdmin, isCouncilMember } = near.currentUser;
 
   const showAlertForUser = signedIn && !(isAdmin || isCouncilMember);
   const showLockups = signedIn && (isAdmin || isCouncilMember);

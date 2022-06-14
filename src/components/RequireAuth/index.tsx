@@ -13,7 +13,7 @@ export default function RequireAuth({ children }: { children: JSX.Element }) {
 
   if (!near) return null;
 
-  const { signedIn, isAdmin, isCouncilMember } = near;
+  const { signedIn, isAdmin, isCouncilMember } = near.currentUser;
 
   const currentContractName = location.pathname.split('/')[1];
 

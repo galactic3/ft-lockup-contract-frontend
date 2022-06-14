@@ -20,11 +20,9 @@ export default function Header({ adminControls }: { adminControls: boolean }) {
     signedAccountId,
     isAdmin,
     isCouncilMember,
-  } = near;
+  } = near.currentUser;
 
-  console.log('Header isCouncilMember', isCouncilMember);
-
-  const lockupsPageViewPolicy = (adminControls && isAdmin) || (adminControls && isCouncilMember);
+  const lockupsPageViewPolicy = adminControls && (isAdmin || isCouncilMember);
 
   return (
     <div className="header">

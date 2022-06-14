@@ -48,8 +48,12 @@ export default function NearApp() {
       near.api.signOut();
       setNear({
         ...near,
-        signedIn: false,
-        signedAccountId: null,
+        currentUser: {
+          signedIn: false,
+          signedAccountId: null,
+          isAdmin: false,
+          isCouncilMember: false,
+        },
       });
     },
   }), [near]);

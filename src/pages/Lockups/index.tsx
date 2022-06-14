@@ -24,7 +24,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
 
   if (!near) return null;
 
-  const { signedIn, isAdmin } = near;
+  const { signedIn, isAdmin } = near.currentUser;
 
   return (
     <div className="container">
