@@ -37,7 +37,6 @@ function ClaimAllLockups(params: { accountId: string | undefined, token: TMetada
         const bounds = await near.tokenApi.storageBalanceBounds();
         const amount = bounds.max;
 
-        debugger;
         const callback = () => {
           near.noLoginTokenApi.storageDeposit(near.tokenContractId, accountId, amount);
         };

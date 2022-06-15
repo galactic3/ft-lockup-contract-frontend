@@ -2,7 +2,7 @@ import {
   Paper,
   TableContainer,
 } from '@mui/material';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import { Link } from 'react-router-dom';
 
@@ -10,25 +10,26 @@ import CreateLockup from '../../components/CreateLockup';
 import LockupsTable from '../../components/LockupsTable';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
+import FavouriteAccounts from '../../components/FavouriteAccounts';
 
 export default function Lockups({ lockups, token, adminControls }: { lockups: any[], token: TMetadata, adminControls: boolean }) {
   const uniqueUsers = Array.from(new Set(lockups.map((x) => x.account_id)));
 
-  console.log('unique users', uniqueUsers);
-
   const {
     near,
   }: {
-    near: INearProps | null,
+    near: INearProps,
   } = useContext(NearContext);
 
-  if (!near) return null;
+  const { signedIn, isAdmin } = near.currentUser;
+  const favouriteAccountsFromLocalStorage = JSON.parse(localStorage.getItem('favouriteAccounts') || '[]');
 
-  const { signedIn, isAdmin } = near;
+  const [favouriteAccounts, setFavouriteAccounts] = useState<string[]>(favouriteAccountsFromLocalStorage);
 
-  return (
-    <div className="container">
+  const favouriteAccountsLockups = lockups.filter((lockup) => favouriteAccounts.includes(lockup.account_id));
 
+  const restOfThePage = (
+    <div>
       {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
 
       {lockups.length === 0 ? (
@@ -45,9 +46,16 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
         </div>
       ) : (
         <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }} component={Paper}>
-          <LockupsTable lockups={lockups} token={token} adminControls={adminControls} />
+          <LockupsTable lockups={favouriteAccountsLockups} token={token} adminControls={adminControls} />
         </TableContainer>
       )}
+    </div>
+  );
+
+  return (
+    <div className="container">
+      <FavouriteAccounts favouriteAccounts={favouriteAccounts} uniqueUsers={uniqueUsers} onSave={setFavouriteAccounts} />
+      { !!favouriteAccounts.length && restOfThePage }
     </div>
   );
 }

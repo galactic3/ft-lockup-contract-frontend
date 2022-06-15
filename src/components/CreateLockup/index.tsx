@@ -43,7 +43,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
     if (!near) {
       throw Error('Cannot access token api');
     }
-    if (!near.signedAccountId) {
+    if (!near.currentUser.signedAccountId) {
       throw new Error('signedAccountId requred to set lockup terminator');
     }
     if (!startDate) {

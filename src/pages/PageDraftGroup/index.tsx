@@ -118,7 +118,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
 
         {!draftGroup.funded && (
           <div style={{ marginTop: 20 }}>
-            <FundButton draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} />
+            {near?.currentUser?.isAdmin && <FundButton draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} /> }
             <FundWithDaoButton draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} />
           </div>
         )}

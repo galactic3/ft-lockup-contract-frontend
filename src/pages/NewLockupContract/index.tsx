@@ -15,7 +15,7 @@ export default function NewLockupContract() {
 
     const perform = async () => {
       try {
-        if (!near?.signedAccountId) {
+        if (!near?.currentUser?.signedAccountId) {
           throw new Error('expected signedAccountId to be present');
         }
 
@@ -91,10 +91,10 @@ export default function NewLockupContract() {
 
             <div className="form-row">
               <span>Contract creator: </span>
-              <strong>{near.signedAccountId}</strong>
+              <strong>{near.currentUser.signedAccountId}</strong>
               {' '}
               <button className="button" type="button" onClick={signIn}>
-                {near.signedAccountId && 'Login as someone else' || 'Login'}
+                {near.currentUser.signedAccountId && 'Login as someone else' || 'Login'}
               </button>
             </div>
             <div className="form-row">
@@ -110,7 +110,7 @@ export default function NewLockupContract() {
               <input type="text" id="lockup_subaccount_id" />
             </div>
 
-            <button className="button middle" type="submit" disabled={!near.signedAccountId}>
+            <button className="button middle" type="submit" disabled={!near.currentUser.signedAccountId}>
               Deploy Contract
             </button>
           </div>

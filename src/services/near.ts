@@ -7,14 +7,18 @@ import NoLoginApi from './noLoginApi';
 import NoLoginTokenApi from './NoLoginTokenApi';
 import TokenApi from './tokenApi';
 import FactoryApi from './factoryApi';
+import { daoCouncilMembers } from './DAOs/astroDAO/utils';
 
 export interface INearProps {
   config: INearConfig;
   api: NearApi;
   noLoginApi: NoLoginApi
-  signedIn: boolean;
-  isAdmin: boolean;
-  signedAccountId: string | null;
+  currentUser: {
+    signedIn: boolean;
+    isAdmin: boolean;
+    isCouncilMember: boolean;
+    signedAccountId: string | null;
+  }
   tokenContractId: string;
   lockupContractId: string;
   tokenApi: TokenApi;
@@ -44,10 +48,18 @@ export const connectNear = async (): Promise<INearProps> => {
   const signedAccountId = walletConnection.getAccountId();
   let tokenContractId: string = '';
   let isAdmin: boolean = false;
+  let depositWhitelist: string[] = [];
+  let isCouncilMember: boolean = false;
   try {
     tokenContractId = await api.getTokenAccountId();
-    const depositWhitelist = await api.getDepositWhitelist();
+    depositWhitelist = await api.getDepositWhitelist();
+    console.log('depositWhitelist', depositWhitelist);
     isAdmin = depositWhitelist.includes(signedAccountId);
+    console.log('isAdmin', isAdmin);
+    const daosCouncilMembers = (await Promise.all(depositWhitelist.map((dwID):Promise<string[]> => daoCouncilMembers(near, dwID)))).flat();
+    console.log('councilMembers', daosCouncilMembers);
+    isCouncilMember = daosCouncilMembers.includes(signedAccountId);
+    console.log('isCouncilMember', isCouncilMember);
   } catch (e) {
     console.log(e);
   }
@@ -79,12 +91,15 @@ export const connectNear = async (): Promise<INearProps> => {
     api,
     tokenContractId,
     noLoginApi,
-    signedIn: !!signedAccountId,
-    isAdmin,
-    signedAccountId,
     tokenApi,
-    noLoginTokenApi,
     factoryApi,
+    currentUser: {
+      signedIn: !!signedAccountId,
+      isAdmin,
+      isCouncilMember,
+      signedAccountId,
+    },
+    noLoginTokenApi,
     rpcProvider,
     isContractFtStoragePaid,
     lockupContractId,

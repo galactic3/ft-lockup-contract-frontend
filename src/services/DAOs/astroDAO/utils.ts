@@ -1,3 +1,9 @@
+import {
+  Near,
+} from 'near-api-js';
+
+import AstroDaoApi from './api';
+
 // TODO move to the .env
 const ASTRO_DAO_HOST = 'https://dev.app.astrodao.com';
 
@@ -51,9 +57,22 @@ export const customFunctionCallProposalFormLink = (
   gas,
 );
 
+export const daoCouncilMembers = async (near: Near, accountAddress: string): Promise<string[]> => {
+  try {
+    const api = new AstroDaoApi(near, accountAddress);
+    const councilsMembers = await api.getCouncilMembers();
+
+    return councilsMembers;
+  } catch (e) {
+    console.log('isDAO ERROR:', e);
+    return [];
+  }
+};
+
 const utils = {
   buildProposalFormLink,
   customFunctionCallProposalFormLink,
+  daoCouncilMembers,
 };
 
 export default utils;

@@ -27,7 +27,7 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
 
   if (!near) return null;
 
-  const { signedIn } = near;
+  const { signedIn } = near.currentUser;
 
   const vestingSchedule = row?.vesting_schedule?.Schedule;
 
