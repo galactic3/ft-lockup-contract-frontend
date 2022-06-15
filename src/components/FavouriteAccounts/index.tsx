@@ -9,10 +9,10 @@ export default function FavouriteAccounts({ favouriteAccounts, uniqueUsers, onSa
   const inputRef = useRef<null | HTMLInputElement>(null);
 
   const handleSaveFavouriteAccounts = (): void => {
-    debugger;
     if (!inputRef?.current?.value) {
       return;
     }
+
     const newFavouriteAccounts = inputRef.current.value.replaceAll(' ', '').split(',');
     onSave(newFavouriteAccounts);
     localStorage.setItem('favouriteAccounts', JSON.stringify(newFavouriteAccounts));

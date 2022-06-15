@@ -26,7 +26,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
 
   const [favouriteAccounts, setFavouriteAccounts] = useState<string[]>(favouriteAccountsFromLocalStorage);
 
-  console.log('favouriteAccounts', favouriteAccounts);
+  const favouriteAccountsLockups = lockups.filter((lockup) => favouriteAccounts.includes(lockup.account_id));
 
   const restOfThePage = (
     <div>
@@ -46,7 +46,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
         </div>
       ) : (
         <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }} component={Paper}>
-          <LockupsTable lockups={lockups} token={token} adminControls={adminControls} />
+          <LockupsTable lockups={favouriteAccountsLockups} token={token} adminControls={adminControls} />
         </TableContainer>
       )}
     </div>
