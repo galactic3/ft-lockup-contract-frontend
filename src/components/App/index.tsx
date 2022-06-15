@@ -24,7 +24,11 @@ import RequireAuth from '../RequireAuth';
 import { TMetadata } from '../../services/tokenApi';
 import Homepage from '../Homepage';
 
-function Customer({ lockups, token, contractId }: { lockups: any, token: TMetadata, contractId: string | null }) {
+function Customer({
+  lockups, token, contractId, near,
+}: {
+  lockups: any, token: TMetadata, contractId: string | null, near: INearProps | null,
+}) {
   if (!lockups) return null;
 
   return (
@@ -33,7 +37,7 @@ function Customer({ lockups, token, contractId }: { lockups: any, token: TMetada
       <Routes>
         <Route path="/" element={<Navigate replace to="lockups" />} />
         <Route path="/about" element={<About lockups={lockups} token_account_id={contractId} />} />
-        <Route path="/lockups" element={<Lockups lockups={lockups} token={token} adminControls={false} />} />
+        <Route path="/lockups" element={near && <Lockups lockups={lockups} token={token} adminControls={false} />} />
         <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} token={token} adminControls={false} />} />
         <Route path="/draft_groups/:draftGroupId" element={<RequireAuth><PageDraftGroup token={token} /></RequireAuth>} />
       </Routes>
@@ -41,7 +45,11 @@ function Customer({ lockups, token, contractId }: { lockups: any, token: TMetada
   );
 }
 
-function Admin({ lockups, token, tokenContractId }: { lockups: any, token: TMetadata, tokenContractId: string | null }) {
+function Admin({
+  lockups, token, tokenContractId, near,
+}: {
+  lockups: any, token: TMetadata, tokenContractId: string | null, near: INearProps | null,
+}) {
   if (!lockups) return null;
 
   return (
@@ -50,7 +58,7 @@ function Admin({ lockups, token, tokenContractId }: { lockups: any, token: TMeta
       <Routes>
         <Route path="/" element={<Authorize />} />
         <Route path="/about" element={<About lockups={lockups} token_account_id={tokenContractId} />} />
-        <Route path="/lockups" element={<RequireAuth><Lockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
+        <Route path="/lockups" element={near && <RequireAuth><Lockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
         <Route path="/lockups/:userId" element={<RequireAuth><UserLockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
         <Route path="/draft_groups" element={<RequireAuth><PageDraftGroupsIndex token={token} /></RequireAuth>} />
         <Route path="/draft_groups/:draftGroupId" element={<RequireAuth><PageDraftGroup token={token} /></RequireAuth>} />
@@ -216,8 +224,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Homepage lockups={lockups} />} />
         <Route path="/new_lockup_contract/" element={<NewLockupContract />} />
-        <Route path="/:cid/*" element={<Customer lockups={lockups} token={token} contractId={contractId} />} />
-        <Route path="/:cid/admin/*" element={<Admin lockups={lockups} token={token} tokenContractId={contractId} />} />
+        <Route path="/:cid/*" element={<Customer lockups={lockups} token={token} contractId={contractId} near={near} />} />
+        <Route path="/:cid/admin/*" element={<Admin lockups={lockups} token={token} tokenContractId={contractId} near={near} />} />
       </Routes>
     </HashRouter>
   );

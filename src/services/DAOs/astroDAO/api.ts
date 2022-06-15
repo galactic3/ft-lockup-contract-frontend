@@ -2,7 +2,7 @@ import {
   Near, Contract, WalletConnection,
 } from 'near-api-js';
 
-const FUNCTION_CALL_CREATE_PROPOSAL_PERMISSION = 'call:AddProposal'
+const FUNCTION_CALL_CREATE_PROPOSAL_PERMISSION = 'call:AddProposal';
 
 const DAO_VIEW_METHODS = [
   'get_policy',
