@@ -28,6 +28,6 @@ describe('1 test', () => {
     )).toThrow('xM out of bound');
   });
   it('returns starting value at the beginning of range', () => {
-    expect(interpolate(1_500_000_000, 10_000, 1_700_000_000, 14_000, 1_500_000_000)).toStrictEqual(1_500_000_000);
+    expect(interpolate(1_500_000_000, 10_000, 1_700_000_000, 14_000, 1_500_000_000)).toStrictEqual(10_000);
   });
 });
