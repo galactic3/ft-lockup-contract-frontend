@@ -231,6 +231,8 @@ export default function App() {
         <Route path="/:cid/admin/*" element={<Admin lockups={lockups} token={token} tokenContractId={contractId} near={near} />} />
         <Route path="/:cid/not_found_contract/" element={<NotFoundContract />} />
         <Route path="*" element={<NotFoundContract />} />
+        <Route path="/:cid/not_found_contract/" element={<NotFoundContract />} />
+        <Route path="*" element={<NotFoundContract />} />
       </Routes>
       <Footer />
     </HashRouter>
