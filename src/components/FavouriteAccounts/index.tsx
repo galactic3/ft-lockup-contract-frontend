@@ -13,6 +13,8 @@ export default function FavouriteAccounts({
 
   const inputRef = useRef<null | HTMLInputElement>(null);
 
+  const parseAccounts = (input: string): string[] => input.replaceAll(' ', '').split(',');
+
   const handleSaveFavouriteAccounts = (): void => {
     const localStorageValue = (value: string[]): string => JSON.stringify({ favouriteAccounts: value });
 
@@ -22,9 +24,19 @@ export default function FavouriteAccounts({
       return;
     }
 
-    const newFavouriteAccounts = inputRef.current.value.replaceAll(' ', '').split(',');
+    const newFavouriteAccounts = parseAccounts(inputRef.current.value);
     onSave(newFavouriteAccounts);
     localStorage.setItem(tokenContractId, localStorageValue(newFavouriteAccounts));
+  };
+
+  const handleChangeFavouriteAccounts = (e: any) => {
+    const { value } = e.target;
+
+    const realAccouns = parseAccounts(value).filter((account) => account.match(/.*(\.)(near|testnet)$/));
+
+    if (favouriteAccounts.toString() !== realAccouns.toString()) {
+      handleSaveFavouriteAccounts();
+    }
   };
 
   return (
@@ -43,6 +55,7 @@ export default function FavouriteAccounts({
         defaultValue={favouriteAccounts.join(', ')}
         inputRef={inputRef}
         onKeyPress={(e) => e.key === 'Enter' && handleSaveFavouriteAccounts()}
+        onChange={handleChangeFavouriteAccounts}
       />
     </div>
   );
