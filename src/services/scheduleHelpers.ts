@@ -7,5 +7,7 @@ export const interpolate = (x0: number, y0: number, x1: number, y1: number, xM: 
     throw new Error('xM out of bound');
   }
 
-  return x0;
+  // const ym = y0 + (y1 - y0) * (xm - x0) / (x1 - x0)
+
+  return y0;
 };
