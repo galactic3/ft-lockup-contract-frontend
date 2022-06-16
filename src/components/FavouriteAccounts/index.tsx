@@ -4,34 +4,59 @@ import {
 
 import { useRef } from 'react';
 
-export default function FavouriteAccounts({ favouriteAccounts, uniqueUsers, onSave }: { favouriteAccounts:string[], uniqueUsers: string[], onSave: Function }) {
+export default function FavouriteAccounts({
+  tokenContractId, favouriteAccounts, uniqueUsers, onSave,
+}: {
+  tokenContractId: string, favouriteAccounts: string[], uniqueUsers: string[], onSave: Function,
+}) {
   console.log('unique users', uniqueUsers);
 
   const inputRef = useRef<null | HTMLInputElement>(null);
 
+  const parseAccounts = (input: string): string[] => input.replaceAll(' ', '').split(',');
+
   const handleSaveFavouriteAccounts = (): void => {
+    const localStorageValue = (value: string[]): string => JSON.stringify({ favouriteAccounts: value });
+
     if (!inputRef?.current?.value) {
-      localStorage.setItem('favouriteAccounts', '[]');
+      localStorage.setItem(tokenContractId, localStorageValue([]));
       onSave([]);
       return;
     }
 
-    const newFavouriteAccounts = inputRef.current.value.replaceAll(' ', '').split(',');
+    const newFavouriteAccounts = parseAccounts(inputRef.current.value);
     onSave(newFavouriteAccounts);
-    localStorage.setItem('favouriteAccounts', JSON.stringify(newFavouriteAccounts));
+    localStorage.setItem(tokenContractId, localStorageValue(newFavouriteAccounts));
+  };
+
+  const handleChangeFavouriteAccounts = (e: any) => {
+    const { value } = e.target;
+
+    const realAccouns = parseAccounts(value).filter((account) => account.match(/.*(\.)(near|testnet)$/));
+
+    if (favouriteAccounts.toString() !== realAccouns.toString()) {
+      handleSaveFavouriteAccounts();
+    }
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', marginBottom: '2em' }}>
       <TextField
-        sx={{ marginBottom: 3, width: 1, paddingRight: 2 }}
+        inputProps={{
+          sx: {
+            padding: 1.4,
+            margin: 0,
+          },
+        }}
+        sx={{ width: 1, padding: 0, margin: 0 }}
         id="outlined-helperText"
-        label="Favourite accounts"
+        label="My accounts"
+        placeholder="Comma separated list of your near accounts"
         defaultValue={favouriteAccounts.join(', ')}
         inputRef={inputRef}
         onKeyPress={(e) => e.key === 'Enter' && handleSaveFavouriteAccounts()}
+        onChange={handleChangeFavouriteAccounts}
       />
-      <button className="button noMargin" type="button" onClick={handleSaveFavouriteAccounts}>save</button>
     </div>
   );
 }

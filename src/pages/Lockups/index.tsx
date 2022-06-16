@@ -14,7 +14,9 @@ import { TMetadata } from '../../services/tokenApi';
 import FavouriteAccounts from '../../components/FavouriteAccounts';
 import { mergeLockupSchedules } from '../../services/schedule';
 
-export default function Lockups({ lockups, token, adminControls }: { lockups: any[], token: TMetadata, adminControls: boolean }) {
+type TToken = TMetadata & { contractId: string };
+
+export default function Lockups({ lockups, token, adminControls }: { lockups: any[], token: TToken, adminControls: boolean }) {
   const uniqueUsers = Array.from(new Set(lockups.map((x) => x.account_id)));
 
   const {
@@ -24,10 +26,10 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
   } = useContext(NearContext);
 
   const { signedIn, isAdmin } = near.currentUser;
-  const favouriteAccountsFromLocalStorage = JSON.parse(localStorage.getItem('favouriteAccounts') || '[]');
 
+  const storedData = localStorage.getItem(token.contractId);
+  const favouriteAccountsFromLocalStorage = storedData ? JSON.parse(storedData)?.favouriteAccounts : [];
   const [favouriteAccounts, setFavouriteAccounts] = useState<string[]>(favouriteAccountsFromLocalStorage);
-
   const favouriteAccountsLockups = lockups.filter((lockup) => favouriteAccounts.includes(lockup.account_id));
 
   const schedules = Array.from(new Set(lockups.map((x) => x.schedule)));
@@ -38,9 +40,6 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
     locked: lockups.length ? mergeLockupSchedules(vestingSchedules, token.decimals) : [],
   };
 
-  // mergeSchedules(lockups[9].schedule, lockups[9].termination_config?.vesting_schedule?.Schedule, token.decimals);
-  // mergeSchedules(schedules, vestingSchedules, token.decimals);
-
   const restOfThePage = (
     <div>
 
@@ -49,6 +48,8 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
       <br />
 
       {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
+
+      <Chart data={chartData} />
 
       {lockups.length === 0 ? (
         <div>
@@ -70,9 +71,20 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
     </div>
   );
 
+  const showFavouriteAccounts = !window.location.href.match('admin');
+
+  console.log('token', token);
+
   return (
     <div className="container">
-      <FavouriteAccounts favouriteAccounts={favouriteAccounts} uniqueUsers={uniqueUsers} onSave={setFavouriteAccounts} />
+      { showFavouriteAccounts && (
+        <FavouriteAccounts
+          tokenContractId={token.contractId}
+          favouriteAccounts={favouriteAccounts}
+          uniqueUsers={uniqueUsers}
+          onSave={setFavouriteAccounts}
+        />
+      ) }
       { !!favouriteAccounts.length && restOfThePage }
     </div>
   );
