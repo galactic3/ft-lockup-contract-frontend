@@ -76,27 +76,25 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
     );
   };
 
-  const showFavouriteAccounts = !window.location.href.match('admin');
-
   console.log('favouriteAccountsLockups', favouriteAccountsLockups);
 
-  if (showFavouriteAccounts) {
+  if (adminControls) {
     return (
       <div className="container">
-        <FavouriteAccounts
-          tokenContractId={token.contractId}
-          favouriteAccounts={favouriteAccounts}
-          uniqueUsers={uniqueUsers}
-          onSave={setFavouriteAccounts}
-        />
-        {lockupsTable(favouriteAccountsLockups)}
+        {lockupsTable(lockups)}
       </div>
     );
   }
 
   return (
     <div className="container">
-      {lockupsTable(lockups)}
+      <FavouriteAccounts
+        tokenContractId={token.contractId}
+        favouriteAccounts={favouriteAccounts}
+        uniqueUsers={uniqueUsers}
+        onSave={setFavouriteAccounts}
+      />
+      {lockupsTable(favouriteAccountsLockups)}
     </div>
   );
 }
