@@ -2,7 +2,7 @@
 
 import { TCheckpoint, TNearTimestamp } from './api';
 
-export const interpolateRaw = (x0: number, y0: number, x1: number, y1: number, xM: number) => {
+export const interpolateRaw = (x0: number, y0: number, x1: number, y1: number, xM: number) : Number => {
   if (x1 <= x0) {
     throw new Error('invalid range');
   }
@@ -15,7 +15,7 @@ export const interpolateRaw = (x0: number, y0: number, x1: number, y1: number, x
   return yM;
 };
 
-export const interpolate = (checkpoint0: TCheckpoint, checkpoint1: TCheckpoint, timestamp: TNearTimestamp) => {
+export const interpolate = (checkpoint0: TCheckpoint, checkpoint1: TCheckpoint, timestamp: TNearTimestamp) : TCheckpoint => {
   const balance = interpolateRaw(
     checkpoint0.timestamp,
     parseFloat(checkpoint0.balance),
@@ -25,4 +25,12 @@ export const interpolate = (checkpoint0: TCheckpoint, checkpoint1: TCheckpoint, 
   );
 
   return { timestamp, balance: balance.toString() };
+};
+
+export const interpolateSchedule = (schedule: TCheckpoint[], timestamp: TNearTimestamp) : TCheckpoint => {
+  if (schedule.length === 0) {
+    throw new Error('empty schedule');
+  }
+
+  return schedule[0];
 };
