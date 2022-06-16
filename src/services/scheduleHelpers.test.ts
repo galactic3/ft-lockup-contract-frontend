@@ -1,4 +1,6 @@
-import { interpolate, interpolateRaw, interpolateSchedule } from './scheduleHelpers';
+import {
+  interpolate, interpolateRaw, interpolateSchedule, sumSchedules,
+} from './scheduleHelpers';
 
 describe('interpolateRaw test', () => {
   it('test interpolate doesn\'t throw', () => {
@@ -110,5 +112,26 @@ describe('interpolateSchedule test', () => {
       schedule,
       timestamp1,
     )).toStrictEqual({ timestamp: timestamp1, balance: '30000' });
+  });
+});
+describe('sumSchedules', () => {
+  const schedule1 = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_900_000_000, balance: '60000' },
+  ];
+  const schedule2 = [
+    { timestamp: 1_600_000_000, balance: '0' },
+    { timestamp: 1_700_000_000, balance: '20000' },
+  ];
+  const expected = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_600_000_000, balance: '15000' },
+    { timestamp: 1_700_000_000, balance: '50000' },
+    { timestamp: 1_900_000_000, balance: '80000' },
+  ];
+  it('doesnt throw', () => {
+    sumSchedules([schedule1, schedule2]);
+    // should return expected
+    // if schedule1 passed returns this schedule
   });
 });
