@@ -62,6 +62,7 @@ export const connectNear = async (): Promise<INearProps> => {
     if (userDaosCouncils?.length > 0) {
       daos = userDaosCouncils.map((daoCMs) => Object.keys(daoCMs).pop() || '');
     }
+    console.log('userDaosCouncils', userDaosCouncils);
     console.log('councilMembers', daosCouncilMembers);
     console.log('daos', daos);
   } catch (e) {

@@ -39,21 +39,17 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     throw Error('Cannot fund draft group without specified amount');
   }
 
-  const { daos, isAdmin } = near.currentUser;
+  const { daos } = near.currentUser;
 
-  console.log('DAOS', daos);
-
-  const defaultDao:string = daos.length > 0 ? daos.pop() || '' : '';
+  const defaultDao:string = daos.length > 0 ? daos[0] || '' : '';
 
   let daoInput;
 
-  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState('');
+  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState(defaultDao);
 
   const handleContractAddressChange = (event: any) => {
     setAstroDAOContractAddress(event.target.value as string);
   };
-
-  console.log('isAdmin', isAdmin);
 
   if (daos.length > 0) {
     daoInput = (
@@ -64,13 +60,12 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
           sx={{ marginBottom: 3, width: 1 }}
           value={astroDAOContractAddress}
           onChange={handleContractAddressChange}
-          defaultValue={defaultDao}
         >
           {daos.map((dao) => <MenuItem value={dao}>{dao}</MenuItem>)}
         </Select>
       </div>
     );
-  } else if (isAdmin) {
+  } else {
     daoInput = (
       <TextField
         required
