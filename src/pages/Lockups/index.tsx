@@ -29,9 +29,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
 
   const storedData = localStorage.getItem(token.contractId);
   const favouriteAccountsFromLocalStorage = storedData ? JSON.parse(storedData)?.favouriteAccounts : [];
-
   const [favouriteAccounts, setFavouriteAccounts] = useState<string[]>(favouriteAccountsFromLocalStorage);
-
   const favouriteAccountsLockups = lockups.filter((lockup) => favouriteAccounts.includes(lockup.account_id));
 
   const schedules = Array.from(new Set(lockups.map((x) => x.schedule)));
@@ -41,9 +39,6 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
     vested: lockups.length ? mergeLockupSchedules(schedules, token.decimals) : [],
     locked: lockups.length ? mergeLockupSchedules(vestingSchedules, token.decimals) : [],
   };
-
-  // mergeSchedules(lockups[9].schedule, lockups[9].termination_config?.vesting_schedule?.Schedule, token.decimals);
-  // mergeSchedules(schedules, vestingSchedules, token.decimals);
 
   const restOfThePage = (
     <div>
