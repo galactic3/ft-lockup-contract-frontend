@@ -35,55 +35,60 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
   const schedules = Array.from(new Set(lockups.map((x) => x.schedule)));
   const vestingSchedules = Array.from(new Set(lockups.map((x) => x.termination_config?.vesting_schedule?.Schedule))).filter((s) => s !== undefined);
 
-  const chartData = {
-    vested: lockups.length ? mergeLockupSchedules(schedules, token.decimals) : [],
-    locked: lockups.length ? mergeLockupSchedules(vestingSchedules, token.decimals) : [],
-  };
+  const chartData = (lockupsData: any): any => ({
+    vested: lockupsData.length ? mergeLockupSchedules(schedules, token.decimals) : [],
+    locked: lockupsData.length ? mergeLockupSchedules(vestingSchedules, token.decimals) : [],
+  });
 
-  const restOfThePage = (
-    <div>
-
-      <Chart data={chartData} />
-
-      <br />
-
-      {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
-
-      {lockups.length === 0 ? (
+  const lockupsTable = (lockupsData: any): any => {
+    if (lockupsData.length > 0) {
+      return (
         <div>
-          There are no lockups yet.
-          {adminControls && (
-            <div>
-              Create single lockup or create batch of them via
-              {' '}
-              <Link to={`/${near.lockupContractId}/admin/draft_groups`}>Draft Groups</Link>
-              .
-            </div>
-          )}
+          <Chart data={chartData(lockupsData)} />
+
+          { signedIn && adminControls && isAdmin && <CreateLockup token={token} /> }
+
+          <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }} component={Paper}>
+            <LockupsTable lockups={lockupsData} token={token} adminControls={adminControls} />
+          </TableContainer>
         </div>
-      ) : (
-        <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }} component={Paper}>
-          <LockupsTable lockups={isAdmin ? lockups : favouriteAccountsLockups} token={token} adminControls={adminControls} />
-        </TableContainer>
-      )}
-    </div>
-  );
+      );
+    }
+
+    return (
+      <div>
+        There are no lockups yet.
+        {adminControls && (
+          <div>
+            Create single lockup or create batch of them via
+            {' '}
+            <Link to={`/${near.lockupContractId}/admin/draft_groups`}>Draft Groups</Link>
+            .
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const showFavouriteAccounts = !window.location.href.match('admin');
 
-  console.log('token', token);
-
-  return (
-    <div className="container">
-      { showFavouriteAccounts && (
+  if (showFavouriteAccounts) {
+    return (
+      <div className="container">
         <FavouriteAccounts
           tokenContractId={token.contractId}
           favouriteAccounts={favouriteAccounts}
           uniqueUsers={uniqueUsers}
           onSave={setFavouriteAccounts}
         />
-      ) }
-      { !!favouriteAccounts.length && restOfThePage }
+        {lockupsTable(favouriteAccountsLockups)}
+      </div>
+    );
+  }
+
+  return (
+    <div className="container">
+      {lockupsTable(lockups)}
     </div>
   );
 }
