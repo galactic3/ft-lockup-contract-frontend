@@ -6,17 +6,21 @@ import {
   DialogTitle,
   IconButton,
   TextField,
+  InputLabel,
+  MenuItem,
 } from '@mui/material';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 import { INearProps, NearContext } from '../../services/near';
 import { customFunctionCallProposalFormLink, ONE_YOKTO } from '../../services/DAOs/astroDAO/utils';
 
-function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount: string | undefined }) {
+function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount: any }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const { draftGroupIndex, amount } = props;
 
-  const defaultDescription = `Fund draft group ${draftGroupIndex} with amount ${amount}. Draft group link: ${window.location.href}`;
+  const defaultDescription = `Fund draft group ${draftGroupIndex} with amount ${amount?.label}. Draft group link: ${window.location.href}`;
   const [description, setDescription] = useState(defaultDescription);
   const [astroDAOContractAddress, setAstroDAOContractAddress] = useState('');
 
@@ -32,9 +36,11 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     throw Error('Cannot fund draft group without index');
   }
 
-  if (amount === undefined) {
+  if (amount?.value === undefined) {
     throw Error('Cannot fund draft group without specified amount');
   }
+
+  const { daos } = near.currentUser;
 
   const buildProposalLink = (): string => {
     const details = encodeURIComponent(description);
@@ -42,7 +48,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     const methodName = 'ft_transfer_call';
     const json = {
       receiver_id: near.api.getContract().contractId,
-      amount,
+      amount: amount.value,
       msg: JSON.stringify({ draft_group_id: draftGroupIndex }),
     };
     const actionsGas = '100'; // with this amount transaction completes in one go (without resubmit with additional gas)
@@ -59,8 +65,9 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     );
   };
 
-  const handleContractAddressChange = (e: any) => {
-    setAstroDAOContractAddress(e.target.value);
+  const handleContractAddressChange = (event: SelectChangeEvent) => {
+    console.log('EEEEE', event.target.value);
+    setAstroDAOContractAddress(event.target.value as string);
   };
 
   const handleDescriptionChange = (e: any) => {
@@ -71,10 +78,12 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     window.open(buildProposalLink(), '_blank')?.focus();
   };
 
+  console.log('DAOS', near.currentUser.daos);
+
   return (
     <div>
       <button className="button fullWidth" type="button" onClick={handleOpen}>Fund with DAO</button>
-      <Dialog open={open} sx={{ padding: 1, minWidth: 1 / 3 }} onClose={handleClose}>
+      <Dialog open={open} sx={{ padding: 1, minWidth: 1 }} onClose={handleClose}>
         <form className="form-submit" onSubmit={handleFund}>
           <DialogTitle>
             Fund with DAO
@@ -91,13 +100,15 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
             </IconButton>
           </DialogTitle>
           <DialogContent style={{ paddingTop: '1.25em' }}>
-            <TextField
+            <InputLabel>Select DAO contract address</InputLabel>
+            <Select
               required
               sx={{ marginBottom: 3, width: 1 }}
-              id="outlined-helperText"
-              label="DAO contract address"
+              value={astroDAOContractAddress}
               onChange={handleContractAddressChange}
-            />
+            >
+              {daos.map((dao) => <MenuItem value={dao}>{dao}</MenuItem>)}
+            </Select>
             <TextField
               sx={{ width: 1 }}
               id="outlined-multiline-static"
