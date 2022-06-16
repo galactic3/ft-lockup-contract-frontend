@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-import { TCheckpoint, TNearTimestamp } from './api';
+import { TCheckpoint, TNearTimestamp, TSchedule } from './api';
 
 export const interpolateRaw = (x0: number, y0: number, x1: number, y1: number, xM: number) : Number => {
   if (x1 <= x0) {
@@ -50,4 +50,12 @@ export const interpolateSchedule = (schedule: TCheckpoint[], timestamp: TNearTim
   }
 
   throw new Error('unreachable');
+};
+
+export const sumSchedules = (schedules: TSchedule[]) : TSchedule => {
+  if (schedules.length === 0) {
+    throw new Error('schedules is empty');
+  }
+
+  return [];
 };
