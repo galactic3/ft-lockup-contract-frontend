@@ -13,6 +13,7 @@ import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import FavouriteAccounts from '../../components/FavouriteAccounts';
 import { mergeLockupSchedules } from '../../services/schedule';
+import { TSchedule } from '../../services/api';
 
 type TToken = TMetadata & { contractId: string };
 
@@ -32,29 +33,29 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
   const [favouriteAccounts, setFavouriteAccounts] = useState<string[]>(favouriteAccountsFromLocalStorage);
   const favouriteAccountsLockups = lockups.filter((lockup) => favouriteAccounts.includes(lockup.account_id));
 
-  const lockupsList = isAdmin ? lockups : favouriteAccountsLockups;
+  const chartData = (lockupsList: any[]): any => {
+    const schedules = Array.from(new Set(lockupsList.map((x) => x.schedule))) as TSchedule[];
+    const vestingSchedules = Array.from(new Set(lockupsList.map((x) => x?.termination_config?.vesting_schedule?.Schedule))).filter((s) => s !== undefined) as TSchedule[];
 
-  const schedules = Array.from(new Set(lockupsList.map((x) => x.schedule)));
-  const vestingSchedules = Array.from(new Set(lockupsList.map((x) => x.termination_config?.vesting_schedule?.Schedule))).filter((s) => s !== undefined);
+    return {
+      vested: lockupsList.length ? mergeLockupSchedules(schedules, token.decimals) : [],
+      locked: lockupsList.length ? mergeLockupSchedules(vestingSchedules, token.decimals) : [],
+    };
+  };
 
-  const chartData = (lockupsData: any): any => ({
-    vested: lockupsData.length ? mergeLockupSchedules(schedules, token.decimals) : [],
-    locked: lockupsData.length ? mergeLockupSchedules(vestingSchedules, token.decimals) : [],
-  });
-
-  const lockupsTable = (lockupsData: any): any => {
-    if (lockupsData.length > 0) {
+  const lockupsTable = (lockupsList: any): any => {
+    if (lockupsList.length > 0) {
       return (
         <div>
 
-          <Chart data={chartData(lockupsData)} />
+          <Chart data={chartData(lockupsList)} />
 
           <br />
 
           { signedIn && adminControls && isAdmin && <CreateLockup token={token} /> }
 
           <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }} component={Paper}>
-            <LockupsTable lockups={lockupsData} token={token} adminControls={adminControls} />
+            <LockupsTable lockups={lockupsList} token={token} adminControls={adminControls} />
           </TableContainer>
         </div>
       );
@@ -75,25 +76,25 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
     );
   };
 
-  const showFavouriteAccounts = !window.location.href.match('admin');
+  console.log('favouriteAccountsLockups', favouriteAccountsLockups);
 
-  if (showFavouriteAccounts) {
+  if (adminControls) {
     return (
       <div className="container">
-        <FavouriteAccounts
-          tokenContractId={token.contractId}
-          favouriteAccounts={favouriteAccounts}
-          uniqueUsers={uniqueUsers}
-          onSave={setFavouriteAccounts}
-        />
-        {lockupsTable(favouriteAccountsLockups)}
+        {lockupsTable(lockups)}
       </div>
     );
   }
 
   return (
     <div className="container">
-      {lockupsTable(lockups)}
+      <FavouriteAccounts
+        tokenContractId={token.contractId}
+        favouriteAccounts={favouriteAccounts}
+        uniqueUsers={uniqueUsers}
+        onSave={setFavouriteAccounts}
+      />
+      {lockupsTable(favouriteAccountsLockups)}
     </div>
   );
 }
