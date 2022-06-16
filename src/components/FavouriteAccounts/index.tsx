@@ -22,16 +22,21 @@ export default function FavouriteAccounts({ favouriteAccounts, uniqueUsers, onSa
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', marginBottom: '2em' }}>
       <TextField
-        sx={{ marginBottom: 3, width: 1, paddingRight: 2 }}
+        inputProps={{
+          sx: {
+            padding: 1,
+            margin: 0,
+          },
+        }}
+        sx={{ width: 1, padding: 0, margin: 0 }}
         id="outlined-helperText"
         label="Favourite accounts"
         defaultValue={favouriteAccounts.join(', ')}
         inputRef={inputRef}
         onKeyPress={(e) => e.key === 'Enter' && handleSaveFavouriteAccounts()}
       />
-      <button className="button noMargin" type="button" onClick={handleSaveFavouriteAccounts}>save</button>
     </div>
   );
 }
