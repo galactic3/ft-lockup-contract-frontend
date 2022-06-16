@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { ChangeEvent, useState } from 'react';
 import { ReactComponent as Logo } from '../../assets/images/near.svg';
@@ -12,15 +12,16 @@ export default function Homepage(
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
   };
+  const navigate = useNavigate();
 
   const handleOpenLockupContract = () => {
-    const url = `${window.location.origin.toString()}#/${address}/lockups`;
-    window.location.assign(url);
+    const url = `/${address}/lockups`;
+    navigate(url);
     window.location.reload();
   };
 
   return (
-    <div>
+    <div className="main">
       <div className="container home">
 
         <ul className="home-list">

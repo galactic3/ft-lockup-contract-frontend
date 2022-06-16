@@ -22,7 +22,9 @@ import Header from '../Header';
 import Authorize from '../Authorize';
 import RequireAuth from '../RequireAuth';
 import { TMetadata } from '../../services/tokenApi';
-import Homepage from '../Homepage';
+import Homepage from '../../pages/Homepage';
+import NotFoundContract from '../../pages/NotFoundContract';
+import Footer from '../Footer';
 
 function Customer({
   lockups, token, contractId, near,
@@ -39,6 +41,7 @@ function Customer({
         <Route path="/about" element={<About lockups={lockups} token_account_id={contractId} />} />
         <Route path="/lockups" element={near && <Lockups lockups={lockups} token={token} adminControls={false} />} />
         <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} token={token} adminControls={false} />} />
+        <Route path="/draft_groups" element={<RequireAuth><PageDraftGroupsIndex token={token} /></RequireAuth>} />
         <Route path="/draft_groups/:draftGroupId" element={<RequireAuth><PageDraftGroup token={token} /></RequireAuth>} />
       </Routes>
     </>
@@ -226,7 +229,10 @@ export default function App() {
         <Route path="/new_lockup_contract/" element={<NewLockupContract />} />
         <Route path="/:cid/*" element={<Customer lockups={lockups} token={token} contractId={contractId} near={near} />} />
         <Route path="/:cid/admin/*" element={<Admin lockups={lockups} token={token} tokenContractId={contractId} near={near} />} />
+        <Route path="/:cid/not_found_contract/" element={<NotFoundContract />} />
+        <Route path="*" element={<NotFoundContract />} />
       </Routes>
+      <Footer />
     </HashRouter>
   );
 }

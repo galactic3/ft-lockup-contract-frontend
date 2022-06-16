@@ -4,6 +4,7 @@ import {
   IconButton,
   TableCell,
   TableRow,
+  Tooltip,
 } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -29,6 +30,11 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
   const vestingSchedule = row?.termination_config?.vesting_schedule?.Schedule;
 
   const selectedAccountPage = window.location.href.split('/').pop() === row.account_id;
+
+  const claimedAmount = `${convertAmount(row.claimed_balance, token.decimals)}`;
+  const availbleAmount = `${convertAmount(row.unclaimed_balance, token.decimals)}`;
+  const vestedAmount = `${convertAmount(row.total_balance - row.claimed_balance - row.unclaimed_balance, token.decimals)}`;
+  const unvestedAmount = `${convertAmount(row.total_balance - row.total_balance, token.decimals)}`;
 
   return (
     <>
@@ -63,24 +69,51 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
           <TokenIcon url={token.icon || ''} size={32} />
         </TableCell>
         <TableCell align="center">
-          <div className="progress-bar">
-            <div style={{ width: `${(row.claimed_balance / row.total_balance) * 100}%` }} className="claimed">
-              <span>{convertAmount(row.claimed_balance, token.decimals)}</span>
+          <Tooltip
+            title={(
+              <div className="progress-bar__tooltip">
+                <span>
+                  <i className="claimed">&nbsp;</i>
+                  <b>{claimedAmount}</b>
+                  {' '}
+                  Claimed
+                </span>
+                <span>
+                  <i className="available">&nbsp;</i>
+                  <b>{availbleAmount}</b>
+                  {' '}
+                  Available
+                </span>
+                <span>
+                  <i className="vested">&nbsp;</i>
+                  <b>{vestedAmount}</b>
+                  {' '}
+                  Vested
+                </span>
+                <span>
+                  <i className="unvested">&nbsp;</i>
+                  <b>{unvestedAmount}</b>
+                  {' '}
+                  Unvested
+                </span>
+              </div>
+)}
+            placement="top"
+            arrow
+          >
+            <div className="progress-bar">
+              <div style={{ width: `${(row.claimed_balance / row.total_balance) * 100}%` }} className="claimed">
+                &nbsp;
+              </div>
+              <div style={{ width: `${(row.unclaimed_balance / row.total_balance) * 100}%` }} className="available">
+                &nbsp;
+              </div>
+              <div style={{ width: `${((row.total_balance - row.claimed_balance - row.unclaimed_balance) / row.total_balance) * 100}%` }} className="vested">
+                &nbsp;
+              </div>
+              <div style={{ width: `${(row.total_balance - row.total_balance) * 100}%` }} className="unvested">&nbsp;</div>
             </div>
-            <div style={{ width: `${(row.unclaimed_balance / row.total_balance) * 100}%` }} className="available">
-              <span>
-                {convertAmount(row.unclaimed_balance, token.decimals)}
-              </span>
-            </div>
-            <div style={{ width: `${((row.total_balance - row.claimed_balance - row.unclaimed_balance) / row.total_balance) * 100}%` }} className="vested">
-              <span>
-                {((row.total_balance - row.claimed_balance - row.unclaimed_balance)
-                  / row.total_balance) > 0.2 && convertAmount(row.total_balance
-                  - row.claimed_balance - row.unclaimed_balance, token.decimals)}
-              </span>
-            </div>
-            <div style={{ width: `${(row.total_balance - row.total_balance) * 100}%` }} className="unvested">&nbsp;</div>
-          </div>
+          </Tooltip>
         </TableCell>
       </TableRow>
       <TableRow sx={{ background: '#F4FAFF' }}>
