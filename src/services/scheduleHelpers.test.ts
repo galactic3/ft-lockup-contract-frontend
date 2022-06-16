@@ -1,6 +1,6 @@
-import { interpolate, interpolateRaw } from './scheduleHelpers';
+import { interpolate, interpolateRaw, interpolateSchedule } from './scheduleHelpers';
 
-describe('1 test', () => {
+describe('interpolateRaw test', () => {
   it('test interpolate doesn\'t throw', () => {
     interpolateRaw(1_500_000_000, 10_000, 1_700_000_000, 14_000, 1_550_000_000);
   });
@@ -35,12 +35,34 @@ describe('1 test', () => {
   });
 });
 
-describe('1 test', () => {
+describe('interpolate test', () => {
   it('returns valid intermediate value', () => {
     expect(interpolate(
       { timestamp: 1_500_000_000, balance: '10000' },
       { timestamp: 1_700_000_000, balance: '14000' },
       1_550_000_000,
     )).toStrictEqual({ timestamp: 1_550_000_000, balance: '11000' });
+  });
+});
+
+describe('interpolateSchedule test', () => {
+  const schedule = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_599_999_999, balance: '0' },
+    { timestamp: 1_600_000_000, balance: '15000' },
+    { timestamp: 1_900_000_000, balance: '60000' },
+  ];
+  it('handles empty schedule', () => {
+    // if schedule is empty throw error
+    expect(() => interpolateSchedule(
+      [],
+      1_550_000_000,
+    )).toThrow('empty schedule');
+  });
+  it('works', () => {
+    // if timestamp before schedule stamp returns first checkpoint
+    // if timestamp after schedule stamp returns last checkpoint
+    // if timestamp matches checkpoint from schedule return checkpoint from schedule
+    // if between two checkpoints returns interpolated value
   });
 });
