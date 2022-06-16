@@ -12,7 +12,9 @@ import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import FavouriteAccounts from '../../components/FavouriteAccounts';
 
-export default function Lockups({ lockups, token, adminControls }: { lockups: any[], token: TMetadata, adminControls: boolean }) {
+type TToken = TMetadata & { contractId: string };
+
+export default function Lockups({ lockups, token, adminControls }: { lockups: any[], token: TToken, adminControls: boolean }) {
   const uniqueUsers = Array.from(new Set(lockups.map((x) => x.account_id)));
 
   const {
@@ -22,7 +24,9 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
   } = useContext(NearContext);
 
   const { signedIn, isAdmin } = near.currentUser;
-  const favouriteAccountsFromLocalStorage = JSON.parse(localStorage.getItem('favouriteAccounts') || '[]');
+
+  const storedData = localStorage.getItem(token.contractId);
+  const favouriteAccountsFromLocalStorage = storedData ? JSON.parse(storedData)?.favouriteAccounts : [];
 
   const [favouriteAccounts, setFavouriteAccounts] = useState<string[]>(favouriteAccountsFromLocalStorage);
 
@@ -54,9 +58,18 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
 
   const showFavouriteAccounts = !window.location.href.match('admin');
 
+  console.log('token', token);
+
   return (
     <div className="container">
-      { showFavouriteAccounts && <FavouriteAccounts favouriteAccounts={favouriteAccounts} uniqueUsers={uniqueUsers} onSave={setFavouriteAccounts} /> }
+      { showFavouriteAccounts && (
+        <FavouriteAccounts
+          tokenContractId={token.contractId}
+          favouriteAccounts={favouriteAccounts}
+          uniqueUsers={uniqueUsers}
+          onSave={setFavouriteAccounts}
+        />
+      ) }
       { !!favouriteAccounts.length && restOfThePage }
     </div>
   );
