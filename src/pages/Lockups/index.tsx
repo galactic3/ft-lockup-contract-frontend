@@ -5,12 +5,14 @@ import {
 import { useContext, useState } from 'react';
 
 import { Link } from 'react-router-dom';
+import Chart from '../../components/Chart';
 
 import CreateLockup from '../../components/CreateLockup';
 import LockupsTable from '../../components/LockupsTable';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import FavouriteAccounts from '../../components/FavouriteAccounts';
+import { mergeLockupSchedules } from '../../services/schedule';
 
 type TToken = TMetadata & { contractId: string };
 
@@ -27,14 +29,22 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
 
   const storedData = localStorage.getItem(token.contractId);
   const favouriteAccountsFromLocalStorage = storedData ? JSON.parse(storedData)?.favouriteAccounts : [];
-
   const [favouriteAccounts, setFavouriteAccounts] = useState<string[]>(favouriteAccountsFromLocalStorage);
-
   const favouriteAccountsLockups = lockups.filter((lockup) => favouriteAccounts.includes(lockup.account_id));
+
+  const schedules = Array.from(new Set(lockups.map((x) => x.schedule)));
+  const vestingSchedules = Array.from(new Set(lockups.map((x) => x.termination_config?.vesting_schedule?.Schedule))).filter((s) => s !== undefined);
+
+  const chartData = {
+    vested: lockups.length ? mergeLockupSchedules(schedules, token.decimals) : [],
+    locked: lockups.length ? mergeLockupSchedules(vestingSchedules, token.decimals) : [],
+  };
 
   const restOfThePage = (
     <div>
       {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
+
+      <Chart data={chartData} />
 
       {lockups.length === 0 ? (
         <div>
