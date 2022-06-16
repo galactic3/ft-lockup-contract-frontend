@@ -50,6 +50,12 @@ export type TCheckpoint = {
   balance: TNearAmount,
 };
 
+export type TCheckpointWithIndex = {
+  timestamp: TNearTimestamp,
+  balance: TNearAmount,
+  index: number;
+};
+
 export type TSchedule = TCheckpoint[];
 
 export type TLockup = {

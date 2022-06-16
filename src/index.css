@@ -19,6 +19,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.main {
+  min-height: calc(100vh - 124px);
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -47,6 +51,15 @@ code {
   height: 82px;
   background: var(--white);
   margin: 0 0 50px;
+}
+
+.logo {
+  font-size: 24px;
+  line-height: 82px;
+  font-weight: 800;
+  margin-right: 50px;
+  color: var(--primary);
+  text-decoration: none;
 }
 
 .nav {
@@ -196,11 +209,11 @@ div.process-log {
 }
 
 .table-head .MuiTableCell-head {
-  color: #97A0C3;
+  color: var(--primary);
   background: #F4F7FC;
   text-transform: uppercase;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .main-table .MuiTableCell-head,
@@ -209,8 +222,7 @@ div.process-log {
 }
 
 .main-table .MuiTableCell-body {
-  font-weight: 700;
-  color: #636E95;
+  color: var(--primary);
 }
 
 .main-table tr .MuiTableCell-body:first-child {
@@ -222,7 +234,7 @@ div.process-log {
 }
 
 .main-table .MuiTableCell-body a {
-  color: #636E95;
+  color: var(--primary);
 }
 
 .main-table .exp-row .MuiTableCell-body {
@@ -265,10 +277,10 @@ div.process-log {
 
 .progress-bar {
   display: flex;
-  width: 300px;
+  width: 200px;
   margin: 0 auto;
-  height: 16px;
-  border-radius: 16px;
+  height: 8px;
+  border-radius: 4px;
   overflow: hidden;
   text-align: center;
 }
@@ -280,22 +292,50 @@ div.process-log {
   line-height: 16px;
 }
 
+.progress-bar__tooltip {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.progress-bar__tooltip span {
+  display: block;
+  width: 50%;
+}
+
+.progress-bar__tooltip span {
+  display: block;
+  width: calc(50% - 10px);
+  font-size: 12px;
+  margin: 5px;
+}
+
+.progress-bar__tooltip span i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.progress-bar__tooltip span b {
+  font-weight: 600;
+}
+
 .claimed {
-  background: #00D1A2;
-  border-radius: 14px 0 0 14px;
+  background: var(--yellow);
 }
 
 .available {
-  background: #D2D0FE;
+  background: var(--green);
 }
 
 .vested {
-  background: #55AAFF;
+  background: #0069D1;
 }
 
 .unvested {
-  background: #F4A700;
-  border-radius: 0 14px 14px 0;
+  background: #F45800;
 }
 
 .button {

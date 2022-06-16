@@ -1,0 +1,13 @@
+@use 'colors.scss';
+
+.footer {
+  .container {
+    padding-bottom: 0;
+  }
+  .nav-link {
+    color: var(--gray);
+    text-transform: capitalize;
+    height: 124px;
+    line-height: 124px;
+  }
+}
