@@ -40,9 +40,14 @@ export const interpolateSchedule = (schedule: TCheckpoint[], timestamp: TNearTim
     return { timestamp, balance: schedule[schedule.length - 1].balance };
   }
 
-  const result = schedule.find((x: TCheckpoint) => x.timestamp === timestamp);
-
-  if (result) return result;
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < schedule.length; i++) {
+    if (schedule[i + 1].timestamp <= timestamp) {
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+    return interpolate(schedule[i], schedule[i + 1], timestamp);
+  }
 
   throw new Error('not found');
 };
