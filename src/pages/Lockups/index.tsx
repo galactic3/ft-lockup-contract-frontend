@@ -52,9 +52,11 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
     </div>
   );
 
+  const showFavouriteAccounts = !window.location.href.match('admin');
+
   return (
     <div className="container">
-      <FavouriteAccounts favouriteAccounts={favouriteAccounts} uniqueUsers={uniqueUsers} onSave={setFavouriteAccounts} />
+      { showFavouriteAccounts && <FavouriteAccounts favouriteAccounts={favouriteAccounts} uniqueUsers={uniqueUsers} onSave={setFavouriteAccounts} /> }
       { !!favouriteAccounts.length && restOfThePage }
     </div>
   );
