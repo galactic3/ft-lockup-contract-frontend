@@ -43,9 +43,12 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
 
   const restOfThePage = (
     <div>
-      {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
 
       <Chart data={chartData} />
+
+      <br />
+
+      {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
 
       {lockups.length === 0 ? (
         <div>
