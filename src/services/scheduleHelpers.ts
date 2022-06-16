@@ -32,5 +32,13 @@ export const interpolateSchedule = (schedule: TCheckpoint[], timestamp: TNearTim
     throw new Error('empty schedule');
   }
 
+  if (timestamp < schedule[0].timestamp) {
+    return { timestamp, balance: schedule[0].balance };
+  }
+
+  if (timestamp >= schedule[schedule.length - 1].timestamp) {
+    return { timestamp, balance: schedule[schedule.length - 1].balance };
+  }
+
   return schedule[0];
 };
