@@ -20,7 +20,7 @@ body {
 }
 
 .main {
-  min-height: calc(100vh - 124px);
+
 }
 
 code {
@@ -397,7 +397,7 @@ div.process-log {
 }
 
 .home-list {
-  margin: 100px 0 60px;
+  margin: 0 0 60px;
   padding: 0;
   display: flex;
   justify-content: space-between;

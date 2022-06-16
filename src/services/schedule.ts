@@ -9,14 +9,7 @@ export const getScheduleAmount = (schedules: TSchedule[], timestamp: number, dec
 
   console.log(schedule);
 
-  const uniqueSchedule = Array.from(schedule.reduce((m, x) => m.set(
-    x.timestamp,
-    (new BN(m.get(x.timestamp) || 0)).add(new BN(x.balance)),
-  ), new Map()), ([t, balance]) => ([t, convertAmount(balance, decimals)]));
-
   // ym = y0 + (y1 - y0) * (xm - x0) / (x1 - x0)
-
-  console.log(uniqueSchedule);
 
   let amount = '0';
 
@@ -44,7 +37,6 @@ export const getScheduleAmount = (schedules: TSchedule[], timestamp: number, dec
   return convertAmount(amount, decimals);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const mergeSchedules = (schedules: TSchedule[], vestingSchedules: TSchedule[], decimals: number) => {
   const timestamps = Array.from(new Set(schedules.concat(vestingSchedules).flatMap((schedule: TCheckpoint[]) => schedule)
     .map((s) => s.timestamp)
@@ -66,7 +58,8 @@ export const mergeLockupSchedules = (schedules: TSchedule[], decimals: number) =
     (new BN(m.get(x.timestamp) || 0)).add(new BN(x.balance)),
   ), new Map()), ([t, balance]) => {
     s = s.add(balance);
-    return [t * 1000, convertAmount(s.toString(), decimals)];
+    console.log(s);
+    return [t * 1000, convertAmount(balance, decimals)];
   });
 
   console.log(result);

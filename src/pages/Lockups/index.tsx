@@ -32,8 +32,10 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
   const [favouriteAccounts, setFavouriteAccounts] = useState<string[]>(favouriteAccountsFromLocalStorage);
   const favouriteAccountsLockups = lockups.filter((lockup) => favouriteAccounts.includes(lockup.account_id));
 
-  const schedules = Array.from(new Set(lockups.map((x) => x.schedule)));
-  const vestingSchedules = Array.from(new Set(lockups.map((x) => x.termination_config?.vesting_schedule?.Schedule))).filter((s) => s !== undefined);
+  const lockupsList = isAdmin ? lockups : favouriteAccountsLockups;
+
+  const schedules = Array.from(new Set(lockupsList.map((x) => x.schedule)));
+  const vestingSchedules = Array.from(new Set(lockupsList.map((x) => x.termination_config?.vesting_schedule?.Schedule))).filter((s) => s !== undefined);
 
   const chartData = {
     vested: lockups.length ? mergeLockupSchedules(schedules, token.decimals) : [],
@@ -63,7 +65,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
         </div>
       ) : (
         <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }} component={Paper}>
-          <LockupsTable lockups={isAdmin ? lockups : favouriteAccountsLockups} token={token} adminControls={adminControls} />
+          <LockupsTable lockups={lockupsList} token={token} adminControls={adminControls} />
         </TableContainer>
       )}
     </div>
