@@ -30,4 +30,7 @@ describe('1 test', () => {
   it('returns starting value at the beginning of range', () => {
     expect(interpolate(1_500_000_000, 10_000, 1_700_000_000, 14_000, 1_500_000_000)).toStrictEqual(10_000);
   });
+  it('returns valid intermediate value', () => {
+    expect(interpolate(1_500_000_000, 10_000, 1_700_000_000, 14_000, 1_550_000_000)).toStrictEqual(11_000);
+  });
 });
