@@ -4,6 +4,7 @@ import {
   IconButton,
   TableCell,
   TableRow,
+  Tooltip,
 } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -65,24 +66,26 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
           <TokenIcon url={token.icon || ''} size={32} />
         </TableCell>
         <TableCell align="center">
-          <div className="progress-bar">
-            <div style={{ width: `${(row.claimed_balance / row.total_balance) * 100}%` }} className="claimed">
-              <span>{convertAmount(row.claimed_balance, token.decimals)}</span>
-            </div>
-            <div style={{ width: `${(row.unclaimed_balance / row.total_balance) * 100}%` }} className="available">
-              <span>
-                {convertAmount(row.unclaimed_balance, token.decimals)}
-              </span>
-            </div>
-            <div style={{ width: `${((row.total_balance - row.claimed_balance - row.unclaimed_balance) / row.total_balance) * 100}%` }} className="vested">
-              <span>
+          <Tooltip title="Add" arrow>
+            <div className="progress-bar">
+              <div style={{ width: `${(row.claimed_balance / row.total_balance) * 100}%` }} className="claimed">
+                {/* <span>{convertAmount(row.claimed_balance, token.decimals)}</span> */}
+              </div>
+              <div style={{ width: `${(row.unclaimed_balance / row.total_balance) * 100}%` }} className="available">
+                {/* <span> */}
+                {/*  {convertAmount(row.unclaimed_balance, token.decimals)} */}
+                {/* </span> */}
+              </div>
+              <div style={{ width: `${((row.total_balance - row.claimed_balance - row.unclaimed_balance) / row.total_balance) * 100}%` }} className="vested">
+                {/* <span>
                 {((row.total_balance - row.claimed_balance - row.unclaimed_balance)
                   / row.total_balance) > 0.2 && convertAmount(row.total_balance
                   - row.claimed_balance - row.unclaimed_balance, token.decimals)}
-              </span>
+              </span> */}
+              </div>
+              <div style={{ width: `${(row.total_balance - row.total_balance) * 100}%` }} className="unvested">&nbsp;</div>
             </div>
-            <div style={{ width: `${(row.total_balance - row.total_balance) * 100}%` }} className="unvested">&nbsp;</div>
-          </div>
+          </Tooltip>
         </TableCell>
       </TableRow>
       <TableRow sx={{ background: '#F4FAFF' }}>
