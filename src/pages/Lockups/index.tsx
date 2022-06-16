@@ -49,8 +49,6 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
 
       {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
 
-      <Chart data={chartData} />
-
       {lockups.length === 0 ? (
         <div>
           There are no lockups yet.
