@@ -59,9 +59,23 @@ describe('interpolateSchedule test', () => {
       1_550_000_000,
     )).toThrow('empty schedule');
   });
+  // if timestamp before schedule stamp returns first checkpoint
+  it('handles timestamp before schedule', () => {
+    const timestamp = 1_450_000_000;
+    expect(interpolateSchedule(
+      schedule,
+      timestamp,
+    )).toStrictEqual({ timestamp, balance: '0' });
+  });
+  // if timestamp after schedule stamp returns last checkpoint
+  it('handles timestamp after schedule', () => {
+    const timestamp = 1_950_000_000;
+    expect(interpolateSchedule(
+      schedule,
+      timestamp,
+    )).toStrictEqual({ timestamp, balance: '60000' });
+  });
   it('works', () => {
-    // if timestamp before schedule stamp returns first checkpoint
-    // if timestamp after schedule stamp returns last checkpoint
     // if timestamp matches checkpoint from schedule return checkpoint from schedule
     // if between two checkpoints returns interpolated value
   });
