@@ -49,5 +49,5 @@ export const interpolateSchedule = (schedule: TCheckpoint[], timestamp: TNearTim
     return interpolate(schedule[i], schedule[i + 1], timestamp);
   }
 
-  throw new Error('not found');
+  throw new Error('unreachable');
 };
