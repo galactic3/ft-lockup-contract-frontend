@@ -9,7 +9,7 @@ import {
   InputLabel,
   MenuItem,
 } from '@mui/material';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
@@ -22,7 +22,6 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
 
   const defaultDescription = `Fund draft group ${draftGroupIndex} with amount ${amount?.label}. Draft group link: ${window.location.href}`;
   const [description, setDescription] = useState(defaultDescription);
-  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState('');
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -41,6 +40,42 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
   }
 
   const { daos } = near.currentUser;
+
+  const defaultDao:string = daos.length > 0 ? daos[0] || '' : '';
+
+  let daoInput;
+
+  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState(defaultDao);
+
+  const handleContractAddressChange = (event: any) => {
+    setAstroDAOContractAddress(event.target.value as string);
+  };
+
+  if (daos.length > 0) {
+    daoInput = (
+      <div>
+        <InputLabel>Select DAO contract address</InputLabel>
+        <Select
+          required
+          sx={{ marginBottom: 3, width: 1 }}
+          value={astroDAOContractAddress}
+          onChange={handleContractAddressChange}
+        >
+          {daos.map((dao) => <MenuItem value={dao}>{dao}</MenuItem>)}
+        </Select>
+      </div>
+    );
+  } else {
+    daoInput = (
+      <TextField
+        required
+        sx={{ marginBottom: 3, width: 1 }}
+        id="outlined-helperText"
+        label="DAO contract address"
+        onChange={handleContractAddressChange}
+      />
+    );
+  }
 
   const buildProposalLink = (): string => {
     const details = encodeURIComponent(description);
@@ -65,11 +100,6 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     );
   };
 
-  const handleContractAddressChange = (event: SelectChangeEvent) => {
-    console.log('EEEEE', event.target.value);
-    setAstroDAOContractAddress(event.target.value as string);
-  };
-
   const handleDescriptionChange = (e: any) => {
     setDescription(e.target.value);
   };
@@ -77,8 +107,6 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
   const handleFund = () => {
     window.open(buildProposalLink(), '_blank')?.focus();
   };
-
-  console.log('DAOS', near.currentUser.daos);
 
   return (
     <div>
@@ -100,15 +128,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
             </IconButton>
           </DialogTitle>
           <DialogContent style={{ paddingTop: '1.25em' }}>
-            <InputLabel>Select DAO contract address</InputLabel>
-            <Select
-              required
-              sx={{ marginBottom: 3, width: 1 }}
-              value={astroDAOContractAddress}
-              onChange={handleContractAddressChange}
-            >
-              {daos.map((dao) => <MenuItem value={dao}>{dao}</MenuItem>)}
-            </Select>
+            {daoInput}
             <TextField
               sx={{ width: 1 }}
               id="outlined-multiline-static"
