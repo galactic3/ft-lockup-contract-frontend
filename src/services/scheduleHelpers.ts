@@ -40,5 +40,9 @@ export const interpolateSchedule = (schedule: TCheckpoint[], timestamp: TNearTim
     return { timestamp, balance: schedule[schedule.length - 1].balance };
   }
 
-  return schedule[0];
+  const result = schedule.find((x: TCheckpoint) => x.timestamp === timestamp);
+
+  if (result) return result;
+
+  throw new Error('not found');
 };
