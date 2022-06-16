@@ -2,7 +2,7 @@ import {
   Near, Contract, WalletConnection,
 } from 'near-api-js';
 
-const FUNCTION_CALL_CREATE_PROPOSAL_PERMISSION = 'call:AddProposal';
+const FUNCTION_CALL_CREATE_PROPOSAL_PERMISSIONS = ['call:AddProposal', '*:AddProposal'];
 
 const DAO_VIEW_METHODS = [
   'get_policy',
@@ -34,7 +34,9 @@ class AstroDaoApi {
 
   async getCouncilMembers(): Promise<string[]> {
     const policy = await this.contract.get_policy();
-    const canProposalRoles = policy.roles.filter((role: any) => role?.permissions?.includes(FUNCTION_CALL_CREATE_PROPOSAL_PERMISSION));
+    const canProposalRoles = policy.roles.filter(
+      (role: any) => role?.permissions?.includes(FUNCTION_CALL_CREATE_PROPOSAL_PERMISSIONS[0]) || role?.permissions?.includes(FUNCTION_CALL_CREATE_PROPOSAL_PERMISSIONS[1]),
+    );
 
     if (canProposalRoles.length === 0) {
       return [];

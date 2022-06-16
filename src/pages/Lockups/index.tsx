@@ -49,8 +49,6 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
 
       {signedIn && adminControls && isAdmin && <CreateLockup token={token} />}
 
-      <Chart data={chartData} />
-
       {lockups.length === 0 ? (
         <div>
           There are no lockups yet.
@@ -65,7 +63,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
         </div>
       ) : (
         <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }} component={Paper}>
-          <LockupsTable lockups={favouriteAccountsLockups} token={token} adminControls={adminControls} />
+          <LockupsTable lockups={isAdmin ? lockups : favouriteAccountsLockups} token={token} adminControls={adminControls} />
         </TableContainer>
       )}
     </div>
