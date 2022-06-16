@@ -61,28 +61,38 @@ describe('interpolateSchedule test', () => {
   });
   // if timestamp before schedule stamp returns first checkpoint
   it('handles timestamp before schedule', () => {
-    const timestamp = 1_450_000_000;
+    const timestamp1 = 1_450_000_000;
     expect(interpolateSchedule(
       schedule,
-      timestamp,
-    )).toStrictEqual({ timestamp, balance: '0' });
+      timestamp1,
+    )).toStrictEqual({ timestamp: timestamp1, balance: '0' });
+    const timestamp2 = 1_500_000_000;
+    expect(interpolateSchedule(
+      schedule,
+      timestamp2,
+    )).toStrictEqual({ timestamp: timestamp2, balance: '0' });
   });
   // if timestamp after schedule stamp returns last checkpoint
   it('handles timestamp after schedule', () => {
-    const timestamp = 1_950_000_000;
+    const timestamp1 = 1_950_000_000;
     expect(interpolateSchedule(
       schedule,
-      timestamp,
-    )).toStrictEqual({ timestamp, balance: '60000' });
+      timestamp1,
+    )).toStrictEqual({ timestamp: timestamp1, balance: '60000' });
+    const timestamp2 = 1_900_000_000;
+    expect(interpolateSchedule(
+      schedule,
+      timestamp2,
+    )).toStrictEqual({ timestamp: timestamp2, balance: '60000' });
   });
   // if timestamp matches checkpoint from schedule return checkpoint from schedule
   it('handles timestamp that matches checkpoint from schedule', () => {
     const timestamp0 = 1_599_999_999;
-    const timestamp1 = 1_600_000_000;
     expect(interpolateSchedule(
       schedule,
       timestamp0,
     )).toStrictEqual({ timestamp: timestamp0, balance: '0' });
+    const timestamp1 = 1_600_000_000;
     expect(interpolateSchedule(
       schedule,
       timestamp1,
@@ -90,10 +100,15 @@ describe('interpolateSchedule test', () => {
   });
   // if between two checkpoints returns interpolated value
   it('handles timestamp between two checkpoints', () => {
-    const timestamp = 1_700_000_000;
+    const timestamp0 = 1_550_000_000;
     expect(interpolateSchedule(
       schedule,
-      timestamp,
-    )).toStrictEqual({ timestamp, balance: '30000' });
+      timestamp0,
+    )).toStrictEqual({ timestamp: timestamp0, balance: '0' });
+    const timestamp1 = 1_700_000_000;
+    expect(interpolateSchedule(
+      schedule,
+      timestamp1,
+    )).toStrictEqual({ timestamp: timestamp1, balance: '30000' });
   });
 });
