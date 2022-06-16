@@ -16,11 +16,11 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { INearProps, NearContext } from '../../services/near';
 import { customFunctionCallProposalFormLink, ONE_YOKTO } from '../../services/DAOs/astroDAO/utils';
 
-function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount: string | undefined }) {
+function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount: any }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const { draftGroupIndex, amount } = props;
 
-  const defaultDescription = `Fund draft group ${draftGroupIndex} with amount ${amount}. Draft group link: ${window.location.href}`;
+  const defaultDescription = `Fund draft group ${draftGroupIndex} with amount ${amount?.label}. Draft group link: ${window.location.href}`;
   const [description, setDescription] = useState(defaultDescription);
   const [astroDAOContractAddress, setAstroDAOContractAddress] = useState('');
 
@@ -36,7 +36,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     throw Error('Cannot fund draft group without index');
   }
 
-  if (amount === undefined) {
+  if (amount?.value === undefined) {
     throw Error('Cannot fund draft group without specified amount');
   }
 
@@ -48,7 +48,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     const methodName = 'ft_transfer_call';
     const json = {
       receiver_id: near.api.getContract().contractId,
-      amount,
+      amount: amount.value,
       msg: JSON.stringify({ draft_group_id: draftGroupIndex }),
     };
     const actionsGas = '100'; // with this amount transaction completes in one go (without resubmit with additional gas)
@@ -102,6 +102,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
           <DialogContent style={{ paddingTop: '1.25em' }}>
             <InputLabel>Select DAO contract address</InputLabel>
             <Select
+              required
               sx={{ marginBottom: 3, width: 1 }}
               value={astroDAOContractAddress}
               onChange={handleContractAddressChange}
