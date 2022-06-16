@@ -26,13 +26,14 @@ export default function FavouriteAccounts({ favouriteAccounts, uniqueUsers, onSa
       <TextField
         inputProps={{
           sx: {
-            padding: 1,
+            padding: 1.4,
             margin: 0,
           },
         }}
         sx={{ width: 1, padding: 0, margin: 0 }}
         id="outlined-helperText"
-        label="Favourite accounts"
+        label="My accounts"
+        placeholder="Comma separated list of your near accounts"
         defaultValue={favouriteAccounts.join(', ')}
         inputRef={inputRef}
         onKeyPress={(e) => e.key === 'Enter' && handleSaveFavouriteAccounts()}
