@@ -57,15 +57,15 @@ export const customFunctionCallProposalFormLink = (
   gas,
 );
 
-export const daoCouncilMembers = async (near: Near, accountAddress: string): Promise<string[]> => {
+export const daoCouncilMembers = async (near: Near, accountAddress: string): Promise<any> => {
   try {
     const api = new AstroDaoApi(near, accountAddress);
     const councilsMembers = await api.getCouncilMembers();
 
-    return councilsMembers;
+    return { [accountAddress]: councilsMembers };
   } catch (e) {
     console.log('isDAO ERROR:', e);
-    return [];
+    return undefined;
   }
 };
 

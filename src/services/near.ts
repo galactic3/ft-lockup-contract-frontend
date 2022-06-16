@@ -18,6 +18,7 @@ export interface INearProps {
     isAdmin: boolean;
     isCouncilMember: boolean;
     signedAccountId: string | null;
+    daos: string[];
   }
   tokenContractId: string;
   lockupContractId: string;
@@ -49,17 +50,20 @@ export const connectNear = async (): Promise<INearProps> => {
   let tokenContractId: string = '';
   let isAdmin: boolean = false;
   let depositWhitelist: string[] = [];
-  let isCouncilMember: boolean = false;
+  let daos: string[] = [];
   try {
     tokenContractId = await api.getTokenAccountId();
     depositWhitelist = await api.getDepositWhitelist();
     console.log('depositWhitelist', depositWhitelist);
     isAdmin = depositWhitelist.includes(signedAccountId);
     console.log('isAdmin', isAdmin);
-    const daosCouncilMembers = (await Promise.all(depositWhitelist.map((dwID):Promise<string[]> => daoCouncilMembers(near, dwID)))).flat();
+    const daosCouncilMembers = (await Promise.all(depositWhitelist.map((dwID):Promise<any[]> => daoCouncilMembers(near, dwID)))).filter((value) => !!value);
+    const userDaosCouncils = daosCouncilMembers.filter((daoCMs) => Object.values(daoCMs).pop().includes(signedAccountId));
+    if (userDaosCouncils?.length > 0) {
+      daos = userDaosCouncils.map((daoCMs) => Object.keys(daoCMs).pop() || '');
+    }
     console.log('councilMembers', daosCouncilMembers);
-    isCouncilMember = daosCouncilMembers.includes(signedAccountId);
-    console.log('isCouncilMember', isCouncilMember);
+    console.log('daos', daos);
   } catch (e) {
     console.log(e);
   }
@@ -96,8 +100,9 @@ export const connectNear = async (): Promise<INearProps> => {
     currentUser: {
       signedIn: !!signedAccountId,
       isAdmin,
-      isCouncilMember,
+      isCouncilMember: daos.length > 0,
       signedAccountId,
+      daos,
     },
     noLoginTokenApi,
     rpcProvider,

@@ -108,18 +108,23 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
     return null;
   }
 
+  const amount = {
+    value: draftGroup.total_amount,
+    label: convertAmount(draftGroup.total_amount, token.decimals) || '',
+  };
+
   return (
     <div className="container">
       <div className="draft-group-preview-wrapper">
         <h5>
           {`Draft group ${draftGroupId}`}
         </h5>
-        <TokenAmountPreview token={token} amount={convertAmount(draftGroup.total_amount, token.decimals)} />
+        <TokenAmountPreview token={token} amount={amount.label} />
 
         {!draftGroup.funded && (
           <div style={{ marginTop: 20 }}>
-            {near?.currentUser?.isAdmin && <FundButton draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} /> }
-            <FundWithDaoButton draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} />
+            {near?.currentUser?.isAdmin && <FundButton draftGroupIndex={draftGroupId} amount={amount.value} /> }
+            <FundWithDaoButton draftGroupIndex={draftGroupId} amount={amount} />
           </div>
         )}
         {draftGroup.funded && draftGroup.draft_indices.length > 0 && (

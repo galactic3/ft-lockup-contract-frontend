@@ -53,6 +53,7 @@ export default function NearApp() {
           signedAccountId: null,
           isAdmin: false,
           isCouncilMember: false,
+          daos: [],
         },
       });
     },
