@@ -88,7 +88,12 @@ describe('interpolateSchedule test', () => {
       timestamp1,
     )).toStrictEqual({ timestamp: timestamp1, balance: '15000' });
   });
-  it('works', () => {
-    // if between two checkpoints returns interpolated value
+  // if between two checkpoints returns interpolated value
+  it('handles timestamp between two checkpoints', () => {
+    const timestamp = 1_700_000_000;
+    expect(interpolateSchedule(
+      schedule,
+      timestamp,
+    )).toStrictEqual({ timestamp, balance: '30000' });
   });
 });
