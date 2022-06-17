@@ -34,23 +34,21 @@ export default function Chart({ data }: { data: { vested: any[], locked: any[] }
     ],
     series: [
       {
-        name: 'Vested',
+        name: 'Total',
         type: 'line',
         color: '#00B988',
         areaStyle: {
           opacity: 1,
         },
-        z: 1,
         data: data.vested,
       },
       {
-        name: 'Unlocked',
+        name: 'Vested',
         type: 'line',
         color: '#0069D1',
         areaStyle: {
           opacity: 1,
         },
-        z: 2,
         data: data.locked,
       },
     ],

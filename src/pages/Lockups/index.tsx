@@ -12,8 +12,9 @@ import LockupsTable from '../../components/LockupsTable';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import FavouriteAccounts from '../../components/FavouriteAccounts';
-import { mergeLockupSchedules } from '../../services/schedule';
-import { TSchedule } from '../../services/api';
+import { TCheckpoint, TSchedule } from '../../services/api';
+import { convertAmount } from '../../utils';
+import { sumSchedules } from '../../services/scheduleHelpers';
 
 type TToken = TMetadata & { contractId: string };
 
@@ -34,16 +35,23 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
   const favouriteAccountsLockups = lockups.filter((lockup) => favouriteAccounts.includes(lockup.account_id));
 
   const chartData = (lockupsList: any[]): any => {
-    const schedules = Array.from(new Set(lockupsList.map((x) => x.schedule))) as TSchedule[];
+    const lockupSchedules = Array.from(new Set(lockupsList.map((x) => x.schedule))) as TSchedule[];
     const vestingSchedules = Array.from(new Set(lockupsList.map((x) => x?.termination_config?.vesting_schedule?.Schedule))).filter((s) => s !== undefined) as TSchedule[];
 
+    const convertSchedule = (schedules: TSchedule[], decimals: number) => {
+      if (schedules.length === 0) return false;
+      const sum = sumSchedules(schedules);
+      console.log(sum);
+      return sum.map((s: TCheckpoint) => [s.timestamp * 1000, convertAmount(s.balance, decimals)]);
+    };
+
     return {
-      vested: lockupsList.length ? mergeLockupSchedules(schedules, token.decimals) : [],
-      locked: lockupsList.length ? mergeLockupSchedules(vestingSchedules, token.decimals) : [],
+      vested: lockupsList.length ? convertSchedule(lockupSchedules, token.decimals) : [],
+      locked: lockupsList.length ? convertSchedule(vestingSchedules, token.decimals) : [],
     };
   };
 
-  const lockupsTable = (lockupsList: any): any => {
+  const lockupsPage = (lockupsList: any): any => {
     if (lockupsList.length > 0) {
       return (
         <div>
@@ -81,7 +89,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
   if (adminControls) {
     return (
       <div className="container">
-        {lockupsTable(lockups)}
+        {lockupsPage(lockups)}
       </div>
     );
   }
@@ -94,7 +102,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
         uniqueUsers={uniqueUsers}
         onSave={setFavouriteAccounts}
       />
-      {lockupsTable(favouriteAccountsLockups)}
+      {lockupsPage(favouriteAccountsLockups)}
     </div>
   );
 }
