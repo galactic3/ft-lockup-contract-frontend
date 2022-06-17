@@ -11,6 +11,9 @@ export default function Chart({ data }: { data: { vested: any[], locked: any[] }
     },
     tooltip: {
       trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+      },
     },
     grid: {
       top: '10%',
@@ -41,6 +44,7 @@ export default function Chart({ data }: { data: { vested: any[], locked: any[] }
           opacity: 1,
         },
         data: data.vested,
+        z: 1,
       },
       {
         name: 'Vested',
@@ -50,6 +54,7 @@ export default function Chart({ data }: { data: { vested: any[], locked: any[] }
           opacity: 1,
         },
         data: data.locked,
+        z: 2,
       },
     ],
   };

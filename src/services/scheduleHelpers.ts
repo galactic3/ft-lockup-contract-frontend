@@ -1,3 +1,4 @@
+import { Big } from 'big.js';
 import { TCheckpoint, TNearTimestamp, TSchedule } from './api';
 
 export const interpolateRaw = (x0: number, y0: number, x1: number, y1: number, xM: number) : Number => {
@@ -59,9 +60,22 @@ export const sumSchedules = (schedules: TSchedule[]) : TSchedule => {
     .map((x) => x.timestamp)
     .sort((x, y) => x - y);
 
-  const sum = timestamps.map((timestamp: TNearTimestamp) => (interpolateSchedule(schedules[0], timestamp)));
+  const all: TSchedule = [];
 
-  console.log(sum);
+  timestamps.forEach((t:TNearTimestamp) => {
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < schedules.length; i++) {
+      all.push(interpolateSchedule(schedules[i], t));
+    }
+  });
+
+  const sum = Array.from(all.reduce(
+    (m, x) => m.set(
+      x.timestamp,
+      (new Big(m.get(x.timestamp) || '0')).plus(new Big(x.balance)),
+    ),
+    new Map(),
+  ), ([timestamp, balance]) => ({ timestamp, balance: balance.toString() }));
 
   return sum;
 };
