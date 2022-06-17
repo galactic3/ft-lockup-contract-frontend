@@ -123,18 +123,52 @@ describe('sumSchedules', () => {
     { timestamp: 1_600_000_000, balance: '0' },
     { timestamp: 1_700_000_000, balance: '20000' },
   ];
-  const expected = [
+  const expected1 = [
     { timestamp: 1_500_000_000, balance: '0' },
     { timestamp: 1_600_000_000, balance: '15000' },
     { timestamp: 1_700_000_000, balance: '50000' },
+    { timestamp: 1_900_000_000, balance: '80000' },
+  ];
+  const schedule3 = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_700_000_000, balance: '20000' },
+  ];
+  const schedule4 = [
+    { timestamp: 1_600_000_000, balance: '0' },
+    { timestamp: 1_900_000_000, balance: '60000' },
+  ];
+  const expected2 = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_600_000_000, balance: '10000' },
+    { timestamp: 1_700_000_000, balance: '40000' },
+    { timestamp: 1_900_000_000, balance: '80000' },
+  ];
+  const schedule5 = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_600_000_000, balance: '20000' },
+  ];
+  const schedule6 = [
+    { timestamp: 1_700_000_000, balance: '0' },
+    { timestamp: 1_900_000_000, balance: '60000' },
+  ];
+  const expected3 = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_600_000_000, balance: '20000' },
+    { timestamp: 1_700_000_000, balance: '20000' },
     { timestamp: 1_900_000_000, balance: '80000' },
   ];
   it('doesnt throw', () => {
     sumSchedules([schedule1, schedule2]);
   });
   // should return expected
-  it('should return expected', () => {
-    expect(sumSchedules([schedule1, schedule2])).toStrictEqual(expected);
+  it('should return expected1', () => {
+    expect(sumSchedules([schedule1, schedule2])).toStrictEqual(expected1);
+  });
+  it('should return expected2', () => {
+    expect(sumSchedules([schedule3, schedule4])).toStrictEqual(expected2);
+  });
+  it('should return expected3', () => {
+    expect(sumSchedules([schedule5, schedule6])).toStrictEqual(expected3);
   });
   // if schedule1 passed returns this schedule
   it('handles schedule1 passed return schedule2', () => {
