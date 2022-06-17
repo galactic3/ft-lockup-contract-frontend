@@ -131,7 +131,13 @@ describe('sumSchedules', () => {
   ];
   it('doesnt throw', () => {
     sumSchedules([schedule1, schedule2]);
-    // should return expected
-    // if schedule1 passed returns this schedule
+  });
+  // should return expected
+  it('should return expected', () => {
+    expect(sumSchedules([schedule1, schedule2])).toStrictEqual(expected);
+  });
+  // if schedule1 passed returns this schedule
+  it('handles schedule1 passed return schedule2', () => {
+    expect(sumSchedules([schedule2])).toStrictEqual(schedule2);
   });
 });

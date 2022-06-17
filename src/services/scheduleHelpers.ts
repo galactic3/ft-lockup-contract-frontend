@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-
 import { TCheckpoint, TNearTimestamp, TSchedule } from './api';
 
 export const interpolateRaw = (x0: number, y0: number, x1: number, y1: number, xM: number) : Number => {
@@ -40,10 +38,8 @@ export const interpolateSchedule = (schedule: TCheckpoint[], timestamp: TNearTim
     return { timestamp, balance: schedule[schedule.length - 1].balance };
   }
 
-  // eslint-disable-next-line no-plusplus
   for (let i = 0; i < schedule.length; i++) {
     if (schedule[i + 1].timestamp <= timestamp) {
-      // eslint-disable-next-line no-continue
       continue;
     }
     return interpolate(schedule[i], schedule[i + 1], timestamp);
@@ -57,5 +53,13 @@ export const sumSchedules = (schedules: TSchedule[]) : TSchedule => {
     throw new Error('schedules is empty');
   }
 
-  return [];
+  const timestamps = schedules.flatMap((x: TCheckpoint[]) => x)
+    .map((x) => x.timestamp)
+    .sort((x, y) => x - y);
+
+  const sum = timestamps.map((timestamp: TNearTimestamp) => (interpolateSchedule(schedules[0], timestamp)));
+
+  console.log(sum);
+
+  return sum;
 };
