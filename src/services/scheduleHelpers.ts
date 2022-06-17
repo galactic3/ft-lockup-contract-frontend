@@ -38,8 +38,10 @@ export const interpolateSchedule = (schedule: TCheckpoint[], timestamp: TNearTim
     return { timestamp, balance: schedule[schedule.length - 1].balance };
   }
 
+  // eslint-disable-next-line no-plusplus
   for (let i = 0; i < schedule.length; i++) {
     if (schedule[i + 1].timestamp <= timestamp) {
+      // eslint-disable-next-line no-continue
       continue;
     }
     return interpolate(schedule[i], schedule[i + 1], timestamp);
