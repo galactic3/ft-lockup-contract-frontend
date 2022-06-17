@@ -56,9 +56,7 @@ export const sumSchedules = (schedules: TSchedule[]) : TSchedule => {
     throw new Error('schedules is empty');
   }
 
-  const timestamps = schedules.flatMap((x: TCheckpoint[]) => x)
-    .map((x) => x.timestamp)
-    .sort((x, y) => x - y);
+  const timestamps = schedules.flat().map((x) => x.timestamp).sort();
 
   const all: TSchedule = [];
 

@@ -157,6 +157,48 @@ describe('sumSchedules', () => {
     { timestamp: 1_700_000_000, balance: '20000' },
     { timestamp: 1_900_000_000, balance: '80000' },
   ];
+  const schedule7 = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_600_000_000, balance: '20000' },
+    { timestamp: 1_700_000_000, balance: '30000' },
+  ];
+  const schedule8 = [
+    { timestamp: 1_550_000_000, balance: '0' },
+    { timestamp: 1_650_000_000, balance: '20000' },
+    { timestamp: 1_750_000_000, balance: '30000' },
+  ];
+  const expected4 = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_550_000_000, balance: '10000' },
+    { timestamp: 1_600_000_000, balance: '30000' },
+    { timestamp: 1_650_000_000, balance: '45000' },
+    { timestamp: 1_700_000_000, balance: '55000' },
+    { timestamp: 1_750_000_000, balance: '60000' },
+  ];
+  const schedule09 = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_600_000_000, balance: '10000' },
+    { timestamp: 1_700_000_000, balance: '10000' },
+    { timestamp: 1_800_000_000, balance: '20000' },
+  ];
+  const schedule10 = [
+    { timestamp: 1_600_000_000, balance: '0' },
+    { timestamp: 1_700_000_000, balance: '20000' },
+    { timestamp: 1_800_000_000, balance: '20000' },
+    { timestamp: 1_900_000_000, balance: '40000' },
+  ];
+  const expected5 = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_600_000_000, balance: '20000' },
+    { timestamp: 1_700_000_000, balance: '60000' },
+    { timestamp: 1_800_000_000, balance: '80000' },
+    { timestamp: 1_900_000_000, balance: '60000' },
+  ];
+  const expected6 = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_600_000_000, balance: '60000' },
+    { timestamp: 1_700_000_000, balance: '90000' },
+  ];
   it('doesnt throw', () => {
     sumSchedules([schedule1, schedule2]);
   });
@@ -169,6 +211,15 @@ describe('sumSchedules', () => {
   });
   it('should return expected3', () => {
     expect(sumSchedules([schedule5, schedule6])).toStrictEqual(expected3);
+  });
+  it('should return expected4', () => {
+    expect(sumSchedules([schedule7, schedule8])).toStrictEqual(expected4);
+  });
+  it('should return expected5', () => {
+    expect(sumSchedules([schedule09, schedule10])).toStrictEqual(expected5);
+  });
+  it('should return expected6', () => {
+    expect(sumSchedules([schedule7, schedule7, schedule7])).toStrictEqual(expected6);
   });
   // if schedule1 passed returns this schedule
   it('handles schedule1 passed return schedule2', () => {
