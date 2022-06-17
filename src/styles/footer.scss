@@ -1,6 +1,8 @@
 @use 'colors.scss';
 
 .footer {
+  position: sticky;
+  top: 100vh;
   .container {
     padding-bottom: 0;
   }
