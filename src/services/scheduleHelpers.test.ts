@@ -189,9 +189,9 @@ describe('sumSchedules', () => {
   ];
   const expected5 = [
     { timestamp: 1_500_000_000, balance: '0' },
-    { timestamp: 1_600_000_000, balance: '20000' },
-    { timestamp: 1_700_000_000, balance: '60000' },
-    { timestamp: 1_800_000_000, balance: '80000' },
+    { timestamp: 1_600_000_000, balance: '10000' },
+    { timestamp: 1_700_000_000, balance: '30000' },
+    { timestamp: 1_800_000_000, balance: '40000' },
     { timestamp: 1_900_000_000, balance: '60000' },
   ];
   const expected6 = [

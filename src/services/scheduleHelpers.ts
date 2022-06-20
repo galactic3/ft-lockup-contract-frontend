@@ -56,24 +56,20 @@ export const sumSchedules = (schedules: TSchedule[]) : TSchedule => {
     throw new Error('schedules is empty');
   }
 
-  const timestamps = schedules.flat().map((x) => x.timestamp).sort((x, y) => x - y);
+  const timestamps = Array.from(new Set(schedules.flat().map((x) => x.timestamp).sort(
+    (x, y) => x - y,
+  )));
 
-  const all: TSchedule = [];
+  const result: TSchedule = [];
 
-  timestamps.forEach((t:TNearTimestamp) => {
+  timestamps.forEach((timestamp:TNearTimestamp) => {
+    let amount = new Big(0);
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < schedules.length; i++) {
-      all.push(interpolateSchedule(schedules[i], t));
+      amount = amount.plus(new Big(interpolateSchedule(schedules[i], timestamp).balance));
     }
+    result.push({ timestamp, balance: amount.toString() });
   });
 
-  const sum = Array.from(all.reduce(
-    (m, x) => m.set(
-      x.timestamp,
-      (new Big(m.get(x.timestamp) || '0')).plus(new Big(x.balance)),
-    ),
-    new Map(),
-  ), ([timestamp, balance]) => ({ timestamp, balance: balance.toString() }));
-
-  return sum;
+  return result;
 };
