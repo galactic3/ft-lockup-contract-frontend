@@ -19,7 +19,7 @@ export default function Chart({ data }: { data: { vested: any[], unlocked: any[]
       icon: 'circle',
     },
     grid: {
-      top: '10%',
+      top: '15%',
       left: '2%',
       right: '3%',
       bottom: '15%',
