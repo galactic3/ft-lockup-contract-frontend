@@ -30,7 +30,6 @@ export default function Chart({ data }: { data: { vested: any[], unlocked: any[]
         type: 'time',
         boundaryGap: ['1%', '1%'],
         splitNumber: 15,
-        scale: true,
       },
     ],
     yAxis: [
@@ -42,16 +41,29 @@ export default function Chart({ data }: { data: { vested: any[], unlocked: any[]
       {
         name: 'Vested',
         type: 'line',
-        color: '#00B988',
+        color: '#0069D1',
         areaStyle: {
           opacity: 1,
+        },
+        markLine: {
+          data: [
+            [
+              { xAxis: new Date(), yAxis: 0 },
+              { xAxis: new Date(), yAxis: 'max' },
+            ],
+          ],
+          lineStyle: {
+            type: 'dashed',
+            color: '#FF594E',
+          },
+          symbol: 'none',
         },
         data: data.vested,
       },
       {
         name: 'Unlocked',
         type: 'line',
-        color: '#0069D1',
+        color: '#00B988',
         areaStyle: {
           opacity: 1,
         },
