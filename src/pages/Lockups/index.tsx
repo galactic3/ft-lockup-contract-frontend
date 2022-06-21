@@ -45,10 +45,11 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
       lockupsList.map((x) => x.schedule),
     ) as TSchedule[];
 
+    const now = Math.round(new Date().getTime() / 1000);
     const minTimestampsLockup = lockupsList.map((x) => x.schedule[0].timestamp);
     const minTimestampsVesting = lockupsList.map((x) => x?.termination_config?.vesting_schedule[0]?.timestamp).filter((x) => x);
 
-    const minTimestamp = Math.min(...minTimestampsLockup, ...minTimestampsVesting); // TODO add now new Date().getTime()
+    const minTimestamp = Math.min(...minTimestampsLockup, ...minTimestampsVesting, now);
 
     const vestingSchedules = Array.from(
       lockupsList.map((x) => {
