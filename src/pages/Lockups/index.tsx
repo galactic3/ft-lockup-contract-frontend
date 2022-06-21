@@ -12,7 +12,9 @@ import LockupsTable from '../../components/LockupsTable';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import FavouriteAccounts from '../../components/FavouriteAccounts';
-import { TCheckpoint, TSchedule } from '../../services/api';
+import {
+  TCheckpoint, TNearAmount, TNearTimestamp, TSchedule,
+} from '../../services/api';
 import { convertAmount } from '../../utils';
 import { sumSchedules } from '../../services/scheduleHelpers';
 
@@ -34,20 +36,41 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
   const [favouriteAccounts, setFavouriteAccounts] = useState<string[]>(favouriteAccountsFromLocalStorage);
   const favouriteAccountsLockups = lockups.filter((lockup) => favouriteAccounts.includes(lockup.account_id));
 
-  const chartData = (lockupsList: any[]): any => {
-    const lockupSchedules = Array.from(new Set(lockupsList.map((x) => x.schedule))) as TSchedule[];
-    const vestingSchedules = Array.from(new Set(lockupsList.map((x) => x?.termination_config?.vesting_schedule?.Schedule))).filter((s) => s !== undefined) as TSchedule[];
+  const buildVestedSchedule = (from: TNearTimestamp, balance: TNearAmount) => [
+    { timestamp: from - 1, balance: '0' },
+    { timestamp: from, balance },
+  ];
 
-    const convertSchedule = (schedules: TSchedule[], decimals: number) => {
-      if (schedules.length === 0) return false;
-      const sum = sumSchedules(schedules);
-      console.log(sum);
-      return sum.map((s: TCheckpoint) => [s.timestamp * 1000, convertAmount(s.balance, decimals)]);
-    };
+  const chartData = (lockupsList: any[]): any => {
+    const lockupSchedules = Array.from(
+      lockupsList.map((x) => x.schedule),
+    ) as TSchedule[];
+
+    const minTimestampsLockup = lockupsList.map((x) => x.schedule[0].timestamp);
+    const minTimestampsVesting = lockupsList.map((x) => x?.termination_config?.vesting_schedule[0]?.timestamp).filter((x) => x);
+
+    const minTimestamp = Math.min(...minTimestampsLockup, ...minTimestampsVesting); // TODO add now new Date().getTime()
+
+    const vestingSchedules = Array.from(
+      lockupsList.map((x) => {
+        const result = x?.termination_config?.vesting_schedule?.Schedule;
+        if (result) return result;
+        return result || buildVestedSchedule(minTimestamp, x.schedule[x.schedule.length - 1].balance);
+      }),
+    ) as TSchedule[];
+
+    const sumVesting = sumSchedules(vestingSchedules);
+    const sumLockup = sumSchedules(lockupSchedules);
+
+    if (sumVesting[sumVesting.length - 1]?.timestamp !== sumLockup[sumLockup.length - 1].timestamp) {
+      sumVesting.push(sumLockup[sumLockup.length - 1]);
+    }
+
+    const convertSchedule = (schedule: TSchedule, decimals: number) => schedule.map((s: TCheckpoint) => [s.timestamp * 1000, convertAmount(s.balance, decimals)]);
 
     return {
-      vested: lockupsList.length ? convertSchedule(lockupSchedules, token.decimals) : [],
-      locked: lockupsList.length ? convertSchedule(vestingSchedules, token.decimals) : [],
+      unlocked: lockupsList.length ? convertSchedule(sumLockup, token.decimals) : [],
+      vested: lockupsList.length ? convertSchedule(sumVesting, token.decimals) : [],
     };
   };
 
