@@ -2,9 +2,7 @@ import ReactEcharts from 'echarts-for-react';
 
 import '../../styles/chart.scss';
 
-export default function Chart({ data }: { data: { vested: any[], locked: any[] } }) {
-  console.log(data);
-
+export default function Chart({ data }: { data: { vested: any[], unlocked: any[] } }) {
   const option = {
     title: {
       text: '',
@@ -15,11 +13,16 @@ export default function Chart({ data }: { data: { vested: any[], locked: any[] }
         type: 'cross',
       },
     },
+    legend: {
+      bottom: '3%',
+      selectedMode: false,
+      icon: 'circle',
+    },
     grid: {
       top: '10%',
       left: '2%',
       right: '3%',
-      bottom: '10%',
+      bottom: '15%',
       containLabel: true,
     },
     xAxis: [
@@ -37,24 +40,22 @@ export default function Chart({ data }: { data: { vested: any[], locked: any[] }
     ],
     series: [
       {
-        name: 'Total',
+        name: 'Vested',
         type: 'line',
         color: '#00B988',
         areaStyle: {
           opacity: 1,
         },
         data: data.vested,
-        z: 1,
       },
       {
-        name: 'Vested',
+        name: 'Unlocked',
         type: 'line',
         color: '#0069D1',
         areaStyle: {
           opacity: 1,
         },
-        data: data.locked,
-        z: 2,
+        data: data.unlocked,
       },
     ],
   };

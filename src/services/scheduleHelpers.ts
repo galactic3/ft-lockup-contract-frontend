@@ -40,7 +40,7 @@ export const interpolateSchedule = (schedule: TCheckpoint[], timestamp: TNearTim
   }
 
   // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < schedule.length; i++) {
+  for (let i = 0; i < schedule.length - 1; i++) {
     if (schedule[i + 1].timestamp <= timestamp) {
       // eslint-disable-next-line no-continue
       continue;
@@ -66,7 +66,8 @@ export const sumSchedules = (schedules: TSchedule[]) : TSchedule => {
     let amount = new Big(0);
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < schedules.length; i++) {
-      amount = amount.plus(new Big(interpolateSchedule(schedules[i], timestamp).balance));
+      const balance = new Big(interpolateSchedule(schedules[i], timestamp).balance);
+      amount = amount.plus(balance);
     }
     result.push({ timestamp, balance: amount.toString() });
   });
