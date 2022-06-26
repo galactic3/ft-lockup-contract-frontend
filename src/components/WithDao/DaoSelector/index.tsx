@@ -11,11 +11,11 @@ import {
 import { INearProps, NearContext } from '../../../services/near';
 
 type TProps = {
-  selectedDaoAddress: string,
-  setSelectedDaoAddress: Function,
+  selectedAddress: string,
+  setSelectedAddress: Function,
 };
 
-function DaoSelector({ selectedDaoAddress, setSelectedDaoAddress }: TProps): any {
+function DaoSelector({ selectedAddress, setSelectedAddress }: TProps): any {
   const { near }: { near: INearProps | null } = useContext(NearContext);
 
   if (!near) {
@@ -24,12 +24,12 @@ function DaoSelector({ selectedDaoAddress, setSelectedDaoAddress }: TProps): any
 
   const { daos } = near.currentUser;
 
-  if (daos.length > 0) {
-    setSelectedDaoAddress(daos[0]);
+  if (daos.length > 0 && selectedAddress === '') {
+    setSelectedAddress(daos[0]);
   }
 
   const handleSelectedDaoAddressChange = (event: any) => {
-    setSelectedDaoAddress(event.target.value as string);
+    setSelectedAddress(event.target.value as string);
   };
 
   if (daos.length > 0) {
@@ -39,7 +39,7 @@ function DaoSelector({ selectedDaoAddress, setSelectedDaoAddress }: TProps): any
         <Select
           required
           sx={{ marginBottom: 3, width: 1 }}
-          value={selectedDaoAddress}
+          value={selectedAddress}
           onChange={handleSelectedDaoAddressChange}
         >
           {daos.map((dao) => <MenuItem value={dao}>{dao}</MenuItem>)}
