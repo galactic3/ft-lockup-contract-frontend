@@ -13,6 +13,7 @@ import { convertAmount, convertTimestamp } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import TerminateLockup from '../TerminateLockup';
+import TerminateWithDaoButton from '../TerminateWithDaoButton';
 import TokenIcon from '../TokenIcon';
 import ScheduleTable from '../ScheduleTable';
 
@@ -127,6 +128,7 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
                 )}
                 <div className="terminate">
                   <TerminateLockup token={token} adminControls={adminControls} lockupIndex={row.id} config={row.termination_config} />
+                  <TerminateWithDaoButton token={token} adminControls={adminControls} lockupIndex={row.id} config={row.termination_config} />
                 </div>
               </div>
             </div>
