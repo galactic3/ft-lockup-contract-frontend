@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 
 import Select from '@mui/material/Select';
 
@@ -10,7 +10,12 @@ import {
 
 import { INearProps, NearContext } from '../../../services/near';
 
-function DaoSelector(): any {
+type TProps = {
+  selectedDaoAddress: string,
+  setSelectedDaoAddress: Function,
+};
+
+function DaoSelector({ selectedDaoAddress, setSelectedDaoAddress }: TProps): any {
   const { near }: { near: INearProps | null } = useContext(NearContext);
 
   if (!near) {
@@ -19,12 +24,12 @@ function DaoSelector(): any {
 
   const { daos } = near.currentUser;
 
-  const defaultDao: string = daos.length > 0 ? daos[0] || '' : '';
+  if (daos.length > 0) {
+    setSelectedDaoAddress(daos[0]);
+  }
 
-  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState(defaultDao);
-
-  const handleContractAddressChange = (event: any) => {
-    setAstroDAOContractAddress(event.target.value as string);
+  const handleSelectedDaoAddressChange = (event: any) => {
+    setSelectedDaoAddress(event.target.value as string);
   };
 
   if (daos.length > 0) {
@@ -34,8 +39,8 @@ function DaoSelector(): any {
         <Select
           required
           sx={{ marginBottom: 3, width: 1 }}
-          value={astroDAOContractAddress}
-          onChange={handleContractAddressChange}
+          value={selectedDaoAddress}
+          onChange={handleSelectedDaoAddressChange}
         >
           {daos.map((dao) => <MenuItem value={dao}>{dao}</MenuItem>)}
         </Select>
@@ -49,7 +54,7 @@ function DaoSelector(): any {
       sx={{ marginBottom: 3, width: 1 }}
       id="outlined-helperText"
       label="DAO contract address"
-      onChange={handleContractAddressChange}
+      onChange={handleSelectedDaoAddressChange}
     />
   );
 }
