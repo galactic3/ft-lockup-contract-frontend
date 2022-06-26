@@ -15,7 +15,7 @@ import Big from 'big.js';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 
-import DaoSelector from '../WithDao/DaoSelector';
+// import DaoSelector from '../WithDao/DaoSelector';
 
 function TerminateWithDao(
   props: {
@@ -121,7 +121,6 @@ function TerminateWithDao(
                   )
                 }
               />
-              <DaoSelector />
             </LocalizationProvider>
             <button className="button red fullWidth" type="button" onClick={handleTerminateWithDao}>
               Terminate

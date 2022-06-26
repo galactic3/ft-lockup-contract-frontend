@@ -6,15 +6,14 @@ import {
   DialogTitle,
   IconButton,
   TextField,
-  InputLabel,
-  MenuItem,
 } from '@mui/material';
-import Select from '@mui/material/Select';
 
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 import { INearProps, NearContext } from '../../services/near';
 import { customFunctionCallProposalFormLink, ONE_YOKTO } from '../../services/DAOs/astroDAO/utils';
+
+import DaoSelector from '../WithDao/DaoSelector';
 
 function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount: any }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
@@ -39,43 +38,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     throw Error('Cannot fund draft group without specified amount');
   }
 
-  const { daos } = near.currentUser;
-
-  const defaultDao:string = daos.length > 0 ? daos[0] || '' : '';
-
-  let daoInput;
-
-  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState(defaultDao);
-
-  const handleContractAddressChange = (event: any) => {
-    setAstroDAOContractAddress(event.target.value as string);
-  };
-
-  if (daos.length > 0) {
-    daoInput = (
-      <div>
-        <InputLabel>Select DAO contract address</InputLabel>
-        <Select
-          required
-          sx={{ marginBottom: 3, width: 1 }}
-          value={astroDAOContractAddress}
-          onChange={handleContractAddressChange}
-        >
-          {daos.map((dao) => <MenuItem value={dao}>{dao}</MenuItem>)}
-        </Select>
-      </div>
-    );
-  } else {
-    daoInput = (
-      <TextField
-        required
-        sx={{ marginBottom: 3, width: 1 }}
-        id="outlined-helperText"
-        label="DAO contract address"
-        onChange={handleContractAddressChange}
-      />
-    );
-  }
+  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState('');
 
   const buildProposalLink = (): string => {
     const details = encodeURIComponent(description);
@@ -128,7 +91,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
             </IconButton>
           </DialogTitle>
           <DialogContent style={{ minWidth: '320px', paddingTop: '1.25em' }}>
-            {daoInput}
+            <DaoSelector selectedDaoAddress={astroDAOContractAddress} setSelectedDaoAddress={setAstroDAOContractAddress} />
             <TextField
               sx={{ width: 1 }}
               id="outlined-multiline-static"
