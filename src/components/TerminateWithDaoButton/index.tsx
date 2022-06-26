@@ -15,7 +15,7 @@ import Big from 'big.js';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 
-function TerminateLockup(
+function TerminateWithDao(
   props: {
     adminControls: boolean,
     lockupIndex: number | undefined,
@@ -45,7 +45,7 @@ function TerminateLockup(
     throw Error('Cannot terminate lockup without lockupIndex');
   }
 
-  const handleTerminateLockup = async () => {
+  const handleTerminateWithDao = async () => {
     if (!enqueueSnackbar) return;
 
     const ts = date ? date.getTime() / 1000 : null;
@@ -63,7 +63,7 @@ function TerminateLockup(
     message = 'No termination config';
     payerMessage = 'This lockup cannot be terminated';
   } else {
-    message = 'Terminate';
+    message = 'Terminate with DAO';
     payerMessage = `Unvested amount will return to ${config.beneficiary_id}`;
   }
 
@@ -85,7 +85,7 @@ function TerminateLockup(
       <Dialog open={open} sx={{ padding: 2 }} maxWidth="xs" onClose={handleClose}>
         <form className="form-submit">
           <DialogTitle>
-            Create Lockup
+            Terminate with DAO
             <IconButton
               aria-label="close"
               onClick={handleClose}
@@ -120,7 +120,7 @@ function TerminateLockup(
                 }
               />
             </LocalizationProvider>
-            <button className="button red fullWidth" type="button" onClick={handleTerminateLockup}>
+            <button className="button red fullWidth" type="button" onClick={handleTerminateWithDao}>
               Terminate
             </button>
           </DialogContent>
@@ -130,4 +130,4 @@ function TerminateLockup(
   );
 }
 
-export default TerminateLockup;
+export default TerminateWithDao;
