@@ -10,7 +10,7 @@ import {
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 import { INearProps, NearContext } from '../../services/near';
-import { customFunctionCallProposalFormLink, ONE_YOKTO } from '../../services/DAOs/astroDAO/utils';
+import { buildFundDraftGroupProposalLink } from '../../services/DAOs/astroDAO/utils';
 
 import DaoSelector from '../WithDao/DaoSelector';
 import DaoProposalDescription from '../WithDao/DaoProposalDescription';
@@ -39,31 +39,16 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     throw Error('Cannot fund draft group without specified amount');
   }
 
-  const buildProposalLink = (): string => {
-    const details = encodeURIComponent(description);
-    const tokenContractAddress = near.tokenApi.getContract().contractId;
-    const methodName = 'ft_transfer_call';
-    const json = {
-      receiver_id: near.api.getContract().contractId,
-      amount: amount.value,
-      msg: JSON.stringify({ draft_group_id: draftGroupIndex }),
-    };
-    const actionsGas = '100'; // with this amount transaction completes in one go (without resubmit with additional gas)
-    const actionDeposit = ONE_YOKTO;
-
-    return customFunctionCallProposalFormLink(
-      astroDAOContractAddress,
-      details,
-      tokenContractAddress,
-      methodName,
-      json,
-      actionsGas,
-      actionDeposit,
-    );
-  };
-
   const handleFund = () => {
-    window.open(buildProposalLink(), '_blank')?.focus();
+    const link = buildFundDraftGroupProposalLink(
+      description,
+      near.tokenApi.getContract().contractId,
+      amount.value,
+      draftGroupIndex,
+      astroDAOContractAddress,
+    );
+
+    window.open(link, '_blank')?.focus();
   };
 
   return (
