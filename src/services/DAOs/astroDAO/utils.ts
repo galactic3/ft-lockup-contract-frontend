@@ -97,11 +97,39 @@ export const buildFundDraftGroupProposalLink = (
   );
 };
 
+export const buildiTerminateLockupProposalLink = (
+  description: string,
+  tokenContractAddress: string,
+  lockupIndex: number,
+  timestamp: number | null,
+  daoContractAddress: string,
+): string => {
+  const details = encodeURIComponent(description);
+  const methodName = 'ft_transfer_call';
+  const json = {
+    receiver_id: tokenContractAddress,
+    msg: JSON.stringify({ lockup_index: lockupIndex, termination_timestamp: timestamp }),
+  };
+  const actionsGas = '100'; // with this amount transaction completes in one go (without resubmit with additional gas)
+  const actionDeposit = ONE_YOKTO;
+
+  return customFunctionCallProposalFormLink(
+    daoContractAddress,
+    details,
+    tokenContractAddress,
+    methodName,
+    json,
+    actionsGas,
+    actionDeposit,
+  );
+};
+
 const utils = {
   buildProposalFormLink,
   customFunctionCallProposalFormLink,
   daoCouncilMembers,
   buildFundDraftGroupProposalLink,
+  buildiTerminateLockupProposalLink,
 };
 
 export default utils;
