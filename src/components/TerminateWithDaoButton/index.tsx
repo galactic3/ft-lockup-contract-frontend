@@ -59,21 +59,18 @@ function TerminateWithDaoButton(
             value: date,
             setValue: setDate,
           },
-          visible: true,
         },
         daoSelector: {
           currentState: {
             value: astroDAOContractAddress,
             setValue: setAstroDAOContractAddress,
           },
-          visible: true,
         },
         daoProposalDescription: {
           currentState: {
             value: description,
             setValue: setDescription,
           },
-          visible: true,
         },
       },
     },

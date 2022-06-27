@@ -19,7 +19,6 @@ type TUIElement<Ctype> = {
     value: Ctype,
     setValue: any,
   },
-  visible: boolean,
 };
 
 type TProps = {
@@ -58,7 +57,7 @@ function TerminateModal({ currentState, handlers, dialog }: TProps) {
         </DialogTitle>
         <DialogContent sx={{ maxWidth: '320px' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            { dialog.datePicker.visible && (
+            { dialog.datePicker && (
               <DatePicker
                 label="Custom termination date"
                 minDate={new Date()}
@@ -79,13 +78,13 @@ function TerminateModal({ currentState, handlers, dialog }: TProps) {
                 }
               />
             ) }
-            { dialog?.daoSelector?.visible && (
+            { dialog?.daoSelector && (
               <DaoSelector
                 selectedAddress={dialog.daoSelector.currentState.value}
                 setSelectedAddress={dialog.daoSelector.currentState.setValue}
               />
             ) }
-            { dialog?.daoProposalDescription?.visible && (
+            { dialog?.daoProposalDescription && (
               <DaoProposalDescription
                 proposalDescription={dialog.daoProposalDescription.currentState.value}
                 setProposalDescription={dialog.daoProposalDescription.currentState.setValue}

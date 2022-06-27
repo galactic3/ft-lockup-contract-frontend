@@ -69,7 +69,6 @@ function TerminateLockup(
             value: date,
             setValue: setDate,
           },
-          visible: true,
         },
       },
     },
