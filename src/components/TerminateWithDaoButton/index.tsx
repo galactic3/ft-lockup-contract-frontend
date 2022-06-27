@@ -44,33 +44,31 @@ function TerminateWithDaoButton(
   const canTerminate = adminControls && config;
 
   const modalProps = {
-    modal: {
-      currentState: {
-        value: open,
-        setValue: setOpen,
-      },
-      handlers: {
-        onClose: handleClose,
-        onSubmit: handleTerminate,
-      },
-      dialog: {
-        datePicker: {
-          currentState: {
-            value: date,
-            setValue: setDate,
-          },
+    currentState: {
+      value: open,
+      setValue: setOpen,
+    },
+    handlers: {
+      onClose: handleClose,
+      onSubmit: handleTerminate,
+    },
+    dialog: {
+      datePicker: {
+        currentState: {
+          value: date,
+          setValue: setDate,
         },
-        daoSelector: {
-          currentState: {
-            value: astroDAOContractAddress,
-            setValue: setAstroDAOContractAddress,
-          },
+      },
+      daoSelector: {
+        currentState: {
+          value: astroDAOContractAddress,
+          setValue: setAstroDAOContractAddress,
         },
-        daoProposalDescription: {
-          currentState: {
-            value: description,
-            setValue: setDescription,
-          },
+      },
+      daoProposalDescription: {
+        currentState: {
+          value: description,
+          setValue: setDescription,
         },
       },
     },
@@ -86,7 +84,7 @@ function TerminateWithDaoButton(
       >
         {buttonText}
       </button>
-      { open && <TerminateModal {...modalProps.modal} /> }
+      { open && <TerminateModal {...modalProps} /> }
     </div>
   );
 }
