@@ -54,21 +54,19 @@ function TerminateLockup(
   const canTerminate = adminControls && config;
 
   const modalProps = {
-    modal: {
-      currentState: {
-        value: open,
-        setValue: setOpen,
-      },
-      handlers: {
-        onClose: handleClose,
-        onSubmit: handleTerminateLockup,
-      },
-      dialog: {
-        datePicker: {
-          currentState: {
-            value: date,
-            setValue: setDate,
-          },
+    currentState: {
+      value: open,
+      setValue: setOpen,
+    },
+    handlers: {
+      onClose: handleClose,
+      onSubmit: handleTerminateLockup,
+    },
+    dialog: {
+      datePicker: {
+        currentState: {
+          value: date,
+          setValue: setDate,
         },
       },
     },
@@ -85,7 +83,7 @@ function TerminateLockup(
         {buttonText}
       </button>
       )}
-      { open && <TerminateModal {...modalProps.modal} /> }
+      { open && <TerminateModal {...modalProps} /> }
     </>
   );
 }
