@@ -71,6 +71,7 @@ export const daoCouncilMembers = async (near: Near, accountAddress: string): Pro
 
 export const buildFundDraftGroupProposalLink = (
   description: string,
+  lockupContractAddress: string,
   tokenContractAddress: string,
   amountValue: string,
   draftGroupIndex: number,
@@ -79,7 +80,7 @@ export const buildFundDraftGroupProposalLink = (
   const details = encodeURIComponent(description);
   const methodName = 'ft_transfer_call';
   const json = {
-    receiver_id: tokenContractAddress,
+    receiver_id: lockupContractAddress,
     amount: amountValue,
     msg: JSON.stringify({ draft_group_id: draftGroupIndex }),
   };
@@ -99,16 +100,16 @@ export const buildFundDraftGroupProposalLink = (
 
 export const buildiTerminateLockupProposalLink = (
   description: string,
-  tokenContractAddress: string,
+  lockupContractAddress: string,
   lockupIndex: number,
   timestamp: number | null,
   daoContractAddress: string,
 ): string => {
   const details = encodeURIComponent(description);
-  const methodName = 'ft_transfer_call';
+  const methodName = 'terminate';
   const json = {
-    receiver_id: tokenContractAddress,
-    msg: JSON.stringify({ lockup_index: lockupIndex, termination_timestamp: timestamp }),
+    lockup_index: lockupIndex,
+    termination_timestamp: timestamp,
   };
   const actionsGas = '100'; // with this amount transaction completes in one go (without resubmit with additional gas)
   const actionDeposit = ONE_YOKTO;
@@ -116,7 +117,7 @@ export const buildiTerminateLockupProposalLink = (
   return customFunctionCallProposalFormLink(
     daoContractAddress,
     details,
-    tokenContractAddress,
+    lockupContractAddress,
     methodName,
     json,
     actionsGas,
