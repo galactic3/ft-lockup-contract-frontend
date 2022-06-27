@@ -3,6 +3,7 @@ import { useContext, useState } from 'react';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 import TerminateModal from '../TerminateModal';
+import { buildiTerminateLockupProposalLink } from '../../services/DAOs/astroDAO/utils';
 
 function TerminateWithDaoButton(
   props: {
@@ -39,7 +40,17 @@ function TerminateWithDaoButton(
     throw Error('Cannot terminate lockup without lockupIndex');
   }
 
-  const handleTerminate = async () => {};
+  const handleTerminate = () => {
+    const link = buildiTerminateLockupProposalLink(
+      description,
+      near.tokenApi.getContract().contractId,
+      lockupIndex,
+      date ? date.getTime() / 1000 : null,
+      astroDAOContractAddress,
+    );
+
+    window.open(link, '_blank')?.focus();
+  };
 
   const canTerminate = adminControls && config;
 
