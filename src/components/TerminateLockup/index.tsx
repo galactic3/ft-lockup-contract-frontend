@@ -12,6 +12,7 @@ function TerminateLockup(
     lockupIndex: number | undefined,
     config: { beneficiary_id: String, vesting_schedule: [] | null } | null,
     token: TMetadata,
+    buttonText: string,
   },
 ) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
@@ -20,6 +21,7 @@ function TerminateLockup(
     lockupIndex,
     config,
     token,
+    buttonText,
   } = props;
 
   const { enqueueSnackbar } = useSnackbar();
@@ -36,8 +38,6 @@ function TerminateLockup(
   if (lockupIndex === undefined) {
     throw Error('Cannot terminate lockup without lockupIndex');
   }
-
-  const buttonText = config?.beneficiary_id ? 'Terminate' : 'No termination config';
 
   const handleTerminateLockup = async () => {
     if (!enqueueSnackbar) return;
@@ -69,6 +69,7 @@ function TerminateLockup(
             value: date,
             setValue: setDate,
           },
+          visible: true,
         },
       },
     },
