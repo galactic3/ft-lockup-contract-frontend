@@ -43,7 +43,7 @@ function TerminateWithDaoButton(
   const handleTerminate = () => {
     const link = buildiTerminateLockupProposalLink(
       description,
-      near.tokenApi.getContract().contractId,
+      near.api.getContract().contractId,
       lockupIndex,
       date ? date.getTime() / 1000 : null,
       astroDAOContractAddress,

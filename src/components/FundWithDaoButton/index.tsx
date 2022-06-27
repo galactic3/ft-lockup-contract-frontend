@@ -39,14 +39,19 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     throw Error('Cannot fund draft group without specified amount');
   }
 
+  console.log('AMOUNT', amount);
+
   const handleFund = () => {
     const link = buildFundDraftGroupProposalLink(
       description,
+      near.api.getContract().contractId,
       near.tokenApi.getContract().contractId,
       amount.value,
       draftGroupIndex,
       astroDAOContractAddress,
     );
+
+    debugger;
 
     window.open(link, '_blank')?.focus();
   };
