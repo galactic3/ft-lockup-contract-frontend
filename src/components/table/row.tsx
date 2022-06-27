@@ -37,6 +37,13 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
   const vestedAmount = `${convertAmount(row.total_balance - row.claimed_balance - row.unclaimed_balance, token.decimals)}`;
   const unvestedAmount = `${convertAmount(row.total_balance - row.total_balance, token.decimals)}`;
 
+  let payerMessage;
+  if (!row.termination_config?.beneficiary_id) {
+    payerMessage = 'This lockup cannot be terminated';
+  } else {
+    payerMessage = `Unvested amount will return to ${row.termination_config?.beneficiary_id}`;
+  }
+
   return (
     <>
       <TableRow className={open ? 'expanded exp-row' : 'exp-row'} sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -127,8 +134,19 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
                   <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
                 )}
                 <div className="terminate">
-                  <TerminateLockup token={token} adminControls={adminControls} lockupIndex={row.id} config={row.termination_config} />
-                  <TerminateWithDaoButton token={token} adminControls={adminControls} lockupIndex={row.id} config={row.termination_config} />
+                  <TerminateLockup
+                    token={token}
+                    adminControls={adminControls}
+                    lockupIndex={row.id}
+                    config={row.termination_config}
+                  />
+                  <TerminateWithDaoButton
+                    token={token}
+                    adminControls={adminControls}
+                    lockupIndex={row.id}
+                    config={row.termination_config}
+                  />
+                  <span className="fine-print">{payerMessage}</span>
                 </div>
               </div>
             </div>
