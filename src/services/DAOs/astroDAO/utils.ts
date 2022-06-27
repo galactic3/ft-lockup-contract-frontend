@@ -98,7 +98,7 @@ export const buildFundDraftGroupProposalLink = (
   );
 };
 
-export const buildiTerminateLockupProposalLink = (
+export const buildTerminateLockupProposalLink = (
   description: string,
   lockupContractAddress: string,
   lockupIndex: number,
@@ -130,7 +130,7 @@ const utils = {
   customFunctionCallProposalFormLink,
   daoCouncilMembers,
   buildFundDraftGroupProposalLink,
-  buildiTerminateLockupProposalLink,
+  buildTerminateLockupProposalLink,
 };
 
 export default utils;
