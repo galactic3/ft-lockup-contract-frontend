@@ -24,7 +24,7 @@ function DaoSelector({ selectedAddress, setSelectedAddress }: TProps): any {
 
   const { daos } = near.currentUser;
 
-  if (daos.length > 0 && selectedAddress === '') {
+  if (daos.length > 0 && (selectedAddress === '' || !daos.includes(selectedAddress))) {
     setSelectedAddress(daos[0]);
   }
 

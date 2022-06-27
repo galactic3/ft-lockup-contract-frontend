@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 import TerminateModal from '../TerminateModal';
-import { buildiTerminateLockupProposalLink } from '../../services/DAOs/astroDAO/utils';
+import { buildTerminateLockupProposalLink } from '../../services/DAOs/astroDAO/utils';
 
 function TerminateWithDaoButton(
   props: {
@@ -30,7 +30,7 @@ function TerminateWithDaoButton(
 
   const defaultDescription = `Terminate lockup ${lockupIndex}. Lockup link: ${window.location.href}`;
   const [description, setDescription] = useState(defaultDescription);
-  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState('');
+  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState((config?.beneficiary_id || '') as string);
 
   if (!near) {
     throw Error('Cannot access lockup api');
@@ -41,7 +41,7 @@ function TerminateWithDaoButton(
   }
 
   const handleTerminate = () => {
-    const link = buildiTerminateLockupProposalLink(
+    const link = buildTerminateLockupProposalLink(
       description,
       near.api.getContract().contractId,
       lockupIndex,
