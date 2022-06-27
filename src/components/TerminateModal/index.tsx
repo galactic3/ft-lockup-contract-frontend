@@ -11,6 +11,16 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
+import DaoSelector from '../WithDao/DaoSelector';
+
+type TUIElement<Ctype> = {
+  currentState: {
+    value: Ctype,
+    setValue: any,
+  },
+  visible: boolean,
+};
+
 type TProps = {
   currentState: {
     value: boolean,
@@ -21,13 +31,8 @@ type TProps = {
     onSubmit: any,
   },
   dialog: {
-    datePicker: {
-      currentState: {
-        value: Date | null,
-        setValue: any,
-      },
-      visible: boolean,
-    },
+    datePicker: TUIElement<Date | null>,
+    daoSelector?: TUIElement<string>,
   },
 };
 
@@ -70,6 +75,12 @@ function TerminateModal({ currentState, handlers, dialog }: TProps) {
                     />
                   )
                 }
+              />
+            ) }
+            { dialog?.daoSelector?.visible && (
+              <DaoSelector
+                selectedAddress={dialog.daoSelector.currentState.value}
+                setSelectedAddress={dialog.daoSelector.currentState.setValue}
               />
             ) }
           </LocalizationProvider>
