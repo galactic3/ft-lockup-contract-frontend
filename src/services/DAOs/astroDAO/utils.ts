@@ -69,10 +69,39 @@ export const daoCouncilMembers = async (near: Near, accountAddress: string): Pro
   }
 };
 
+export const buildFundDraftGroupProposalLink = (
+  description: string,
+  tokenContractAddress: string,
+  amountValue: string,
+  draftGroupIndex: number,
+  daoContractAddress: string,
+): string => {
+  const details = encodeURIComponent(description);
+  const methodName = 'ft_transfer_call';
+  const json = {
+    receiver_id: tokenContractAddress,
+    amount: amountValue,
+    msg: JSON.stringify({ draft_group_id: draftGroupIndex }),
+  };
+  const actionsGas = '100'; // with this amount transaction completes in one go (without resubmit with additional gas)
+  const actionDeposit = ONE_YOKTO;
+
+  return customFunctionCallProposalFormLink(
+    daoContractAddress,
+    details,
+    tokenContractAddress,
+    methodName,
+    json,
+    actionsGas,
+    actionDeposit,
+  );
+};
+
 const utils = {
   buildProposalFormLink,
   customFunctionCallProposalFormLink,
   daoCouncilMembers,
+  buildFundDraftGroupProposalLink,
 };
 
 export default utils;
