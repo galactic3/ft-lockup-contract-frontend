@@ -47,6 +47,8 @@ function TerminateWithDao(
     throw Error('Cannot terminate lockup without lockupIndex');
   }
 
+  const buttonText = config?.beneficiary_id ? 'Terminate with DAO' : 'No termination config';
+
   const handleTerminateWithDao = async () => {
     if (!enqueueSnackbar) return;
 
@@ -59,16 +61,6 @@ function TerminateWithDao(
     setTimeout(() => window.location.reload(), 1000);
   };
 
-  let message;
-  let payerMessage;
-  if (!config) {
-    message = 'No termination config';
-    payerMessage = 'This lockup cannot be terminated';
-  } else {
-    message = 'Terminate with DAO';
-    payerMessage = `Unvested amount will return to ${config.beneficiary_id}`;
-  }
-
   const canTerminate = adminControls && config;
 
   return (
@@ -79,11 +71,8 @@ function TerminateWithDao(
         type="button"
         onClick={handleOpen}
       >
-        {message}
+        {buttonText}
       </button>
-      <span className="fine-print">
-        {payerMessage}
-      </span>
       <Dialog open={open} sx={{ padding: 2 }} maxWidth="xs" onClose={handleClose}>
         <form className="form-submit">
           <DialogTitle>
@@ -121,6 +110,7 @@ function TerminateWithDao(
                   )
                 }
               />
+
             </LocalizationProvider>
             <button className="button red fullWidth" type="button" onClick={handleTerminateWithDao}>
               Terminate

@@ -1,19 +1,10 @@
 import { useContext, useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField,
-} from '@mui/material';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
 import { useSnackbar } from 'notistack';
 import Big from 'big.js';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
+import TerminateModal from '../TerminateModal';
 
 function TerminateLockup(
   props: {
@@ -32,8 +23,9 @@ function TerminateLockup(
   } = props;
 
   const { enqueueSnackbar } = useSnackbar();
-  const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | null>(null);
+
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -44,6 +36,8 @@ function TerminateLockup(
   if (lockupIndex === undefined) {
     throw Error('Cannot terminate lockup without lockupIndex');
   }
+
+  const buttonText = config?.beneficiary_id ? 'Terminate' : 'No termination config';
 
   const handleTerminateLockup = async () => {
     if (!enqueueSnackbar) return;
@@ -57,76 +51,41 @@ function TerminateLockup(
     setTimeout(() => window.location.reload(), 1000);
   };
 
-  let message;
-  let payerMessage;
-  if (!config) {
-    message = 'No termination config';
-    payerMessage = 'This lockup cannot be terminated';
-  } else {
-    message = 'Terminate';
-    payerMessage = `Unvested amount will return to ${config.beneficiary_id}`;
-  }
-
   const canTerminate = adminControls && config;
+
+  const modalProps = {
+    modal: {
+      currentState: {
+        value: open,
+        setValue: setOpen,
+      },
+      handlers: {
+        onClose: handleClose,
+        onSubmit: handleTerminateLockup,
+      },
+      dialog: {
+        datePicker: {
+          currentState: {
+            value: date,
+            setValue: setDate,
+          },
+        },
+      },
+    },
+  };
 
   return (
     <>
-      <span>
-        {payerMessage}
-      </span>
       {canTerminate && (
       <button
         className="button"
         type="button"
         onClick={handleOpen}
       >
-        {message}
+        {buttonText}
       </button>
       )}
-      <Dialog open={open} sx={{ padding: 2 }} maxWidth="xs" onClose={handleClose}>
-        <form className="form-submit">
-          <DialogTitle>
-            Create Lockup
-            <IconButton
-              aria-label="close"
-              onClick={handleClose}
-              sx={{
-                position: 'absolute',
-                right: 8,
-                top: 8,
-              }}
-            >
-              <CloseRoundedIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent sx={{ maxWidth: '320px' }}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label="Custom termination date"
-                minDate={new Date()}
-                value={date}
-                onChange={(newValue) => {
-                  setDate(newValue);
-                }}
-                renderInput={
-                  (params) => (
-                    <TextField
-                      sx={{ margin: '20px 0 40px' }}
-                      margin="normal"
-                      fullWidth
-                      variant="standard"
-                      {...params}
-                    />
-                  )
-                }
-              />
-            </LocalizationProvider>
-            <button className="button red fullWidth" type="button" onClick={handleTerminateLockup}>
-              Terminate
-            </button>
-          </DialogContent>
-        </form>
-      </Dialog>
+      { open && <TerminateModal {...modalProps.modal} /> }
     </>
   );
 }
