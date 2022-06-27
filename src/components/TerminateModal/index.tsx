@@ -12,6 +12,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import DaoSelector from '../WithDao/DaoSelector';
+import DaoProposalDescription from '../WithDao/DaoProposalDescription';
 
 type TUIElement<Ctype> = {
   currentState: {
@@ -33,6 +34,7 @@ type TProps = {
   dialog: {
     datePicker: TUIElement<Date | null>,
     daoSelector?: TUIElement<string>,
+    daoProposalDescription?: TUIElement<string>,
   },
 };
 
@@ -81,6 +83,12 @@ function TerminateModal({ currentState, handlers, dialog }: TProps) {
               <DaoSelector
                 selectedAddress={dialog.daoSelector.currentState.value}
                 setSelectedAddress={dialog.daoSelector.currentState.setValue}
+              />
+            ) }
+            { dialog?.daoProposalDescription?.visible && (
+              <DaoProposalDescription
+                proposalDescription={dialog.daoProposalDescription.currentState.value}
+                setProposalDescription={dialog.daoProposalDescription.currentState.setValue}
               />
             ) }
           </LocalizationProvider>
