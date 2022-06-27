@@ -27,6 +27,8 @@ function TerminateWithDaoButton(
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const defaultDescription = `Terminate lockup ${lockupIndex}. Lockup link: ${window.location.href}`;
+  const [description, setDescription] = useState(defaultDescription);
   const [astroDAOContractAddress, setAstroDAOContractAddress] = useState('');
 
   if (!near) {
@@ -63,6 +65,13 @@ function TerminateWithDaoButton(
           currentState: {
             value: astroDAOContractAddress,
             setValue: setAstroDAOContractAddress,
+          },
+          visible: true,
+        },
+        daoProposalDescription: {
+          currentState: {
+            value: description,
+            setValue: setDescription,
           },
           visible: true,
         },
