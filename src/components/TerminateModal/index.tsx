@@ -26,6 +26,7 @@ type TProps = {
         value: Date | null,
         setValue: any,
       },
+      visible: boolean,
     },
   },
 };
@@ -50,25 +51,27 @@ function TerminateModal({ currentState, handlers, dialog }: TProps) {
         </DialogTitle>
         <DialogContent sx={{ maxWidth: '320px' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="Custom termination date"
-              minDate={new Date()}
-              value={dialog.datePicker.currentState.value}
-              onChange={(newValue) => {
-                dialog.datePicker.currentState.setValue(newValue);
-              }}
-              renderInput={
-                (params) => (
-                  <TextField
-                    sx={{ margin: '20px 0 40px' }}
-                    margin="normal"
-                    fullWidth
-                    variant="standard"
-                    {...params}
-                  />
-                )
-              }
-            />
+            { dialog.datePicker.visible && (
+              <DatePicker
+                label="Custom termination date"
+                minDate={new Date()}
+                value={dialog.datePicker.currentState.value}
+                onChange={(newValue) => {
+                  dialog.datePicker.currentState.setValue(newValue);
+                }}
+                renderInput={
+                  (params) => (
+                    <TextField
+                      sx={{ margin: '20px 0 40px' }}
+                      margin="normal"
+                      fullWidth
+                      variant="standard"
+                      {...params}
+                    />
+                  )
+                }
+              />
+            ) }
           </LocalizationProvider>
           <button className="button red fullWidth" type="button" onClick={handlers.onSubmit}>
             Terminate

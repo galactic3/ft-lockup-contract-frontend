@@ -139,12 +139,14 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
                     adminControls={adminControls}
                     lockupIndex={row.id}
                     config={row.termination_config}
+                    buttonText={row?.termination_config?.beneficiary_id ? 'Terminate' : 'No termination config'}
                   />
                   <TerminateWithDaoButton
                     token={token}
                     adminControls={adminControls}
                     lockupIndex={row.id}
                     config={row.termination_config}
+                    buttonText={row?.termination_config?.beneficiary_id ? 'Terminate with Dao' : 'No termination config'}
                   />
                   <span className="fine-print">{payerMessage}</span>
                 </div>
