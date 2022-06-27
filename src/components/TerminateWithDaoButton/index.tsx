@@ -27,6 +27,8 @@ function TerminateWithDaoButton(
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState('');
+
   if (!near) {
     throw Error('Cannot access lockup api');
   }
@@ -54,6 +56,13 @@ function TerminateWithDaoButton(
           currentState: {
             value: date,
             setValue: setDate,
+          },
+          visible: true,
+        },
+        daoSelector: {
+          currentState: {
+            value: astroDAOContractAddress,
+            setValue: setAstroDAOContractAddress,
           },
           visible: true,
         },
