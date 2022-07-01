@@ -5,16 +5,15 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  TextField,
-  InputLabel,
-  MenuItem,
 } from '@mui/material';
-import Select from '@mui/material/Select';
 
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 import { INearProps, NearContext } from '../../services/near';
-import { customFunctionCallProposalFormLink, ONE_YOKTO } from '../../services/DAOs/astroDAO/utils';
+import { buildFundDraftGroupProposalLink } from '../../services/DAOs/astroDAO/utils';
+
+import DaoSelector from '../WithDao/DaoSelector';
+import DaoProposalDescription from '../WithDao/DaoProposalDescription';
 
 function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount: any }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
@@ -22,6 +21,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
 
   const defaultDescription = `Fund draft group ${draftGroupIndex} with amount ${amount?.label}. Draft group link: ${window.location.href}`;
   const [description, setDescription] = useState(defaultDescription);
+  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState('');
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -39,73 +39,21 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
     throw Error('Cannot fund draft group without specified amount');
   }
 
-  const { daos } = near.currentUser;
-
-  const defaultDao:string = daos.length > 0 ? daos[0] || '' : '';
-
-  let daoInput;
-
-  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState(defaultDao);
-
-  const handleContractAddressChange = (event: any) => {
-    setAstroDAOContractAddress(event.target.value as string);
-  };
-
-  if (daos.length > 0) {
-    daoInput = (
-      <div>
-        <InputLabel>Select DAO contract address</InputLabel>
-        <Select
-          required
-          sx={{ marginBottom: 3, width: 1 }}
-          value={astroDAOContractAddress}
-          onChange={handleContractAddressChange}
-        >
-          {daos.map((dao) => <MenuItem value={dao}>{dao}</MenuItem>)}
-        </Select>
-      </div>
-    );
-  } else {
-    daoInput = (
-      <TextField
-        required
-        sx={{ marginBottom: 3, width: 1 }}
-        id="outlined-helperText"
-        label="DAO contract address"
-        onChange={handleContractAddressChange}
-      />
-    );
-  }
-
-  const buildProposalLink = (): string => {
-    const details = encodeURIComponent(description);
-    const tokenContractAddress = near.tokenApi.getContract().contractId;
-    const methodName = 'ft_transfer_call';
-    const json = {
-      receiver_id: near.api.getContract().contractId,
-      amount: amount.value,
-      msg: JSON.stringify({ draft_group_id: draftGroupIndex }),
-    };
-    const actionsGas = '100'; // with this amount transaction completes in one go (without resubmit with additional gas)
-    const actionDeposit = ONE_YOKTO;
-
-    return customFunctionCallProposalFormLink(
-      astroDAOContractAddress,
-      details,
-      tokenContractAddress,
-      methodName,
-      json,
-      actionsGas,
-      actionDeposit,
-    );
-  };
-
-  const handleDescriptionChange = (e: any) => {
-    setDescription(e.target.value);
-  };
+  console.log('AMOUNT', amount);
 
   const handleFund = () => {
-    window.open(buildProposalLink(), '_blank')?.focus();
+    const link = buildFundDraftGroupProposalLink(
+      description,
+      near.api.getContract().contractId,
+      near.tokenApi.getContract().contractId,
+      amount.value,
+      draftGroupIndex,
+      astroDAOContractAddress,
+    );
+
+    debugger;
+
+    window.open(link, '_blank')?.focus();
   };
 
   return (
@@ -128,16 +76,8 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
             </IconButton>
           </DialogTitle>
           <DialogContent style={{ minWidth: '320px', paddingTop: '1.25em' }}>
-            {daoInput}
-            <TextField
-              sx={{ width: 1 }}
-              id="outlined-multiline-static"
-              label="Proposal description"
-              multiline
-              minRows={5}
-              onChange={handleDescriptionChange}
-              defaultValue={description}
-            />
+            <DaoSelector selectedAddress={astroDAOContractAddress} setSelectedAddress={setAstroDAOContractAddress} />
+            <DaoProposalDescription proposalDescription={description} setProposalDescription={setDescription} />
           </DialogContent>
           <DialogActions sx={{ padding: '14px 24px 24px' }}>
             <button className="button fullWidth noMargin" type="submit">Fund</button>

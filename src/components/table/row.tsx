@@ -13,6 +13,7 @@ import { convertAmount, convertTimestamp } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import TerminateLockup from '../TerminateLockup';
+import TerminateWithDaoButton from '../TerminateWithDaoButton';
 import TokenIcon from '../TokenIcon';
 import ScheduleTable from '../ScheduleTable';
 
@@ -35,6 +36,43 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
   const availbleAmount = `${convertAmount(row.unclaimed_balance, token.decimals)}`;
   const vestedAmount = `${convertAmount(row.total_balance - row.claimed_balance - row.unclaimed_balance, token.decimals)}`;
   const unvestedAmount = `${convertAmount(row.total_balance - row.total_balance, token.decimals)}`;
+
+  let payerMessage;
+  if (!row.termination_config?.beneficiary_id) {
+    payerMessage = 'This lockup cannot be terminated';
+  } else {
+    payerMessage = `Unvested amount will return to ${row.termination_config?.beneficiary_id}`;
+  }
+
+  const terminatorId = row?.termination_config?.beneficiary_id;
+
+  const terminateButton = (terminator: string, currentUserId: string | null, daos: string[]) => {
+    if (currentUserId && (terminator === currentUserId)) {
+      return (
+        <TerminateLockup
+          token={token}
+          adminControls={adminControls}
+          lockupIndex={row.id}
+          config={row.termination_config}
+          buttonText={terminator ? 'Terminate' : 'No termination config'}
+        />
+      );
+    }
+
+    if (daos.includes(terminator)) {
+      return (
+        <TerminateWithDaoButton
+          token={token}
+          adminControls={adminControls}
+          lockupIndex={row.id}
+          config={row.termination_config}
+          buttonText={terminator ? 'Terminate with Dao' : 'No termination config'}
+        />
+      );
+    }
+
+    return null;
+  };
 
   return (
     <>
@@ -128,7 +166,9 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
                   <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
                 )}
                 <div className="terminate">
-                  <TerminateLockup token={token} adminControls={adminControls} lockupIndex={row.id} config={row.termination_config} />
+                  <span className="fine-print">{payerMessage}</span>
+                  {terminateButton(terminatorId, near.currentUser.signedAccountId, near.currentUser.daos)}
+
                 </div>
               </div>
             </div>

@@ -1,12 +1,11 @@
 import { useContext, useState } from 'react';
 
-import { useSnackbar } from 'notistack';
-import Big from 'big.js';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 import TerminateModal from '../TerminateModal';
+import { buildTerminateLockupProposalLink } from '../../services/DAOs/astroDAO/utils';
 
-function TerminateLockup(
+function TerminateWithDaoButton(
   props: {
     adminControls: boolean,
     lockupIndex: number | undefined,
@@ -20,16 +19,18 @@ function TerminateLockup(
     adminControls,
     lockupIndex,
     config,
-    token,
     buttonText,
   } = props;
 
-  const { enqueueSnackbar } = useSnackbar();
   const [date, setDate] = useState<Date | null>(null);
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const defaultDescription = `Terminate lockup ${lockupIndex}. Lockup link: ${window.location.href}`;
+  const [description, setDescription] = useState(defaultDescription);
+  const [astroDAOContractAddress, setAstroDAOContractAddress] = useState((config?.beneficiary_id || '') as string);
 
   if (!near) {
     throw Error('Cannot access lockup api');
@@ -39,16 +40,16 @@ function TerminateLockup(
     throw Error('Cannot terminate lockup without lockupIndex');
   }
 
-  const handleTerminateLockup = async () => {
-    if (!enqueueSnackbar) return;
+  const handleTerminate = () => {
+    const link = buildTerminateLockupProposalLink(
+      description,
+      near.api.getContract().contractId,
+      lockupIndex,
+      date ? date.getTime() / 1000 : null,
+      astroDAOContractAddress,
+    );
 
-    const ts = date ? date.getTime() / 1000 : null;
-    const result = await near.api.terminate(lockupIndex, ts);
-    const amount = new Big(result as any).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
-    console.log(amount);
-    const message = `Terminated lockup #${lockupIndex}, refunded ${amount} ${token.symbol}`;
-    enqueueSnackbar(message, { variant: 'success' });
-    setTimeout(() => window.location.reload(), 1000);
+    window.open(link, '_blank')?.focus();
   };
 
   const canTerminate = adminControls && config;
@@ -60,7 +61,7 @@ function TerminateLockup(
     },
     handlers: {
       onClose: handleClose,
-      onSubmit: handleTerminateLockup,
+      onSubmit: handleTerminate,
     },
     dialog: {
       datePicker: {
@@ -69,23 +70,35 @@ function TerminateLockup(
           setValue: setDate,
         },
       },
+      daoSelector: {
+        currentState: {
+          value: astroDAOContractAddress,
+          setValue: setAstroDAOContractAddress,
+        },
+      },
+      daoProposalDescription: {
+        currentState: {
+          value: description,
+          setValue: setDescription,
+        },
+      },
     },
   };
 
   return (
-    <>
-      {canTerminate && (
-        <button
-          className="button"
-          type="button"
-          onClick={handleOpen}
-        >
-          {buttonText}
-        </button>
-      )}
+    <div>
+      <button
+        className="button"
+        disabled={!canTerminate}
+        type="button"
+        onClick={handleOpen}
+        style={{ marginTop: 0 }}
+      >
+        {buttonText}
+      </button>
       { open && <TerminateModal {...modalProps} /> }
-    </>
+    </div>
   );
 }
 
-export default TerminateLockup;
+export default TerminateWithDaoButton;

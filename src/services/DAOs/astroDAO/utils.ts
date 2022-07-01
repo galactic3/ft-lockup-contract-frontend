@@ -69,10 +69,68 @@ export const daoCouncilMembers = async (near: Near, accountAddress: string): Pro
   }
 };
 
+export const buildFundDraftGroupProposalLink = (
+  description: string,
+  lockupContractAddress: string,
+  tokenContractAddress: string,
+  amountValue: string,
+  draftGroupIndex: number,
+  daoContractAddress: string,
+): string => {
+  const details = encodeURIComponent(description);
+  const methodName = 'ft_transfer_call';
+  const json = {
+    receiver_id: lockupContractAddress,
+    amount: amountValue,
+    msg: JSON.stringify({ draft_group_id: draftGroupIndex }),
+  };
+  const actionsGas = '100'; // with this amount transaction completes in one go (without resubmit with additional gas)
+  const actionDeposit = ONE_YOKTO;
+
+  return customFunctionCallProposalFormLink(
+    daoContractAddress,
+    details,
+    tokenContractAddress,
+    methodName,
+    json,
+    actionsGas,
+    actionDeposit,
+  );
+};
+
+export const buildTerminateLockupProposalLink = (
+  description: string,
+  lockupContractAddress: string,
+  lockupIndex: number,
+  timestamp: number | null,
+  daoContractAddress: string,
+): string => {
+  const details = encodeURIComponent(description);
+  const methodName = 'terminate';
+  const json = {
+    lockup_index: lockupIndex,
+    termination_timestamp: timestamp,
+  };
+  const actionsGas = '100'; // with this amount transaction completes in one go (without resubmit with additional gas)
+  const actionDeposit = ONE_YOKTO;
+
+  return customFunctionCallProposalFormLink(
+    daoContractAddress,
+    details,
+    lockupContractAddress,
+    methodName,
+    json,
+    actionsGas,
+    actionDeposit,
+  );
+};
+
 const utils = {
   buildProposalFormLink,
   customFunctionCallProposalFormLink,
   daoCouncilMembers,
+  buildFundDraftGroupProposalLink,
+  buildTerminateLockupProposalLink,
 };
 
 export default utils;
