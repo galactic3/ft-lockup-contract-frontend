@@ -127,16 +127,18 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
           </div>
         )}
         {draftGroup.funded && draftGroup.draft_indices.length > 0 && (
-          <LoadingButton
-            className="button fullWidth"
-            type="button"
-            onClick={handleConvert}
-            loading={inProgress}
-            variant="contained"
-            color="success"
-          >
-            Convert
-          </LoadingButton>
+          <div className="draft-group-fund-button-wrapper">
+            <LoadingButton
+              className="button"
+              type="button"
+              onClick={handleConvert}
+              loading={inProgress}
+              variant="contained"
+              color="success"
+            >
+              Convert
+            </LoadingButton>
+          </div>
         )}
         {draftGroup.funded && draftGroup.draft_indices.length === 0 && (
           <div style={{ marginTop: 20 }}>

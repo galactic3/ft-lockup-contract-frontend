@@ -119,8 +119,6 @@ code {
 }
 
 .new-lockup-contract p {
-  font-size: 18px;
-  font-weight: 500;
   margin-bottom: 48px;
 }
 
@@ -412,7 +410,7 @@ div.process-log {
   background: #F45800;
 }
 
-.button {
+.button, .MuiLoadingButton-root.button {
   background: var(--green);
   font-size: 16px;
   line-height: 24px;
@@ -422,6 +420,11 @@ div.process-log {
   border: unset;
   padding: 12px 32px;
   cursor: pointer;
+  box-shadow: none;
+}
+
+.MuiLoadingButton-root.button:hover {
+  background: var(--green);
 }
 
 .submit {
