@@ -42,7 +42,7 @@ function TerminateModal({ currentState, handlers, dialog }: TProps) {
     <Dialog open={currentState.value} sx={{ padding: 2 }} maxWidth="xs" onClose={handlers.onClose}>
       <form className="form-submit">
         <DialogTitle>
-          Create Lockup
+          Terminate Lockup
           <IconButton
             aria-label="close"
             onClick={handlers.onClose}
@@ -68,7 +68,7 @@ function TerminateModal({ currentState, handlers, dialog }: TProps) {
                 renderInput={
                   (params) => (
                     <TextField
-                      sx={{ margin: '20px 0 40px' }}
+                      sx={{ margin: '0px 0 24px' }}
                       margin="normal"
                       fullWidth
                       variant="standard"
@@ -91,7 +91,8 @@ function TerminateModal({ currentState, handlers, dialog }: TProps) {
               />
             ) }
           </LocalizationProvider>
-          <button className="button red fullWidth" type="button" onClick={handlers.onSubmit}>
+          <span style={{ minHeight: '40px' }} />
+          <button className="button red fullWidth" style={{ marginTop: '40px' }} type="button" onClick={handlers.onSubmit}>
             Terminate
           </button>
         </DialogContent>
