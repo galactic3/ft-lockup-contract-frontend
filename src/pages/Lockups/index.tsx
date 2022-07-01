@@ -1,5 +1,4 @@
 import {
-  Paper,
   TableContainer,
 } from '@mui/material';
 import { useContext, useState } from 'react';
@@ -46,18 +45,15 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
   const lockupsTable = (lockupsList: any): any => {
     if (lockupsList.length > 0) {
       return (
-        <div>
-
+        <>
           <Chart data={chartData(lockupsList)} />
-
-          <br />
 
           { signedIn && adminControls && isAdmin && <CreateLockup token={token} /> }
 
-          <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }} component={Paper}>
+          <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }}>
             <LockupsTable lockups={lockupsList} token={token} adminControls={adminControls} />
           </TableContainer>
-        </div>
+        </>
       );
     }
 
@@ -68,7 +64,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
           <div>
             Create single lockup or create batch of them via
             {' '}
-            <Link to={`/${near.lockupContractId}/admin/draft_groups`}>Draft Groups</Link>
+            <Link to={`/${near.lockupContractId}/admin/import_draft_group`}>Draft Groups</Link>
             .
           </div>
         )}
@@ -80,21 +76,25 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
 
   if (adminControls) {
     return (
-      <div className="container">
-        {lockupsTable(lockups)}
+      <div className="main">
+        <div className="container">
+          {lockupsTable(lockups)}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container">
-      <FavouriteAccounts
-        tokenContractId={token.contractId}
-        favouriteAccounts={favouriteAccounts}
-        uniqueUsers={uniqueUsers}
-        onSave={setFavouriteAccounts}
-      />
-      {lockupsTable(favouriteAccountsLockups)}
+    <div className="main">
+      <div className="container">
+        <FavouriteAccounts
+          tokenContractId={token.contractId}
+          favouriteAccounts={favouriteAccounts}
+          uniqueUsers={uniqueUsers}
+          onSave={setFavouriteAccounts}
+        />
+        {lockupsTable(favouriteAccountsLockups)}
+      </div>
     </div>
   );
 }

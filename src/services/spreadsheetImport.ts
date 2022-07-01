@@ -304,12 +304,13 @@ export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmou
 };
 
 export type Lockup = {
+  id: number,
   account_id: ValidAccountId,
   schedule: Schedule,
   vesting_schedule: { Schedule: Schedule } | null,
 };
 
-export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals: number): Lockup => {
+export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals: number, index: number): Lockup => {
   const row = parseToSpreadsheetRow(rawSpreadsheetRow);
 
   let vestingSchedule = null;
@@ -319,6 +320,7 @@ export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals:
   }
 
   return {
+    id: index,
     account_id: row.account_id,
     schedule: toLockupSchedule(row.lockup_schedule, row.amount, tokenDecimals),
     vesting_schedule: vestingSchedule,
@@ -327,5 +329,5 @@ export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals:
 
 export const parseRawSpreadsheetInput = (spreadsheetInput: string, tokenDecimals: number): Lockup[] => {
   const rows = parseSpreadsheetColumns(spreadsheetInput);
-  return rows.map((x) => parseLockup(x, tokenDecimals));
+  return rows.map((x, index: number) => parseLockup(x, tokenDecimals, index));
 };

@@ -26,7 +26,7 @@ function FundButton(props: { draftGroupIndex: number | undefined, amount: string
   };
 
   return (
-    <button className="button fullWidth" type="button" onClick={handleFund}>Fund</button>
+    <button className="button" type="button" onClick={handleFund}>Fund</button>
   );
 }
 
