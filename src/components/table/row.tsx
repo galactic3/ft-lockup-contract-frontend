@@ -44,6 +44,36 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
     payerMessage = `Unvested amount will return to ${row.termination_config?.beneficiary_id}`;
   }
 
+  const terminatorId = row?.termination_config?.beneficiary_id;
+
+  const terminateButton = (terminator: string, currentUserId: string | null, daos: string[]) => {
+    if (currentUserId && (terminator === currentUserId)) {
+      return (
+        <TerminateLockup
+          token={token}
+          adminControls={adminControls}
+          lockupIndex={row.id}
+          config={row.termination_config}
+          buttonText={terminator ? 'Terminate' : 'No termination config'}
+        />
+      );
+    }
+
+    if (daos.includes(terminator)) {
+      return (
+        <TerminateWithDaoButton
+          token={token}
+          adminControls={adminControls}
+          lockupIndex={row.id}
+          config={row.termination_config}
+          buttonText={terminator ? 'Terminate with Dao' : 'No termination config'}
+        />
+      );
+    }
+
+    return null;
+  };
+
   return (
     <>
       <TableRow className={open ? 'expanded exp-row' : 'exp-row'} sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -137,20 +167,8 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
                 )}
                 <div className="terminate">
                   <span className="fine-print">{payerMessage}</span>
-                  <TerminateLockup
-                    token={token}
-                    adminControls={adminControls}
-                    lockupIndex={row.id}
-                    config={row.termination_config}
-                    buttonText={row?.termination_config?.beneficiary_id ? 'Terminate' : 'No termination config'}
-                  />
-                  <TerminateWithDaoButton
-                    token={token}
-                    adminControls={adminControls}
-                    lockupIndex={row.id}
-                    config={row.termination_config}
-                    buttonText={row?.termination_config?.beneficiary_id ? 'Terminate with Dao' : 'No termination config'}
-                  />
+                  {terminateButton(terminatorId, near.currentUser.signedAccountId, near.currentUser.daos)}
+
                 </div>
               </div>
             </div>
