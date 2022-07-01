@@ -12,7 +12,7 @@ import TokenAmountPreview from '../../components/TokenAmountPreview';
 import FundButton from '../../components/FundButton';
 import FundWithDaoButton from '../../components/FundWithDaoButton';
 
-export default function PageDraftGroup({ token }: { token: TMetadata }) {
+export default function PageDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const draftGroupId = parseInt(useParams().draftGroupId || '', 10);
@@ -116,14 +116,13 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
   return (
     <div className="container">
       <div className="draft-group-preview-wrapper">
-        <h5>
-          {`Draft group ${draftGroupId}`}
-        </h5>
-        <TokenAmountPreview token={token} amount={amount.label} />
-
+        <div className="draft-group-preview-info" style={{ display: 'flex' }}>
+          <h5>{`Draft group ${draftGroupId}`}</h5>
+          <TokenAmountPreview token={token} amount={amount.label} />
+        </div>
         {!draftGroup.funded && (
-          <div style={{ marginTop: 20 }}>
-            {near?.currentUser?.isAdmin && <FundButton draftGroupIndex={draftGroupId} amount={amount.value} /> }
+          <div className="draft-group-fund-button-wrapper">
+            {adminControls && <FundButton draftGroupIndex={draftGroupId} amount={amount.value} /> }
             <FundWithDaoButton draftGroupIndex={draftGroupId} amount={amount} />
           </div>
         )}
@@ -147,7 +146,7 @@ export default function PageDraftGroup({ token }: { token: TMetadata }) {
       </div>
 
       {(!draftGroup.funded || draftGroup.draft_indices.length > 0) && (
-        <DraftsTable lockups={drafts} token={token} />
+        <DraftsTable lockups={drafts} token={token} adminControls={adminControls} progressShow />
       )}
     </div>
   );

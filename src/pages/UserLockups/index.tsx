@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
 import {
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -27,7 +26,7 @@ export default function UserLockups({ lockups: allLockups, token, adminControls 
 
       {!adminControls && <ClaimAllLockups accountId={userId} token={token} total={convertAmount(totalUnclaimedBalance, token.decimals)} />}
 
-      <TableContainer sx={{ boxShadow: 'unset' }} component={Paper}>
+      <TableContainer sx={{ boxShadow: 'unset' }}>
         <Table className="main-table" aria-label="collapsible table">
           <TableHead className="table-head">
             <TableRow>

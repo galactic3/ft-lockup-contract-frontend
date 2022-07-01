@@ -16,10 +16,12 @@ import { TMetadata } from '../../services/tokenApi';
 import TokenIcon from '../TokenIcon';
 import ScheduleTable from '../ScheduleTable';
 
-export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMetadata }) {
+export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMetadata, adminControls: boolean, progressShow: boolean }) {
   const location = useLocation();
   const [open, setOpen] = useState(false);
-  const { row, token } = props;
+  const {
+    row, token, adminControls, progressShow,
+  } = props;
   const {
     near,
   }: {
@@ -28,11 +30,14 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
 
   if (!near) return null;
 
-  const { signedIn } = near.currentUser;
-
   const vestingSchedule = row?.vesting_schedule?.Schedule;
 
   const currentContractName = location.pathname.split('/')[1];
+
+  const claimedAmount = `${convertAmount(row.claimed_balance, token.decimals)}`;
+  const availbleAmount = `${convertAmount(row.unclaimed_balance, token.decimals)}`;
+  const vestedAmount = `${convertAmount(row.total_balance - row.claimed_balance - row.unclaimed_balance, token.decimals)}`;
+  const unvestedAmount = `${convertAmount(row.total_balance - row.total_balance, token.decimals)}`;
 
   return (
     <>
@@ -48,7 +53,10 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
         </TableCell>
         <TableCell align="left">{row.id}</TableCell>
         <TableCell align="left">
-          <Link to={signedIn ? `${currentContractName}/admin/lockups/${row.account_id}` : `${currentContractName}/lockups/${row.account_id}`}>
+          <Link to={adminControls
+            ? `${currentContractName}/admin/lockups/${row.account_id}`
+            : `${currentContractName}/lockups/${row.account_id}`}
+          >
             {row.account_id}
           </Link>
         </TableCell>
@@ -65,30 +73,57 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
           &nbsp;
           <TokenIcon url={token.icon || ''} size={32} />
         </TableCell>
+        {progressShow && (
         <TableCell align="center">
-          <Tooltip title="Add" arrow>
+          <Tooltip
+            title={(
+              <div className="progress-bar__tooltip">
+                <span>
+                  <i className="claimed">&nbsp;</i>
+                  <b>{claimedAmount}</b>
+                  {' '}
+                  Claimed
+                </span>
+                <span>
+                  <i className="available">&nbsp;</i>
+                  <b>{availbleAmount}</b>
+                  {' '}
+                  Available
+                </span>
+                <span>
+                  <i className="vested">&nbsp;</i>
+                  <b>{vestedAmount}</b>
+                  {' '}
+                  Vested
+                </span>
+                <span>
+                  <i className="unvested">&nbsp;</i>
+                  <b>{unvestedAmount}</b>
+                  {' '}
+                  Unvested
+                </span>
+              </div>
+)}
+            placement="top"
+            arrow
+          >
             <div className="progress-bar">
               <div style={{ width: `${(row.claimed_balance / row.total_balance) * 100}%` }} className="claimed">
-                {/* <span>{convertAmount(row.claimed_balance, token.decimals)}</span> */}
+                &nbsp;
               </div>
               <div style={{ width: `${(row.unclaimed_balance / row.total_balance) * 100}%` }} className="available">
-                {/* <span> */}
-                {/*  {convertAmount(row.unclaimed_balance, token.decimals)} */}
-                {/* </span> */}
+                &nbsp;
               </div>
               <div style={{ width: `${((row.total_balance - row.claimed_balance - row.unclaimed_balance) / row.total_balance) * 100}%` }} className="vested">
-                {/* <span>
-                {((row.total_balance - row.claimed_balance - row.unclaimed_balance)
-                  / row.total_balance) > 0.2 && convertAmount(row.total_balance
-                  - row.claimed_balance - row.unclaimed_balance, token.decimals)}
-              </span> */}
+                &nbsp;
               </div>
               <div style={{ width: `${(row.total_balance - row.total_balance) * 100}%` }} className="unvested">&nbsp;</div>
             </div>
           </Tooltip>
         </TableCell>
+        )}
       </TableRow>
-      <TableRow sx={{ background: '#F4FAFF' }}>
+      <TableRow sx={{ background: '#F4F7FC' }}>
         <TableCell style={{ padding: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">

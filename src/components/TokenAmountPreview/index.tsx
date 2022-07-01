@@ -5,18 +5,13 @@ export default function TokenAmountPreview(params: { token: TMetadata, amount: S
   const { token, amount } = params;
 
   return (
-    <div className="balance-info-block" style={{ display: 'flex' }}>
-      <div style={{ flex: 1, alignContent: 'center' }} className="amount-info">
-        <div className="token-symbol">
-          {token.symbol}
-        </div>
-        <div className="token-amount">
-          {amount}
-        </div>
+    <div className="token-info">
+      <div className="token-amount">
+        {amount}
+        {' '}
+        {token.symbol}
       </div>
-      <div style={{ flex: 1 }}>
-        <TokenIcon url={token.icon || ''} size={64} />
-      </div>
+      <TokenIcon url={token.icon || ''} size={32} />
     </div>
   );
 }

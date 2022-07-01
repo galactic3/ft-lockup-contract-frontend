@@ -70,18 +70,19 @@ function TerminateLockup(
   const canTerminate = adminControls && config;
 
   return (
-    <div>
+    <>
+      <span>
+        {payerMessage}
+      </span>
+      {canTerminate && (
       <button
-        className="button red fullWidth"
-        disabled={!canTerminate}
+        className="button"
         type="button"
         onClick={handleOpen}
       >
         {message}
       </button>
-      <span className="fine-print">
-        {payerMessage}
-      </span>
+      )}
       <Dialog open={open} sx={{ padding: 2 }} maxWidth="xs" onClose={handleClose}>
         <form className="form-submit">
           <DialogTitle>
@@ -126,7 +127,7 @@ function TerminateLockup(
           </DialogContent>
         </form>
       </Dialog>
-    </div>
+    </>
   );
 }
 

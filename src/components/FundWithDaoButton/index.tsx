@@ -109,8 +109,8 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
   };
 
   return (
-    <div>
-      <button className="button fullWidth" type="button" onClick={handleOpen}>Fund with DAO</button>
+    <>
+      <button className="button" type="button" onClick={handleOpen}>Fund with DAO</button>
       <Dialog open={open} sx={{ padding: 1, minWidth: 1 }} onClose={handleClose}>
         <form className="form-submit" onSubmit={handleFund}>
           <DialogTitle>
@@ -127,7 +127,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
               <CloseRoundedIcon />
             </IconButton>
           </DialogTitle>
-          <DialogContent style={{ paddingTop: '1.25em' }}>
+          <DialogContent style={{ minWidth: '320px', paddingTop: '1.25em' }}>
             {daoInput}
             <TextField
               sx={{ width: 1 }}
@@ -144,7 +144,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
           </DialogActions>
         </form>
       </Dialog>
-    </div>
+    </>
   );
 }
 

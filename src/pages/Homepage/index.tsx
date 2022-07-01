@@ -1,8 +1,7 @@
-import { Box, TextField } from '@mui/material';
+import { Box, InputAdornment, TextField } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { ChangeEvent, useState } from 'react';
-import { ReactComponent as Logo } from '../../assets/images/near.svg';
+import SearchIcon from '@mui/icons-material/Search';
 import { DEFAULT_CONTRACT_NAME } from '../../config';
 
 export default function Homepage(
@@ -34,21 +33,18 @@ export default function Homepage(
 
           <ul className="home-list">
             <li>
-              <span className="near-icon-bg"><Logo /></span>
               <div>
                 <span>Total contracts</span>
                 <b>256</b>
               </div>
             </li>
             <li>
-              <span className="near-icon-bg"><Logo /></span>
               <div>
                 <span>Total locked</span>
                 <b>$5,336,000</b>
               </div>
             </li>
             <li>
-              <span className="near-icon-bg"><Logo /></span>
               <div>
                 <span>Total lockups</span>
                 <b>{lockups?.length || 42}</b>
@@ -56,20 +52,33 @@ export default function Homepage(
             </li>
           </ul>
 
-          <h2>The best DApp on NEAR to manage token vesting</h2>
-          <p>With our lockup contracts you can ....</p>
+          <h2>Manage token vesting on NEAR</h2>
+          <p>Create new lockup contract to be used by startup</p>
 
-          <Link to="/new_lockup_contract" className="button large link-button">Create new Lockup Contract</Link>
+          <Link to="/new_lockup_contract" className="button link-button">Create Lockup Contract</Link>
 
-        </div>
-        <div className="white-block">
-          <div className="container home">
-            <h2>If you already have a lockup contract, enter its address below</h2>
-            <TextField variant="outlined" value={address} onChange={handleChange} className="input-large" placeholder="Lockup contract address" />
-            <button className="button link-button icon-button" onClick={handleOpenLockupContract} aria-label="open" type="button" style={{ height: 56, width: 56 }}>
-              <ArrowForwardRoundedIcon />
+          <div className="line" />
+
+          <div className="search-container">
+            <TextField
+              variant="outlined"
+              value={address}
+              onChange={handleChange}
+              className="input"
+              placeholder="Enter existing Lockup contract address"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <button className="button" onClick={handleOpenLockupContract} aria-label="open" type="button">
+              Search
             </button>
           </div>
+
         </div>
       </div>
     </div>

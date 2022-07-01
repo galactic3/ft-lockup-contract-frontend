@@ -2,14 +2,13 @@ import { TextareaAutosize } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { LoadingButton } from '@mui/lab';
 
 import DraftsTable from '../DraftsTable';
 import { parseRawSpreadsheetInput, Lockup } from '../../services/spreadsheetImport';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 
-function ImportDraftGroup({ token }: { token: TMetadata }) {
+function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   const location = useLocation();
   const { near }: { near: INearProps | null } = useContext(NearContext);
 
@@ -91,41 +90,38 @@ function ImportDraftGroup({ token }: { token: TMetadata }) {
   };
 
   return (
-    <div className="container">
-      <h3>
-        Import Draft Group
-      </h3>
-      <div>
-        Copy lockups from a spreadsheet editor and paste into the area below.
-        See
-        {' '}
-        <a href={`${process.env.PUBLIC_URL}/lockup_import_example.xlsx`}>
-          example and format specifications
-        </a>
-        .
-      </div>
-      <div>
-        <TextareaAutosize
-          style={{ width: '100%', marginTop: 20 }}
-          id="spreadsheet-input"
-          placeholder="Excel input"
-          maxRows={5}
-          onChange={handleChangeInput}
-        />
-      </div>
-      <DraftsTable lockups={data} token={token} />
-      <br />
-      <div>
-        <LoadingButton
+    <div className="main">
+      <div className="container">
+        <h2>
+          Import Draft Group
+        </h2>
+        <div className="import-draft-group-wrapper">
+          <p>
+            Copy lockups from a spreadsheet editor and paste into the area below.
+            See
+            {' '}
+            <a href={`${process.env.PUBLIC_URL}/lockup_import_example.xlsx`}>
+              example and format specifications
+            </a>
+            .
+          </p>
+          <TextareaAutosize
+            className="import-draft-group-textarea"
+            id="spreadsheet-input"
+            placeholder="Excel input"
+            maxRows={5}
+            onChange={handleChangeInput}
+          />
+        </div>
+        <DraftsTable lockups={data} token={token} adminControls={adminControls} progressShow={false} />
+        <button
           disabled={!(data.length >= 1 && !importProgress)}
-          loading={importProgress}
           onClick={handleClickImport}
-          color="success"
           type="button"
-          variant="contained"
+          className="button"
         >
           Import
-        </LoadingButton>
+        </button>
       </div>
     </div>
   );

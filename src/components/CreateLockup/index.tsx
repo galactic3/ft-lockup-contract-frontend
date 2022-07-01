@@ -93,7 +93,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
   };
 
   return (
-    <div>
+    <>
       <button className="button" type="button" onClick={handleOpen}>Create Lockup</button>
       <Dialog open={open} sx={{ padding: 2 }} maxWidth="xs" onClose={handleClose}>
         <form className="form-submit" onSubmit={handleCreateLockup}>
@@ -173,6 +173,6 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
           </DialogActions>
         </form>
       </Dialog>
-    </div>
+    </>
   );
 }

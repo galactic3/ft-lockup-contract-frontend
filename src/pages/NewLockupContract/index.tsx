@@ -74,6 +74,7 @@ export default function NewLockupContract() {
       <div className="header">
         <div className="container">
           <Box sx={{ display: 'flex' }}>
+            <Link className="logo" to="/">LOCKUPS</Link>
             <div className="nav">
               <Link className="nav-link" to="/">Home</Link>
             </div>
@@ -82,20 +83,22 @@ export default function NewLockupContract() {
       </div>
 
       <div className="container new-lockup-contract">
-        <h1>
+        <h2>
           Create Lockup Contract for your Fungible Tokens
-        </h1>
+        </h2>
 
         <form className="form-submit" onSubmit={handleDeployLockupContract}>
           <div className="form-wrapper">
 
+            <p>On this page you can deploy your own copy of lockup contract. Some more elaborative description follows here.</p>
             <div className="form-row">
               <span>Contract creator: </span>
-              <strong>{near.currentUser.signedAccountId}</strong>
-              {' '}
-              <button className="button" type="button" onClick={signIn}>
-                {near.currentUser.signedAccountId && 'Login as someone else' || 'Login'}
-              </button>
+              <div className="form-cell">
+                {near.currentUser.signedAccountId && <strong>{near.currentUser.signedAccountId}</strong>}
+                <button className="button" type="button" onClick={signIn}>
+                  {near.currentUser.signedAccountId && 'Login as someone else' || 'Login'}
+                </button>
+              </div>
             </div>
             <div className="form-row">
               <span>Lockup operators: </span>
@@ -110,7 +113,7 @@ export default function NewLockupContract() {
               <input type="text" id="lockup_subaccount_id" />
             </div>
 
-            <button className="button middle" type="submit" disabled={!near.currentUser.signedAccountId}>
+            <button className="button submit" type="submit" disabled={!near.currentUser.signedAccountId}>
               Deploy Contract
             </button>
           </div>

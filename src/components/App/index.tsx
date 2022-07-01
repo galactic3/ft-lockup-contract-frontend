@@ -41,8 +41,8 @@ function Customer({
         <Route path="/about" element={<About lockups={lockups} token_account_id={contractId} />} />
         <Route path="/lockups" element={contractId && near && <Lockups lockups={lockups} token={{ ...token, contractId }} adminControls={false} />} />
         <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} token={token} adminControls={false} />} />
-        <Route path="/draft_groups" element={<RequireAuth><PageDraftGroupsIndex token={token} /></RequireAuth>} />
-        <Route path="/draft_groups/:draftGroupId" element={<RequireAuth><PageDraftGroup token={token} /></RequireAuth>} />
+        <Route path="/draft_groups" element={<RequireAuth><PageDraftGroupsIndex token={token} adminControls={false} /></RequireAuth>} />
+        <Route path="/draft_groups/:draftGroupId" element={<RequireAuth><PageDraftGroup token={token} adminControls={false} /></RequireAuth>} />
       </Routes>
     </>
   );
@@ -65,9 +65,9 @@ function Admin({
         <Route path="/about" element={<About lockups={lockups} token_account_id={tokenContractId} />} />
         <Route path="/lockups" element={showLockups && <RequireAuth><Lockups lockups={lockups} token={{ ...token, contractId: tokenContractId }} adminControls /></RequireAuth>} />
         <Route path="/lockups/:userId" element={<RequireAuth><UserLockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
-        <Route path="/draft_groups" element={<RequireAuth><PageDraftGroupsIndex token={token} /></RequireAuth>} />
-        <Route path="/draft_groups/:draftGroupId" element={<RequireAuth><PageDraftGroup token={token} /></RequireAuth>} />
-        <Route path="/import_draft_group" element={<RequireAuth><ImportDraftGroup token={token} /></RequireAuth>} />
+        <Route path="/draft_groups" element={<RequireAuth><PageDraftGroupsIndex token={token} adminControls /></RequireAuth>} />
+        <Route path="/draft_groups/:draftGroupId" element={<RequireAuth><PageDraftGroup token={token} adminControls /></RequireAuth>} />
+        <Route path="/import_draft_group" element={<RequireAuth><ImportDraftGroup token={token} adminControls /></RequireAuth>} />
       </Routes>
     </>
   );

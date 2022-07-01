@@ -51,7 +51,9 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
         <TableCell align="left">
           {row.id}
         </TableCell>
-        <TableCell align="left"><Link to={`${selectedAccountPage ? '' : row.account_id}`}>{row.account_id}</Link></TableCell>
+        <TableCell align="left">
+          <Link to={`${selectedAccountPage ? '' : row.account_id}`}>{row.account_id}</Link>
+        </TableCell>
         <TableCell align="right">
           {convertTimestamp(row.schedule[0].timestamp)}
         </TableCell>
@@ -116,7 +118,7 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
           </Tooltip>
         </TableCell>
       </TableRow>
-      <TableRow sx={{ background: '#F4FAFF' }}>
+      <TableRow sx={{ background: '#F4F7FC' }}>
         <TableCell style={{ padding: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">
