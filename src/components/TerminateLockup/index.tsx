@@ -75,13 +75,13 @@ function TerminateLockup(
   return (
     <>
       {canTerminate && (
-      <button
-        className="button"
-        type="button"
-        onClick={handleOpen}
-      >
-        {buttonText}
-      </button>
+        <button
+          className="button"
+          type="button"
+          onClick={handleOpen}
+        >
+          {buttonText}
+        </button>
       )}
       { open && <TerminateModal {...modalProps} /> }
     </>

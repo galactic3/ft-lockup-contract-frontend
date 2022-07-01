@@ -136,6 +136,7 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
                   <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
                 )}
                 <div className="terminate">
+                  <span className="fine-print">{payerMessage}</span>
                   <TerminateLockup
                     token={token}
                     adminControls={adminControls}
@@ -150,7 +151,6 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
                     config={row.termination_config}
                     buttonText={row?.termination_config?.beneficiary_id ? 'Terminate with Dao' : 'No termination config'}
                   />
-                  <span className="fine-print">{payerMessage}</span>
                 </div>
               </div>
             </div>

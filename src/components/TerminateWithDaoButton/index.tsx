@@ -88,10 +88,11 @@ function TerminateWithDaoButton(
   return (
     <div>
       <button
-        className="button red fullWidth"
+        className="button"
         disabled={!canTerminate}
         type="button"
         onClick={handleOpen}
+        style={{ marginTop: 0 }}
       >
         {buttonText}
       </button>
