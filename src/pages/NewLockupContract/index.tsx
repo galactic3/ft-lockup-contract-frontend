@@ -6,6 +6,7 @@ import { useSnackbar } from 'notistack';
 import useTitle from '../../services/useTitle';
 import { FACTORY_CONTRACT_NAME } from '../../config';
 import { INearProps, NearContext } from '../../services/near';
+import AddRemoveInput from '../../components/AddRemoveInput';
 
 export default function NewLockupContract() {
   useTitle('Create Lockup Contract | FT Lockup', { restoreOnUnmount: true });
@@ -256,6 +257,11 @@ export default function NewLockupContract() {
                   {!name && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Required</span>}
                 </div>
               </div>
+            </div>
+            <div className="form-row">
+              <span>Lockup operators: </span>
+              <input type="text" id="lockup_operators" />
+              <AddRemoveInput />
             </div>
 
             <button
