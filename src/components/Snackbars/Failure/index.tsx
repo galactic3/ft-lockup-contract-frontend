@@ -29,7 +29,7 @@ const body = (transactionLink: string) => {
 const header = (text: string) => {
   const Header = function (makeStyles: any) {
     const classes = makeStyles(() => ({
-      typography1: {
+      typography: {
         color: 'rgba(255, 89, 78, 1)',
         fontWeight: 700,
         fontSize: '16px',
@@ -37,7 +37,7 @@ const header = (text: string) => {
     }))();
 
     return (
-      <Typography variant="subtitle2" className={classes.typography1}>
+      <Typography variant="subtitle2" className={classes.typography}>
         {text}
       </Typography>
     );

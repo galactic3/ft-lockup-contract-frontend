@@ -3,12 +3,12 @@ import Typography from '@mui/material/Typography';
 const body = (text: string) => {
   const Body = function (makeStyles: any) {
     const classes = makeStyles(() => ({
-      typography2: {
+      typography: {
         fontSize: '12px',
       },
     }))();
 
-    return <Typography className={classes.typography2}>{text}</Typography>;
+    return <Typography className={classes.typography}>{text}</Typography>;
   };
 
   return Body;
@@ -17,7 +17,7 @@ const body = (text: string) => {
 const header = (text: string) => {
   const Header = function (makeStyles: any) {
     const classes = makeStyles(() => ({
-      typography1: {
+      typography: {
         color: 'rgba(0, 185, 136, 1)',
         fontWeight: 700,
         fontSize: '16px',
@@ -25,7 +25,7 @@ const header = (text: string) => {
     }))();
 
     return (
-      <Typography variant="subtitle2" className={classes.typography1}>
+      <Typography variant="subtitle2" className={classes.typography}>
         {text}
       </Typography>
     );
