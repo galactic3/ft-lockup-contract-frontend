@@ -8,6 +8,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import App from './components/App';
 import { NearContext, connectNear, INearProps } from './services/near';
 
+import MessageButtons from './components/Snackbars/MessageButtons';
+
 import './index.css';
 
 function SnackbarCloseButton(props: { snackbarKey: any }) {
@@ -77,6 +79,7 @@ export default function NearApp() {
           onClose={handleClose}
         >
           <App />
+          <MessageButtons />
         </SnackbarProvider>
       </NearContext.Provider>
     </StrictMode>
