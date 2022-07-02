@@ -1,7 +1,6 @@
-import { useState, forwardRef, useCallback } from 'react';
+import { forwardRef, useCallback } from 'react';
 import { makeStyles } from '@mui/styles';
 import { useSnackbar, SnackbarContent } from 'notistack';
-import Collapse from '@mui/material/Collapse';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
@@ -9,7 +8,6 @@ import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const useStyles = makeStyles(() => ({
@@ -54,11 +52,6 @@ const useStyles = makeStyles(() => ({
 const Success = forwardRef((props: any, ref: any) => {
   const classes = useStyles();
   const { closeSnackbar } = useSnackbar();
-  const [expanded, setExpanded] = useState(false);
-
-  const handleExpandClick = useCallback(() => {
-    setExpanded((oldExpanded) => !oldExpanded);
-  }, []);
 
   const handleDismiss = useCallback(() => {
     closeSnackbar(props.id);
@@ -74,28 +67,18 @@ const Success = forwardRef((props: any, ref: any) => {
             {props.message}
           </Typography>
           <div className={classes.icons}>
-            <IconButton
-              aria-label="Show more"
-              className={classes.expand}
-              style={expanded ? { transform: 'rotate(180deg)' } : undefined}
-              onClick={handleExpandClick}
-            >
-              <ExpandMoreIcon />
-            </IconButton>
             <IconButton className={classes.expand} onClick={handleDismiss}>
               <CloseIcon />
             </IconButton>
           </div>
         </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <Paper className={classes.collapse}>
-            <Typography gutterBottom>PDF ready</Typography>
-            <Button size="small" className={classes.button}>
-              <CheckCircleIcon className={classes.checkIcon} />
-              Download now
-            </Button>
-          </Paper>
-        </Collapse>
+        <Paper className={classes.collapse}>
+          <Typography gutterBottom>PDF ready</Typography>
+          <Button size="small" className={classes.button}>
+            <CheckCircleIcon className={classes.checkIcon} />
+            Download now
+          </Button>
+        </Paper>
       </Card>
     </SnackbarContent>
   );
