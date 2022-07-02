@@ -57,7 +57,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Success = forwardRef((props: any, ref: any) => {
+const Snackbar = forwardRef((props: any, ref: any) => {
   const classes = useStyles();
   const { closeSnackbar } = useSnackbar();
 
@@ -89,4 +89,4 @@ const Success = forwardRef((props: any, ref: any) => {
   );
 });
 
-export default Success;
+export default Snackbar;

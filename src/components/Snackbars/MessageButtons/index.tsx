@@ -24,9 +24,9 @@ const MessageButtons = function () {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = () => {
-    enqueueSnackbar("You're report is ready", {
+    enqueueSnackbar('Success', {
       anchorOrigin: {
-        vertical: 'bottom',
+        vertical: 'top',
         horizontal: 'right',
       },
       content: success,
