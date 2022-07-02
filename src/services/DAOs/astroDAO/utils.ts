@@ -1,5 +1,5 @@
 import {
-  Near,
+  WalletConnection,
 } from 'near-api-js';
 
 import AstroDaoApi from './api';
@@ -57,9 +57,9 @@ export const customFunctionCallProposalFormLink = (
   gas,
 );
 
-export const daoCouncilMembers = async (near: Near, accountAddress: string): Promise<any> => {
+export const daoCouncilMembers = async (walletConnection: WalletConnection, accountAddress: string): Promise<any> => {
   try {
-    const api = new AstroDaoApi(near, accountAddress);
+    const api = new AstroDaoApi(walletConnection, accountAddress);
     const councilsMembers = await api.getCouncilMembers();
 
     return { [accountAddress]: councilsMembers };

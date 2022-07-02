@@ -1,5 +1,5 @@
 import {
-  Near, Contract, WalletConnection,
+  Contract, WalletConnection,
 } from 'near-api-js';
 
 const FUNCTION_CALL_CREATE_PROPOSAL_PERMISSIONS = ['call:AddProposal', '*:AddProposal'];
@@ -15,14 +15,11 @@ type TAstroDaoViewMethods = {
 type TAstroDaoContract = Contract & TAstroDaoViewMethods;
 
 class AstroDaoApi {
-  private near: Near;
-
   private contract: TAstroDaoContract;
 
-  constructor(near: Near, contractId: string) {
-    this.near = near;
+  constructor(walletConnection: WalletConnection, contractId: string) {
     this.contract = new Contract(
-      (new WalletConnection(this.near, contractId)).account(),
+      walletConnection.account(),
       contractId,
       { viewMethods: DAO_VIEW_METHODS, changeMethods: [] },
     ) as TAstroDaoContract;
