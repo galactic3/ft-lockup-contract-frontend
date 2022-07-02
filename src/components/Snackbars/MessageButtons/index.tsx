@@ -2,8 +2,8 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import { useSnackbar } from 'notistack';
 import { enqueueCustomSnackbar } from '../Snackbar';
-// import { header, body } from '../Success';
-import { header, body } from '../Failure';
+// import { header, body } from '../SuccessPartials';
+import { header, body } from '../FailurePartials';
 
 const styles = {
   root: {
