@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import { useSnackbar } from 'notistack';
 import { enqueueCustomSnackbar } from '../Snackbar';
-import { header, body } from '../Failure';
+import { header, body } from '../Success';
 
 const styles = {
   root: {
@@ -22,7 +22,10 @@ const styles = {
 const MessageButtons = function () {
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleClick = () => enqueueCustomSnackbar(enqueueSnackbar, body, header);
+  const whateverLink = 'https://localhost:3000';
+  const whateverHeader = 'Whatever header';
+
+  const handleClick = () => enqueueCustomSnackbar(enqueueSnackbar, body(whateverLink), header(whateverHeader));
 
   return (
     <Paper style={styles.root}>
