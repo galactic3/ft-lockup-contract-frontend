@@ -57,7 +57,7 @@ export const connectNear = async (): Promise<INearProps> => {
     console.log('depositWhitelist', depositWhitelist);
     isAdmin = depositWhitelist.includes(signedAccountId);
     console.log('isAdmin', isAdmin);
-    const daosCouncilMembers = (await Promise.all(depositWhitelist.map((dwID):Promise<any[]> => daoCouncilMembers(near, dwID)))).filter((value) => !!value);
+    const daosCouncilMembers = (await Promise.all(depositWhitelist.map((dwID):Promise<any[]> => daoCouncilMembers(walletConnection, dwID)))).filter((value) => !!value);
     const userDaosCouncils = daosCouncilMembers.filter((daoCMs) => Object.values(daoCMs).pop().includes(signedAccountId));
     if (userDaosCouncils?.length > 0) {
       daos = userDaosCouncils.map((daoCMs) => Object.keys(daoCMs).pop() || '');
