@@ -1,4 +1,4 @@
-import { forwardRef, useCallback } from 'react';
+import { forwardRef, useCallback, Ref } from 'react';
 import { makeStyles } from '@mui/styles';
 import { useSnackbar, SnackbarContent } from 'notistack';
 import Paper from '@mui/material/Paper';
@@ -53,7 +53,7 @@ type TProps = {
   body: Function,
 };
 
-const Snackbar = forwardRef((props: TProps, ref: Function) => {
+const Snackbar = forwardRef((props: TProps, ref: Ref<HTMLDivElement> | undefined) => {
   const classes = useStyles();
   const { closeSnackbar } = useSnackbar();
 
