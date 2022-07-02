@@ -1,19 +1,24 @@
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 const body = (makeStyles: any) => {
   const classes = makeStyles(() => ({
-    typography2: {
+    button: {
+      padding: '0px 4px',
+      textTransform: 'none',
       fontSize: '12px',
     },
   }))();
 
-  return <Typography className={classes.typography2}>Success description</Typography>;
+  return (
+    <Button size="small" className={classes.button}>See transaction</Button>
+  );
 };
 
 const header = (makeStyles: any) => {
   const classes = makeStyles(() => ({
     typography1: {
-      color: 'rgba(0, 185, 136, 1)',
+      color: 'rgba(255, 89, 78, 1)',
       fontWeight: 700,
       fontSize: '16px',
     },
@@ -21,7 +26,7 @@ const header = (makeStyles: any) => {
 
   return (
     <Typography variant="subtitle2" className={classes.typography1}>
-      Success header
+      Failure header
     </Typography>
   );
 };

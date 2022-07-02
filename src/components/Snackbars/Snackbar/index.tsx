@@ -2,10 +2,8 @@ import { forwardRef, useCallback } from 'react';
 import { makeStyles } from '@mui/styles';
 import { useSnackbar, SnackbarContent } from 'notistack';
 import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -47,17 +45,12 @@ const useStyles = makeStyles(() => ({
     boxShadow: 'none',
     borderRadius: '8px',
   },
-  typography2: {
-    fontSize: '12px',
-  },
-  button: {
-    padding: '0px 4px',
-    textTransform: 'none',
-    fontSize: '12px',
-  },
 }));
 
 const Snackbar = forwardRef((props: any, ref: any) => {
+  console.log('props', props);
+  console.log('ref', ref);
+
   const classes = useStyles();
   const { closeSnackbar } = useSnackbar();
 
@@ -69,9 +62,7 @@ const Snackbar = forwardRef((props: any, ref: any) => {
     <SnackbarContent ref={ref} className={classes.root}>
       <Card className={classes.card}>
         <CardActions classes={{ root: classes.actionRoot }}>
-          <Typography variant="subtitle2" className={classes.typography1}>
-            {props.message}
-          </Typography>
+          {props.header(makeStyles)}
           <div className={classes.icons}>
             <IconButton className={classes.expand} onClick={handleDismiss}>
               <CloseIcon />
@@ -79,14 +70,24 @@ const Snackbar = forwardRef((props: any, ref: any) => {
           </div>
         </CardActions>
         <Paper className={classes.collapse}>
-          <Typography className={classes.typography2}>Success description</Typography>
-          <Button size="small" className={classes.button}>
-            Download now
-          </Button>
+          {props.body(makeStyles)}
         </Paper>
       </Card>
     </SnackbarContent>
   );
 });
+
+const anchorOrigin = {
+  vertical: 'top',
+  horizontal: 'right',
+};
+
+export const enqueueCustomSnackbar = (hook: any, body: any, header: any) => hook(
+  '',
+  {
+    anchorOrigin,
+    content: (key: any) => <Snackbar {...{ id: key, body, header }} />,
+  },
+);
 
 export default Snackbar;
