@@ -2,8 +2,8 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import { useSnackbar } from 'notistack';
 import { enqueueCustomSnackbar } from '../Snackbar';
-// import { header, body } from '../SuccessPartials';
-import { header, body } from '../FailurePartials';
+import success from '../SuccessPartials';
+import failure from '../FailurePartials';
 
 const styles = {
   root: {
@@ -26,7 +26,15 @@ const MessageButtons = function () {
   const whateverLink = 'https://localhost:3000';
   const whateverHeader = 'Whatever header';
 
-  const handleClick = () => enqueueCustomSnackbar(enqueueSnackbar, body(whateverLink), header(whateverHeader));
+  let partial: any;
+
+  if (1 * 2 === 2) {
+    partial = failure;
+  } else {
+    partial = success;
+  }
+
+  const handleClick = () => enqueueCustomSnackbar(enqueueSnackbar, partial.body(whateverLink), partial.header(whateverHeader));
 
   return (
     <Paper style={styles.root}>

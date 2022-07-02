@@ -34,4 +34,6 @@ const header = (text: string) => {
   return Header;
 };
 
-export { body, header };
+const success = { body, header };
+
+export default success;

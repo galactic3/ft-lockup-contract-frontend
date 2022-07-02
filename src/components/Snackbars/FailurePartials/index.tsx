@@ -47,4 +47,6 @@ const header = (text: string) => {
   return Header;
 };
 
-export { body, header };
+const failure = { body, header };
+
+export default failure;
