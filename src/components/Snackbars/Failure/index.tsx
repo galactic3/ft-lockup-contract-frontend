@@ -1,8 +1,9 @@
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { MouseEvent } from 'react';
 
 const body = (transactionLink: string) => {
-  const Body = function (makeStyles: any) {
+  const Body = function (makeStyles: Function) {
     const classes = makeStyles(() => ({
       button: {
         padding: '0px 4px',
@@ -11,7 +12,7 @@ const body = (transactionLink: string) => {
       },
     }))();
 
-    const onClick = (event: any) => {
+    const onClick = (event: MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
       window.open(transactionLink, '_blank');
     };
@@ -27,7 +28,7 @@ const body = (transactionLink: string) => {
 };
 
 const header = (text: string) => {
-  const Header = function (makeStyles: any) {
+  const Header = function (makeStyles: Function) {
     const classes = makeStyles(() => ({
       typography: {
         color: 'rgba(255, 89, 78, 1)',
@@ -42,8 +43,6 @@ const header = (text: string) => {
       </Typography>
     );
   };
-
-  console.log('header', Header);
 
   return Header;
 };

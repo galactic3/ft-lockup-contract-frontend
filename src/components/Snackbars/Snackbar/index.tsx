@@ -47,10 +47,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Snackbar = forwardRef((props: any, ref: any) => {
-  console.log('props', props);
-  console.log('ref', ref);
+type TProps = {
+  id: number,
+  header: Function,
+  body: Function,
+};
 
+const Snackbar = forwardRef((props: TProps, ref: Function) => {
   const classes = useStyles();
   const { closeSnackbar } = useSnackbar();
 
@@ -62,7 +65,7 @@ const Snackbar = forwardRef((props: any, ref: any) => {
     <SnackbarContent ref={ref} className={classes.root}>
       <Card className={classes.card}>
         <CardActions classes={{ root: classes.actionRoot }}>
-          {props.header(makeStyles)}
+          {props.body && props.header(makeStyles)}
           <div className={classes.icons}>
             <IconButton className={classes.expand} onClick={handleDismiss}>
               <CloseIcon />
@@ -70,7 +73,7 @@ const Snackbar = forwardRef((props: any, ref: any) => {
           </div>
         </CardActions>
         <Paper className={classes.collapse}>
-          {props.body(makeStyles)}
+          {props.body && props.body(makeStyles)}
         </Paper>
       </Card>
     </SnackbarContent>
@@ -82,11 +85,11 @@ const anchorOrigin = {
   horizontal: 'right',
 };
 
-export const enqueueCustomSnackbar = (hook: any, body: any, header: any) => hook(
+export const enqueueCustomSnackbar = (hook: Function, body: Function, header: Function) => hook(
   '',
   {
     anchorOrigin,
-    content: (key: any) => <Snackbar {...{ id: key, body, header }} />,
+    content: (key: number) => <Snackbar {...{ id: key, body, header }} />,
   },
 );
 
