@@ -29,6 +29,8 @@ import PageDraft from '../../pages/PageDraft';
 import Terms from '../../pages/Terms';
 import Privacy from '../../pages/Privacy';
 
+import { parseTxResultUrl, fetchTxStatus } from '../../services/transactionResultParser';
+
 function Customer({
   lockups, token, contractId, near,
 }: {
@@ -104,25 +106,49 @@ export default function App() {
     }
 
     const perform = async () => {
-      const searchParams = new URLSearchParams(window.location.search);
-      const transactionHashesRaw: string | null = searchParams.get('transactionHashes');
-      if (!transactionHashesRaw) {
+      const txHash = parseTxResultUrl(window.location.search);
+
+      // ---------------
+      // const succTxHash = 'EKhKgQBJKKcVCKRKFqR4ZYGznb33ZzJAb6VQgb3C8RSt';
+      // const succTxStatus = await fetchTxStatus(
+      //   near.rpcProvider,
+      //   near.api.getContract().contractId,
+      //   succTxHash,
+      // );
+      // console.log('SUCC TX STATUS', succTxStatus);
+      // const failedTxHash = '6FmN2Kw46bqtJdCcmPDkacZD9HRJwSvhr7L1U8FuTgLm'; //token
+      // const failedTxHash = 'G8HbVgv6L4Pupa8aNPV67YbKsXounGNc1u3EnN1hrZ63'; // ft-lockup
+      // const failedTxHash = 'csfxKXDx5u2XaxRSA1ggg9tW6vDuJaSP77Wm9WvLRbV'; // ft-lockup
+      // const failedTxStatus = await fetchTxStatus(
+      //   near.rpcProvider,
+      //   near.api.getContract().contractId,
+      //   failedTxHash,
+      // );
+      // console.log('FAILED TX STATUS', failedTxStatus);
+      // ---------------
+
+      if (!txHash) {
         return;
       }
-      const txHash = transactionHashesRaw.split(',')[0];
-      console.log('txHash', txHash);
-      const txStatus = await near.rpcProvider.txStatus(txHash, 'sender.testnet');
-      console.log(txStatus);
 
-      const methodName = txStatus.transaction.actions[0].FunctionCall.method_name;
+      const txStatus = await fetchTxStatus(
+        near.rpcProvider,
+        near.api.getContract().contractId,
+        txHash,
+      );
 
-      const successValue = (txStatus.status as any).SuccessValue;
+      if (!txStatus) {
+        return;
+      }
 
-      const args = JSON.parse(atob(txStatus.transaction.actions[0].FunctionCall.args));
+      const { method } = txStatus;
+      const methodName = method.name;
+      const successValue = method.result?.success?.value;
+      const unpacked = successValue && JSON.parse(atob(successValue));
+      const { args } = method;
 
       if (methodName === 'claim') {
         if (successValue) {
-          const unpacked = JSON.parse(atob(successValue));
           if (unpacked !== '0') {
             const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
             enqueueSnackbar(`Claimed ${amount} ${token.symbol}`, { variant: 'success' });
@@ -134,7 +160,6 @@ export default function App() {
       }
 
       if (methodName === 'storage_deposit') {
-        const unpacked = JSON.parse(atob(successValue));
         const amount = parseFloat(nearTo(unpacked.total, 9)).toString();
         console.log(amount);
         const accountId = args.account_id;
@@ -147,7 +172,6 @@ export default function App() {
         const txMsg = JSON.parse(args.msg);
         console.log(txMsg);
         if (txMsg.schedule) {
-          const unpacked = JSON.parse(atob(successValue));
           const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
           console.log(amount);
           const totalBalance = txMsg.schedule[txMsg.schedule.length - 1].balance;
@@ -162,7 +186,6 @@ export default function App() {
           return;
         }
         if (txMsg.draft_group_id !== null) {
-          const unpacked = JSON.parse(atob(successValue));
           const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
           console.log(amount);
           if (unpacked !== '0') {
@@ -181,7 +204,6 @@ export default function App() {
 
       if (methodName === 'terminate') {
         if (successValue) {
-          const unpacked = JSON.parse(atob(successValue));
           console.log(unpacked);
           const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
           const message = `Terminated lockup #${args.lockup_index}, unvested amount: ${amount}`;
