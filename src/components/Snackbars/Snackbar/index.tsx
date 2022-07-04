@@ -85,11 +85,12 @@ const anchorOrigin = {
   horizontal: 'right',
 };
 
-export const enqueueCustomSnackbar = (hook: Function, body: Function, header: Function) => hook(
+export const enqueueCustomSnackbar = (hook: Function, body: Function, header: Function, options?: any) => hook(
   '',
   {
     anchorOrigin,
     content: (key: number) => <Snackbar {...{ id: key, body, header }} />,
+    ...options,
   },
 );
 

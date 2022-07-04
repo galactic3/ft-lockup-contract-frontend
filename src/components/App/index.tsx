@@ -7,9 +7,8 @@ import {
   Routes, Route, HashRouter, Navigate,
 } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import Big from 'big.js';
 
-import { txLinkInExplorer, nearTo } from '../../utils';
+import { txLinkInExplorer } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import About from '../../pages/About';
 import ImportDraftGroup from '../ImportDraftGroup';
@@ -28,6 +27,13 @@ import Footer from '../Footer';
 import PageDraft from '../../pages/PageDraft';
 import Terms from '../../pages/Terms';
 import Privacy from '../../pages/Privacy';
+import {
+  claimSnack,
+  storageDepositSnack,
+  createLockupSnack,
+  fundDraftGroupSnack,
+  terminateLockupSnack,
+} from '../Snackbars';
 
 import { parseTxResultUrl, fetchTxStatus } from '../../services/transactionResultParser';
 
@@ -107,9 +113,11 @@ export default function App() {
 
     const perform = async () => {
       const txHash = parseTxResultUrl(window.location.search);
+      // console.log(parseTxResultUrl);
+      // const txHash = 'HWCdsHvGMDfhxwcco5moBtuNUyAu8KKteU7DqYPkdBHv';
 
       // ---------------
-      // const succTxHash = 'EKhKgQBJKKcVCKRKFqR4ZYGznb33ZzJAb6VQgb3C8RSt';
+      // const succTxHash = 'HWCdsHvGMDfhxwcco5moBtuNUyAu8KKteU7DqYPkdBHv';
       // const succTxStatus = await fetchTxStatus(
       //   near.rpcProvider,
       //   near.api.getContract().contractId,
@@ -137,85 +145,46 @@ export default function App() {
         txHash,
       );
 
+      console.log('TX STATUS', txStatus);
+
       if (!txStatus) {
         return;
       }
 
       const { method } = txStatus;
       const methodName = method.name;
-      const successValue = method.result?.success?.value;
+      const successValue = method.result;
       const unpacked = successValue && JSON.parse(atob(successValue));
       const { args } = method;
+      const txMsg = args.msg && JSON.parse(args.msg);
 
-      if (methodName === 'claim') {
-        if (successValue) {
-          if (unpacked !== '0') {
-            const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
-            enqueueSnackbar(`Claimed ${amount} ${token.symbol}`, { variant: 'success' });
-            return;
-          }
-        }
-        enqueueSnackbar(`Claim failed: ${txLinkInExplorer(txHash)}`, { variant: 'error' });
-        return;
-      }
-
-      if (methodName === 'storage_deposit') {
-        const amount = parseFloat(nearTo(unpacked.total, 9)).toString();
-        console.log(amount);
-        const accountId = args.account_id;
-        const message = `Successfully paid ${amount}N for FT storage of ${accountId}`;
-        enqueueSnackbar(message, { variant: 'success' });
-        return;
-      }
-
-      if (methodName === 'ft_transfer_call') {
-        const txMsg = JSON.parse(args.msg);
-        console.log(txMsg);
-        if (txMsg.schedule) {
-          const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
-          console.log(amount);
-          const totalBalance = txMsg.schedule[txMsg.schedule.length - 1].balance;
-          if (totalBalance === unpacked) {
-            const statusMessage = `Created lockup for ${txMsg.account_id} with amount ${amount} ${token.symbol}`;
-            enqueueSnackbar(statusMessage, { variant: 'success', autoHideDuration: 60_000 });
-            return;
+      switch (methodName) {
+        case 'claim':
+          claimSnack(enqueueSnackbar, unpacked, txHash, token);
+          break;
+        case 'storage_deposit':
+          storageDepositSnack(enqueueSnackbar, unpacked, txHash, token, args.account_id);
+          break;
+        case 'ft_transfer_call':
+          if (txMsg.schedule) {
+            createLockupSnack(enqueueSnackbar, unpacked, txHash, token, txMsg);
+            break;
           }
 
-          const statusMessage = `Failed to create lockup for ${txMsg.account_id}: ${txLinkInExplorer(txHash)}`;
-          enqueueSnackbar(statusMessage, { variant: 'error' });
-          return;
-        }
-        if (txMsg.draft_group_id !== null) {
-          const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
-          console.log(amount);
-          if (unpacked !== '0') {
-            const statusMessage = `Funded draft group ${txMsg.draft_group_id} with amount ${amount} ${token.symbol}`;
-            enqueueSnackbar(statusMessage, { variant: 'success' });
-            return;
+          if (txMsg.draft_group_id) {
+            fundDraftGroupSnack(enqueueSnackbar, unpacked, txHash, token, txMsg);
+            break;
           }
-          const statusMessage = `Failed to fund draft group ${txMsg.draft_group_id}: ${txLinkInExplorer(txHash)}`;
-          enqueueSnackbar(statusMessage, { variant: 'error' });
-          return;
-        }
 
-        enqueueSnackbar(`Transaction performed, TODO ${txHash}!`, { variant: 'warning' });
-        return;
+          enqueueSnackbar(`Transaction performed, TODO ${txHash}!`, { variant: 'warning' });
+          break;
+        case 'terminate':
+          terminateLockupSnack(enqueueSnackbar, unpacked, txHash, token, args.lockup_index);
+          break;
+        default:
+          enqueueSnackbar(`UNHANDLED Transaction "${methodName}" : ${txLinkInExplorer(txHash)}`, { variant: 'warning' });
+          break;
       }
-
-      if (methodName === 'terminate') {
-        if (successValue) {
-          console.log(unpacked);
-          const amount = new Big(unpacked).div(new Big(10).pow(token.decimals)).round(2, Big.roundDown);
-          const message = `Terminated lockup #${args.lockup_index}, unvested amount: ${amount}`;
-          enqueueSnackbar(message, { variant: 'success' });
-          return;
-        }
-        enqueueSnackbar(`Terminate lockup failed: ${txLinkInExplorer(txHash)}`, { variant: 'error' });
-        return;
-      }
-
-      const message = `UNHANDLED Transaction "${methodName}" : ${txLinkInExplorer(txHash)}`;
-      enqueueSnackbar(message, { variant: 'warning' });
     };
 
     perform();
