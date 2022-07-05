@@ -102,10 +102,57 @@ const terminateLockupSnack = (enqueueSnackbar: any, unpacked: any, txHash: strin
   );
 };
 
+type TVariant = {
+  positive?: any,
+  negative?: any,
+};
+
+const createDraftGroupSnack = (enqueueSnackbar: any, variant: TVariant) => {
+  if (variant.negative) {
+    const { txHash } = variant.negative;
+
+    return enqueueCustomSnackbar(
+      enqueueSnackbar,
+      failure.body(`${txLinkInExplorer(txHash)}`),
+      failure.header('Create draft group failed'),
+    );
+  }
+
+  const draftGroupId = variant.positive;
+
+  return enqueueCustomSnackbar(
+    enqueueSnackbar,
+    success.body(`Created draft group id: ${draftGroupId}`),
+    success.header('Create draft group succeed'),
+  );
+};
+
+const createDraftsSnack = (enqueueSnackbar: any, variant: TVariant) => {
+  if (variant.negative) {
+    const { txHash } = variant.negative;
+
+    return enqueueCustomSnackbar(
+      enqueueSnackbar,
+      failure.body(`${txLinkInExplorer(txHash)}`),
+      failure.header('Create drafts failed'),
+    );
+  }
+
+  const drafts = variant.positive;
+
+  return enqueueCustomSnackbar(
+    enqueueSnackbar,
+    success.body(`Created drafts ${drafts.length}.`),
+    success.header('Create drafts succeed'),
+  );
+};
+
 export {
   claimSnack,
   storageDepositSnack,
   createLockupSnack,
   fundDraftGroupSnack,
   terminateLockupSnack,
+  createDraftGroupSnack,
+  createDraftsSnack,
 };

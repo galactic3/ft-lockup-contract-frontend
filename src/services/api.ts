@@ -138,9 +138,29 @@ class NearApi {
     return result;
   }
 
-  async createDraftGroup(): Promise<DraftGroupIndex> {
-    const result = await this.contract.create_draft_group();
-    return result;
+  async createDraftGroup(): Promise<any> {
+    type TResult = {
+      positive: any,
+      negative: any,
+    };
+
+    const result: TResult = {
+      positive: null,
+      negative: null,
+    };
+
+    try {
+      result.positive = await await this.contract.create_draft_group();
+      return result;
+    } catch (e: any) {
+      result.negative = {
+        origin: e,
+        txHash: e.transaction_outcome.id,
+        errorMessage: JSON.parse(e.message).kind.ExecutionError,
+      };
+
+      return result;
+    }
   }
 
   async createDraft(draft: any): Promise<DraftIndex> {
@@ -149,10 +169,30 @@ class NearApi {
     return result;
   }
 
-  async createDrafts(drafts: any[]): Promise<DraftIndex> {
-    const result = await this.contract.create_drafts({ args: { drafts }, gas: '300000000000000' });
+  async createDrafts(drafts: any[]): Promise<any> {
+    type TResult = {
+      positive: any,
+      negative: any,
+    };
 
-    return result;
+    const result: TResult = {
+      positive: null,
+      negative: null,
+    };
+
+    try {
+      result.positive = await this.contract.create_drafts({ args: { drafts }, gas: '200000000000000' });
+
+      return result;
+    } catch (e: any) {
+      result.negative = {
+        origin: e,
+        txHash: e.transaction_outcome.id,
+        errorMessage: JSON.parse(e.message).kind.ExecutionError,
+      };
+
+      return result;
+    }
   }
 
   async convertDraft(index: DraftIndex): Promise<LockupIndex> {

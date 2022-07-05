@@ -13,6 +13,9 @@ import {
 import TokenAmountPreview from '../TokenAmountPreview';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
+import { createDraftGroupSnack, createDraftsSnack } from '../Snackbars';
+
+const DRAFTS_PER_TRANSACTION = 100;
 
 function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   useTitle('Import draft group | FT Lockup', { restoreOnUnmount: true });
@@ -48,19 +51,6 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const withNotification = async (name: string, func: () => any): Promise<any> => {
-    try {
-      const result = await func();
-      return result;
-    } catch (e) {
-      if (!(e instanceof Error)) {
-        throw new Error('unreachable');
-      }
-      enqueueSnackbar(`${name} failed: ${e.message}`, { variant: 'error' });
-      throw e;
-    }
-  };
-
   const handleClickImport = async () => {
     try {
       if (!near) {
@@ -68,59 +58,24 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
       }
       setImportProgress(true);
 
-      await withNotification(
-        'Check accounts',
-        async () => {
-          const accountIds = Array.from(new Set(
-            data.filter((x) => !(x instanceof Error)).map((x) => (x as Lockup).account_id),
-          ));
+      const result = await near.api.createDraftGroup();
 
-          for (let i = 0; i < accountIds.length; i += 1) {
-            const accountId = accountIds[i];
-            if (!accountId.match(/^[0-9a-f]{64}$/)) {
-              try {
-                const { total } = (await (await near.near.account(accountId)).getAccountBalance());
-                console.log(`${accountId} balance: ${total}`);
-              } catch (e) {
-                const message = `Account ID ${accountId} does not exist`;
-                throw new Error(message);
-              }
-            }
-          }
+      const draftGroupId = result.positive;
 
-          console.log('all accounts exist');
-          enqueueSnackbar('Checked account existence.', { variant: 'success' });
-        },
-      );
+      createDraftGroupSnack(enqueueSnackbar, result);
 
-      const draftGroupId = await withNotification(
-        'Create draft group',
-        async () => {
-          const result = await near.api.createDraftGroup();
-          return result;
-        },
-      );
-      const msg = `Created draft group id: ${draftGroupId}`;
-      enqueueSnackbar(msg, { variant: 'success' });
-
-      const chunkSize = 20;
-      for (let i = 0; i < data.length; i += chunkSize) {
-        const chunk = data.slice(i, i + chunkSize);
+      for (let i = 0; i < data.length; i += DRAFTS_PER_TRANSACTION) {
+        const chunk = data.slice(i, i + DRAFTS_PER_TRANSACTION);
         const drafts = chunk.map((lockup) => ({
           draft_group_id: draftGroupId,
           lockup_create: lockup,
         }));
-        await withNotification(
-          'Create drafts',
-          async () => {
-            const result = await near.api.createDrafts(drafts);
-            return result;
-          },
+
+        createDraftsSnack(
+          enqueueSnackbar,
+          await near.api.createDrafts(drafts),
         );
       }
-
-      const message = `Created ${data.length} draft${data.length > 1 ? 's' : ''}.`;
-      enqueueSnackbar(message, { variant: 'success' });
 
       const currentContractName = location.pathname.split('/')[1];
       const path = `/${currentContractName}/admin/draft_groups/${draftGroupId}`;
