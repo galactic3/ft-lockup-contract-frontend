@@ -1,6 +1,13 @@
 import BN from 'bn.js';
 import Big from 'big.js';
-import { assertValidTerminationSchedule } from './scheduleHelpers';
+import {
+  assertValidTerminationSchedule,
+  ValidAccountId,
+  Checkpoint,
+  Lockup,
+  Schedule,
+  TLockupOrError,
+} from './scheduleHelpers';
 
 // TODO: replace with cleaner hack or another library
 BN.prototype.toJSON = function toJSON() {
@@ -211,15 +218,6 @@ export const parseSpreadsheetToSpreadsheetRows = (input: string): SpreadsheetRow
   return parsedStringRows.map((x) => parseToSpreadsheetRow(x));
 };
 
-type ValidAccountId = string;
-type TimestampSec = number;
-type Balance = string;
-type Checkpoint = {
-  timestamp: TimestampSec,
-  balance: Balance,
-};
-type Schedule = Checkpoint[];
-
 export const datePlusDurationMul = (date: Date, duration: IsoDuration, mulInput: number): Date => {
   const mul = Math.floor(mulInput);
   const result = new Date(Date.UTC(
@@ -336,13 +334,6 @@ export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmou
   return result;
 };
 
-export type Lockup = {
-  id: number,
-  account_id: ValidAccountId,
-  schedule: Schedule,
-  vesting_schedule: { Schedule: Schedule } | null,
-};
-
 export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals: number, index: number): Lockup => {
   const row = parseToSpreadsheetRow(rawSpreadsheetRow);
 
@@ -368,8 +359,6 @@ export const parseRawSpreadsheetInput = (spreadsheetInput: string, tokenDecimals
   return rows.map((x, index: number) => parseLockup(x, tokenDecimals, index + 1));
 };
 
-export type TLockupOrError = Lockup | Error;
-
 export const parseRawSpreadsheetInputWithErrors = (spreadsheetInput: string, tokenDecimals: number): TLockupOrError[] => {
   const rows = parseSpreadsheetColumns(spreadsheetInput);
   return rows.map((x, index: number) => {
@@ -383,5 +372,3 @@ export const parseRawSpreadsheetInputWithErrors = (spreadsheetInput: string, tok
     }
   });
 };
-
-export const lockupTotalBalance = (lockup: Lockup): Balance => lockup.schedule[lockup.schedule.length - 1].balance;

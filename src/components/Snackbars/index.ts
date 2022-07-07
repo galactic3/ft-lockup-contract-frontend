@@ -3,7 +3,13 @@ import Big from 'big.js';
 import success from './SuccessPartials';
 import failure from './FailurePartials';
 import { enqueueCustomSnackbar } from './Snackbar';
-import { txLinkInExplorer, nearTo } from '../../utils';
+import {
+  txLinkInExplorer,
+  nearTo,
+  formatTokenAmount,
+} from '../../utils';
+
+import { calcTotalBalance } from '../../services/scheduleHelpers';
 
 const parseAmount = (unpacked: string, decimals: any): any => new Big(unpacked).div(new Big(10).pow(decimals)).round(2, Big.roundDown);
 
@@ -105,6 +111,7 @@ const terminateLockupSnack = (enqueueSnackbar: any, unpacked: any, txHash: strin
 type TVariant = {
   positive?: any,
   negative?: any,
+  token?: any,
 };
 
 const createDraftGroupSnack = (enqueueSnackbar: any, variant: TVariant) => {
@@ -127,24 +134,46 @@ const createDraftGroupSnack = (enqueueSnackbar: any, variant: TVariant) => {
   );
 };
 
-const createDraftsSnack = (enqueueSnackbar: any, variant: TVariant) => {
-  if (variant.negative) {
-    const { txHash } = variant.negative;
+const createDraftsSnacks = (enqueueSnackbar: any, variant: TVariant) => {
+  const posDraftsCount = variant.positive?.reduce((res:number, n: any) => res + n.originDrafts.length, 0) || 0;
+  const negDraftsCount = variant.negative?.reduce((res:number, n: any) => res + n.originDrafts.length, 0) || 0;
+  const totalDraftsCount = negDraftsCount + posDraftsCount;
 
-    return enqueueCustomSnackbar(
+  if (variant.positive?.length) {
+    const lockupCreateArray = variant.positive.map((res: any) => res.originDrafts.map((od: any) => od.lockup_create)).flat();
+    const posDraftsBalance = calcTotalBalance(lockupCreateArray);
+    const totalPosDraftsBalance = formatTokenAmount(posDraftsBalance, variant.token.decimals);
+
+    enqueueCustomSnackbar(
       enqueueSnackbar,
-      failure.body(`${txLinkInExplorer(txHash)}`),
-      failure.header('Create drafts failed'),
+      success.body(`${posDraftsCount} of ${totalDraftsCount} drafts (${totalPosDraftsBalance} ${variant.token.symbol} in total) created and ready to be fund`),
+      success.header('Drafts created'),
     );
   }
 
-  const drafts = variant.positive;
+  if (variant.negative?.length) {
+    const results = variant.negative;
 
-  return enqueueCustomSnackbar(
-    enqueueSnackbar,
-    success.body(`Created drafts ${drafts.length}.`),
-    success.header('Create drafts succeed'),
-  );
+    const linksTexts = results.map((res: any) => {
+      const link = `${txLinkInExplorer(res.txHash)}`;
+      const temp = res.originDrafts.map((el: any) => el.lockup_create.id);
+      if (temp.length === 1) {
+        return { text: `${temp[0]}`, link };
+      }
+      return { text: `[${temp[0]}-${temp[temp.length - 1]}]`, link };
+    });
+
+    const notifBody = {
+      text: `${negDraftsCount} of ${totalDraftsCount} drafts are not created. See failed transactions:`,
+      linksTexts,
+    };
+
+    enqueueCustomSnackbar(
+      enqueueSnackbar,
+      failure.createDraftsBody(notifBody),
+      failure.header('Failed drafts'),
+    );
+  }
 };
 
 export {
@@ -154,5 +183,5 @@ export {
   fundDraftGroupSnack,
   terminateLockupSnack,
   createDraftGroupSnack,
-  createDraftsSnack,
+  createDraftsSnacks,
 };

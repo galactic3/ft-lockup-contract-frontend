@@ -181,7 +181,10 @@ class NearApi {
     };
 
     try {
-      result.positive = await this.contract.create_drafts({ args: { drafts }, gas: '200000000000000' });
+      result.positive = {
+        ids: await this.contract.create_drafts({ args: { drafts }, gas: '200000000000000' }),
+        originDrafts: drafts,
+      };
 
       return result;
     } catch (e: any) {
@@ -189,6 +192,7 @@ class NearApi {
         origin: e,
         txHash: e.transaction_outcome.id,
         errorMessage: JSON.parse(e.message).kind.ExecutionError,
+        originDrafts: drafts,
       };
 
       return result;

@@ -239,3 +239,32 @@ export const calcBalancesRaw = (row: any, now: number): TBalancesRaw => {
     total: totalBalanceRaw,
   };
 };
+
+export type ValidAccountId = string;
+export type TimestampSec = number;
+export type Balance = string;
+export type Checkpoint = {
+  timestamp: TimestampSec,
+  balance: Balance,
+};
+export type Schedule = Checkpoint[];
+export type Lockup = {
+  id: number,
+  account_id: ValidAccountId,
+  schedule: Schedule,
+  vesting_schedule: { Schedule: Schedule } | null,
+};
+export type TLockupOrError = Lockup | Error;
+
+export const lockupTotalBalance = (lockup: Lockup): Balance => lockup.schedule[lockup.schedule.length - 1].balance;
+
+export const calcTotalBalance = (lockups: TLockupOrError[]) => {
+  const lockupsFiltered = lockups.filter((x: TLockupOrError) => !(x instanceof Error)).map((x) => x as Lockup);
+  const balances = lockupsFiltered.map((x: Lockup) => lockupTotalBalance(x));
+  let result = new Big('0');
+
+  balances.forEach((x) => {
+    result = result.add(new Big(x));
+  });
+  return result.toString();
+};

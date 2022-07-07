@@ -2,18 +2,17 @@ import { TextareaAutosize } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import Big from 'big.js';
-
 import { LoadingButton } from '@mui/lab';
 import useTitle from '../../services/useTitle';
 import DraftsTable from '../DraftsTable';
 import {
-  parseRawSpreadsheetInputWithErrors, TLockupOrError, Lockup, lockupTotalBalance,
+  parseRawSpreadsheetInputWithErrors,
 } from '../../services/spreadsheetImport';
 import TokenAmountPreview from '../TokenAmountPreview';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
-import { createDraftGroupSnack, createDraftsSnack } from '../Snackbars';
+import { createDraftGroupSnack, createDraftsSnacks } from '../Snackbars';
+import { calcTotalBalance, TLockupOrError } from '../../services/scheduleHelpers';
 
 const DRAFTS_PER_TRANSACTION = 100;
 
@@ -51,31 +50,53 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const createDraftGroupStep = async (api: any): Promise<any> => {
+    const result = await api.createDraftGroup();
+
+    createDraftGroupSnack(enqueueSnackbar, result);
+
+    return result;
+  };
+
+  const createDraftsStep = async (draftGroupId: any, api: any) => {
+    const result: any = {
+      positive: [],
+      negative: [],
+    };
+
+    for (let i = 0; i < data.length; i += DRAFTS_PER_TRANSACTION) {
+      const chunk = data.slice(i, i + DRAFTS_PER_TRANSACTION);
+      const drafts = chunk.map((lockup) => ({
+        draft_group_id: draftGroupId,
+        lockup_create: lockup,
+      }));
+
+      const tempResult = await api.createDrafts(drafts);
+
+      if (tempResult.positive) {
+        result.positive.push(tempResult?.positive);
+      }
+      if (tempResult.negative) {
+        result.negative.push(tempResult?.negative);
+      }
+    }
+
+    return result;
+  };
+
   const handleClickImport = async () => {
     try {
       if (!near) {
         throw new Error('near is null');
       }
+      const { decimals, symbol } = token;
       setImportProgress(true);
 
-      const result = await near.api.createDraftGroup();
+      const draftGroupId = (await createDraftGroupStep(near.api)).positive;
+      const result = await createDraftsStep(draftGroupId, near.api);
+      result.token = { ...{ decimals, symbol } };
 
-      const draftGroupId = result.positive;
-
-      createDraftGroupSnack(enqueueSnackbar, result);
-
-      for (let i = 0; i < data.length; i += DRAFTS_PER_TRANSACTION) {
-        const chunk = data.slice(i, i + DRAFTS_PER_TRANSACTION);
-        const drafts = chunk.map((lockup) => ({
-          draft_group_id: draftGroupId,
-          lockup_create: lockup,
-        }));
-
-        createDraftsSnack(
-          enqueueSnackbar,
-          await near.api.createDrafts(drafts),
-        );
-      }
+      createDraftsSnacks(enqueueSnackbar, result);
 
       const currentContractName = location.pathname.split('/')[1];
       const path = `/${currentContractName}/admin/draft_groups/${draftGroupId}`;
@@ -84,17 +105,6 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
     } catch (e) {
       setImportProgress(false);
     }
-  };
-
-  const calcTotalBalance = (lockups: TLockupOrError[]) => {
-    const lockupsFiltered = lockups.filter((x: TLockupOrError) => !(x instanceof Error)).map((x) => x as Lockup);
-    const balances = lockupsFiltered.map((x: Lockup) => lockupTotalBalance(x));
-    let result = new Big('0');
-
-    balances.forEach((x) => {
-      result = result.add(new Big(x));
-    });
-    return result.toString();
   };
 
   return (
