@@ -12,6 +12,7 @@ import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import { convertAmount } from '../../utils';
 import TokenIcon from '../../components/TokenIcon';
+import DeleteDraftGroupButton from '../../components/DeleteDraftGroupButton';
 
 export default function PageDraftGroupsIndex({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   const location = useLocation();
@@ -73,11 +74,12 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
               <TableCell align="center">Funded</TableCell>
               <TableCell align="center">Number&nbsp;of&nbsp;lockups</TableCell>
               <TableCell align="right">Total&nbsp;amount</TableCell>
+              <TableCell align="right" width="0%">Delete</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {draftGroups.map((group) => (
-              <TableRow>
+              <TableRow key={group.id}>
                 <TableCell align="center">
                   <Link to={`/${currentContractName}/${adminControls ? 'admin/' : ''}draft_groups/${group.id}`}>{group.id}</Link>
                 </TableCell>
@@ -89,6 +91,13 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
                   {token.symbol}
                 &nbsp;
                   <TokenIcon url={token.icon || ''} size={32} />
+                </TableCell>
+                <TableCell align="right">
+                  <DeleteDraftGroupButton
+                    draftGroupId={group.id}
+                    draftIds={group.draft_indices}
+                    disabled={group.funded}
+                  />
                 </TableCell>
               </TableRow>
             ))}

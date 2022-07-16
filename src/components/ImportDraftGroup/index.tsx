@@ -23,7 +23,6 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
       console.log(token);
       const input = event.target.value;
       const lockups = parseRawSpreadsheetInput(input, token.decimals);
-      debugger;
       setData(lockups);
     } catch (e) {
       if (e instanceof Error) {

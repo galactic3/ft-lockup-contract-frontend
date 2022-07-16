@@ -13,7 +13,10 @@ const FACTORY_CHANGE_METHODS = [
 
 type TFactoryChangeMethods = {
   'create': (opts: {
-    args: { name: string, hash: string, access_keys: string[], method_name: string, args: string }, callbackUrl: string, amount: string | number, gas: string | number
+    args: { name: string, init_function: string, init_args: string },
+    callbackUrl: string,
+    amount: string | number,
+    gas: string | number
   }) => any,
 };
 
@@ -22,15 +25,12 @@ type TFactoryContract = Contract & TFactoryChangeMethods;
 class FactoryApi {
   private contract: TFactoryContract;
 
-  private hash: string;
-
-  constructor(walletConnection: WalletConnection, contractId: string, hash: string) {
+  constructor(walletConnection: WalletConnection, contractId: string) {
     this.contract = new Contract(
       walletConnection.account(),
       contractId,
       { viewMethods: [], changeMethods: FACTORY_CHANGE_METHODS },
     ) as TFactoryContract;
-    this.hash = hash;
   }
 
   getContract(): TFactoryContract {
@@ -42,14 +42,12 @@ class FactoryApi {
       token_account_id: tokenAccountId,
       deposit_whitelist: depositWhitelist,
     };
-    const argsPacked = btoa(JSON.stringify(argsRaw));
+    const argsPacked = JSON.stringify(argsRaw);
     const result = await this.contract.create({
       args: {
         name,
-        hash: this.hash,
-        access_keys: [],
-        method_name: 'new',
-        args: argsPacked,
+        init_function: 'new',
+        init_args: argsPacked,
       },
       callbackUrl,
       gas: MAX_GAS,

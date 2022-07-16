@@ -22,6 +22,8 @@ const LOCKUP_CHANGE_METHODS = [
   'convert_draft',
   'convert_drafts',
   'terminate',
+  'discard_draft_group',
+  'delete_drafts',
 ];
 
 type TViewMethods = {
@@ -40,6 +42,8 @@ type TChangeMethods = {
   'convert_draft': any,
   'convert_drafts': any,
   'terminate': any,
+  'discard_draft_group': any,
+  'delete_drafts': any,
 };
 
 export type TNearAmount = string;
@@ -111,6 +115,9 @@ class NearApi {
 
   async getDraftGroup(index: number): Promise<DraftGroupView | null> {
     const result = await this.contract.get_draft_group({ index });
+    if (result) {
+      result.id = index;
+    }
 
     return result;
   }
@@ -146,6 +153,18 @@ class NearApi {
 
   async convertDrafts(indices: DraftIndex[]): Promise<LockupIndex[]> {
     const result = await this.contract.convert_drafts({ args: { draft_ids: indices }, gas: '200000000000000' });
+
+    return result;
+  }
+
+  async discardDraftGroup(draftGroupId: number): Promise<any> {
+    const result = await this.contract.discard_draft_group({ args: { draft_group_id: draftGroupId } });
+
+    return result;
+  }
+
+  async deleteDrafts(draftIds: number[]): Promise<any> {
+    const result = await this.contract.delete_drafts({ args: { draft_ids: draftIds } });
 
     return result;
   }

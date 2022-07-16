@@ -84,7 +84,6 @@ export const connectNear = async (): Promise<INearProps> => {
   const factoryApi = new FactoryApi(
     walletConnection,
     config.factoryContractName,
-    config.factoryContractHash,
   );
 
   const rpcProvider = new nearAPI.providers.JsonRpcProvider(
