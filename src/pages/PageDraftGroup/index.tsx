@@ -11,6 +11,7 @@ import { INearProps, NearContext } from '../../services/near';
 import TokenAmountPreview from '../../components/TokenAmountPreview';
 import FundButton from '../../components/FundButton';
 import FundWithDaoButton from '../../components/FundWithDaoButton';
+import DeleteDraftGroupButton from '../../components/DeleteDraftGroupButton';
 
 export default function PageDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   const location = useLocation();
@@ -117,13 +118,22 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
     <div className="container">
       <div className="draft-group-preview-wrapper">
         <div className="draft-group-preview-info" style={{ display: 'flex' }}>
-          <h5>{`Draft group ${draftGroupId}`}</h5>
+          <h5>
+            {`Draft group ${draftGroupId}`}
+            {' '}
+            {draftGroup.discarded && (<span className="discarded-marker">DISCARDED</span>)}
+          </h5>
           <TokenAmountPreview token={token} amount={amount.label} />
         </div>
         {!draftGroup.funded && (
           <div className="draft-group-fund-button-wrapper">
-            {adminControls && <FundButton draftGroupIndex={draftGroupId} amount={amount.value} /> }
-            <FundWithDaoButton draftGroupIndex={draftGroupId} amount={amount} />
+            {adminControls && !draftGroup.discarded && <FundButton draftGroupIndex={draftGroupId} amount={amount.value} /> }
+            {!draftGroup.discarded && (<FundWithDaoButton draftGroupIndex={draftGroupId} amount={amount} />)}
+            <DeleteDraftGroupButton
+              draftGroupId={draftGroup.id}
+              draftIds={draftGroup.draft_indices}
+              disabled={draftGroup.funded}
+            />
           </div>
         )}
         {draftGroup.funded && draftGroup.draft_indices.length > 0 && (

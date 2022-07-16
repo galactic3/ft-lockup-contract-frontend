@@ -550,3 +550,14 @@ svg {
   height: 48px;
   margin: 20px;
 }
+
+.main button.button.compact {
+  margin: 0;
+}
+
+span.discarded-marker {
+  font-weight: 800;
+  background-color: var(--light-gray);
+  border-radius: 10px;
+  padding: 0 5px;
+}

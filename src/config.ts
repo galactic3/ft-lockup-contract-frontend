@@ -6,12 +6,10 @@ export interface INearConfig {
   helperUrl: string,
   explorerUrl: string,
   factoryContractName: string,
-  factoryContractHash: string,
 }
 
-export const DEFAULT_CONTRACT_NAME = process.env.DEFAULT_CONTRACT_NAME || 'ft-lockup.demo008.ft-lockup.testnet';
-export const FACTORY_CONTRACT_NAME = process.env.FACTORY_CONTRACT_NAME || 'factory008.ft-lockup.testnet';
-export const FACTORY_CONTRACT_HASH = process.env.FACTORY_CONTRACT_HASH || 'DPDYZYHjRqLKZLGpvZYTLKudRrKWmN6a43Pc4MD2t9dg';
+export const DEFAULT_CONTRACT_NAME = process.env.DEFAULT_CONTRACT_NAME || 'example.factory010.ft-lockup.testnet';
+export const FACTORY_CONTRACT_NAME = process.env.FACTORY_CONTRACT_NAME || 'factory010.ft-lockup.testnet';
 
 const getCurrentContractName = (): string => {
   const contractNameFromUrl = window.location.hash.split('/')[1];
@@ -38,7 +36,6 @@ function getConfig(): INearConfig {
         helperUrl: 'https://helper.mainnet.near.org',
         explorerUrl: 'https://explorer.mainnet.near.org',
         factoryContractName: FACTORY_CONTRACT_NAME,
-        factoryContractHash: FACTORY_CONTRACT_HASH,
       };
     case 'development':
     case 'testnet':
@@ -50,7 +47,6 @@ function getConfig(): INearConfig {
         helperUrl: 'https://helper.testnet.near.org',
         explorerUrl: 'https://explorer.testnet.near.org',
         factoryContractName: FACTORY_CONTRACT_NAME,
-        factoryContractHash: FACTORY_CONTRACT_HASH,
       };
     case 'betanet':
       return {
@@ -61,7 +57,6 @@ function getConfig(): INearConfig {
         helperUrl: 'https://helper.betanet.near.org',
         explorerUrl: 'https://explorer.betanet.near.org',
         factoryContractName: FACTORY_CONTRACT_NAME,
-        factoryContractHash: FACTORY_CONTRACT_HASH,
       };
     case 'local':
       return {
@@ -72,7 +67,6 @@ function getConfig(): INearConfig {
         walletUrl: 'http://localhost:4000/wallet',
         contractName: CONTRACT_NAME,
         factoryContractName: FACTORY_CONTRACT_NAME,
-        factoryContractHash: FACTORY_CONTRACT_HASH,
       };
     case 'test':
     case 'ci':
@@ -84,7 +78,6 @@ function getConfig(): INearConfig {
         nodeUrl: 'https://rpc.ci-testnet.near.org',
         contractName: CONTRACT_NAME,
         factoryContractName: FACTORY_CONTRACT_NAME,
-        factoryContractHash: FACTORY_CONTRACT_HASH,
       };
     case 'ci-betanet':
       return {
@@ -95,7 +88,6 @@ function getConfig(): INearConfig {
         nodeUrl: 'https://rpc.ci-betanet.near.org',
         contractName: CONTRACT_NAME,
         factoryContractName: FACTORY_CONTRACT_NAME,
-        factoryContractHash: FACTORY_CONTRACT_HASH,
       };
     default:
       throw Error(`Unconfigured environment '${env}'. Can be configured in src/config.js.`);
