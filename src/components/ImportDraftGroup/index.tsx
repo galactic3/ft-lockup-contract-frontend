@@ -23,6 +23,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
       console.log(token);
       const input = event.target.value;
       const lockups = parseRawSpreadsheetInput(input, token.decimals);
+      debugger;
       setData(lockups);
     } catch (e) {
       if (e instanceof Error) {
@@ -61,7 +62,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
       const msg = `Created draft group id: ${draftGroupId}`;
       enqueueSnackbar(msg, { variant: 'success' });
 
-      const chunkSize = 100;
+      const chunkSize = 20;
       for (let i = 0; i < data.length; i += chunkSize) {
         const chunk = data.slice(i, i + chunkSize);
         const drafts = chunk.map((lockup) => ({
