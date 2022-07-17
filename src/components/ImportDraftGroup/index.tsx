@@ -26,6 +26,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
       setData(lockups);
     } catch (e) {
       if (e instanceof Error) {
+        setData([]);
         console.log(e);
       }
     }

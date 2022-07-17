@@ -81,7 +81,7 @@ export const assertValidTerminationSchedule = (lockupSchedule: TSchedule, vestin
     const lockupBalance = checkpoint.balance;
     const vestingBalance = interpolateSchedule(vestingSchedule, timestamp).balance;
     if (!(new Big(lockupBalance).lte(new Big(vestingBalance)))) {
-      throw new Error(`The lockup schedule is ahead of the termination schedule at timestamp {}`);
+      throw new Error(`The lockup schedule is ahead of the termination schedule at timestamp ${timestamp}`);
     }
   });
   vestingSchedule.forEach((checkpoint) => {
@@ -89,7 +89,7 @@ export const assertValidTerminationSchedule = (lockupSchedule: TSchedule, vestin
     const lockupBalance = interpolateSchedule(lockupSchedule, timestamp).balance;
     const vestingBalance = checkpoint.balance;
     if (!(new Big(lockupBalance).lte(new Big(vestingBalance)))) {
-      throw new Error(`The lockup schedule is ahead of the termination schedule at timestamp {}`);
+      throw new Error(`The lockup schedule is ahead of the termination schedule at timestamp ${timestamp}`);
     }
   });
 };

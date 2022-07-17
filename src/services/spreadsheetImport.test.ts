@@ -486,6 +486,18 @@ describe('.parseLockup', () => {
       },
     );
   });
+  it('fails with incompatible schedule', () => {
+    expect(
+      () => parseLockup({
+        account_id: 'alice.near',
+        amount: '60000',
+        lockup_schedule: '1999-12-31T23:59:59Z|P4Y|P2Y:50|PT1S',
+        vesting_schedule: '2000-12-31T23:59:59Z|P4Y|P1Y:25|PT1S',
+      }, 12, 0),
+    ).toThrow(
+      /is ahead of/
+    );
+  });
 })
 
 describe('.parseRawSpreadsheetInput', () => {

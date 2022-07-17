@@ -1,5 +1,6 @@
 import BN from 'bn.js';
 import Big from 'big.js';
+import { assertValidTerminationSchedule } from './scheduleHelpers';
 
 // TODO: replace with cleaner hack or another library
 BN.prototype.toJSON = function toJSON() {
@@ -313,17 +314,20 @@ export type Lockup = {
 export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals: number, index: number): Lockup => {
   const row = parseToSpreadsheetRow(rawSpreadsheetRow);
 
-  let vestingSchedule = null;
+  const lockupSchedule = toLockupSchedule(row.lockup_schedule, row.amount, tokenDecimals);
+  let vestingSchedulePacked = null;
 
   if (row.vesting_schedule) {
-    vestingSchedule = { Schedule: toLockupSchedule(row.vesting_schedule, row.amount, tokenDecimals) };
+    const vestingSchedule = toLockupSchedule(row.vesting_schedule, row.amount, tokenDecimals);
+    assertValidTerminationSchedule(lockupSchedule, vestingSchedule);
+    vestingSchedulePacked = { Schedule: vestingSchedule };
   }
 
   return {
     id: index,
     account_id: row.account_id,
-    schedule: toLockupSchedule(row.lockup_schedule, row.amount, tokenDecimals),
-    vesting_schedule: vestingSchedule,
+    schedule: lockupSchedule,
+    vesting_schedule: vestingSchedulePacked,
   };
 };
 
