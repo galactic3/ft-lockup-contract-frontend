@@ -464,10 +464,11 @@ describe('.parseLockup', () => {
         amount: '60000',
         lockup_schedule: '1999-12-31T23:59:59Z|P4Y|P2Y:50|PT1S',
         vesting_schedule: '1999-12-31T23:59:59Z|P4Y|P1Y:25|PT1S',
-      }, 12, 'owner.near'),
+      }, 12, 0),
     ).toStrictEqual(
       {
         account_id: "alice.near",
+        id: 0,
         schedule: [
           { balance: "0", timestamp: 946684799 },
           { balance: "0", timestamp: 1009843198 },
@@ -494,10 +495,11 @@ describe('.parseRawSpreadsheetInput', () => {
         account_id	amount	lockup_schedule	vesting_schedule
         alice.near	100000	2009-12-31T23:59:59Z|P4Y|P2Y:50|PT1S	
         bob.near	60000	1999-12-31T23:59:59Z|P4Y|P2Y:50|PT1S	1999-12-31T23:59:59Z|P4Y|P2Y:50|PT1S
-      `, 12, 'owner.near'),
+      `, 12),
     ).toStrictEqual([
       {
         account_id: "alice.near",
+        id: 0,
         schedule: [
           { balance: '0', timestamp: 1262303999 },
           { balance: '0', timestamp: 1325375998 },
@@ -508,6 +510,7 @@ describe('.parseRawSpreadsheetInput', () => {
       },
       {
         account_id: 'bob.near',
+        id: 1,
         schedule: [
           {balance: '0', timestamp: 946684799},
           {balance: '0', timestamp: 1009843198},
