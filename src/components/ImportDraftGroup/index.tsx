@@ -13,6 +13,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
   const { near }: { near: INearProps | null } = useContext(NearContext);
 
   const [data, setData] = useState<Lockup[]>([]);
+  const [parseError, setParseError] = useState<string | null>(null);
   const [importProgress, setImportProgress] = useState<boolean>(false);
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -24,9 +25,11 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
       const input = event.target.value;
       const lockups = parseRawSpreadsheetInput(input, token.decimals);
       setData(lockups);
+      setParseError(null);
     } catch (e) {
       if (e instanceof Error) {
         setData([]);
+        setParseError(e.message);
         console.log(e);
       }
     }
@@ -115,6 +118,13 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
           />
         </div>
         <DraftsTable lockups={data} token={token} adminControls={adminControls} progressShow={false} />
+        {parseError && (
+          <div style={{ color: 'red' }}>
+            Parse error:
+            {' '}
+            {parseError}
+          </div>
+        )}
         <button
           disabled={!(data.length >= 1 && !importProgress)}
           onClick={handleClickImport}
