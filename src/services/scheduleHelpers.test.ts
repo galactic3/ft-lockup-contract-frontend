@@ -1,5 +1,6 @@
 import {
   interpolate, interpolateRaw, interpolateSchedule, sumSchedules,
+  assertValidTerminationSchedule,
 } from './scheduleHelpers';
 
 describe('interpolateRaw test', () => {
@@ -241,5 +242,74 @@ describe('sumSchedules', () => {
       { timestamp: 1_700_000_000, balance: '20000' },
     ];
     expect(sumSchedules([schedule2])).toStrictEqual(schedule2);
+  });
+});
+
+describe('assertValidTerminationSchedule', () => {
+  it('doesnt fail on same lockup schedule', () => {
+    const schedule = [
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_600_000_000, balance: '20000' },
+      { timestamp: 1_700_000_000, balance: '30000' },
+    ];
+    expect(() => assertValidTerminationSchedule(schedule, schedule)).not.toThrow();
+  });
+  it('doesnt fail on lagging vesting schedule', () => {
+    const lockupSchedule = [
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_600_000_000, balance: '20000' },
+      { timestamp: 1_700_000_000, balance: '30000' },
+    ];
+    let buildVestingSchedule = (offset: number) => {
+      return [
+        { timestamp: 1_500_000_000 + offset, balance: '0' },
+        { timestamp: 1_600_000_000 + offset, balance: '20000' },
+        { timestamp: 1_700_000_000 + offset, balance: '30000' },
+      ];
+    };
+    expect(() => assertValidTerminationSchedule(lockupSchedule, buildVestingSchedule(-1))).not.toThrow();
+    expect(() => assertValidTerminationSchedule(lockupSchedule, buildVestingSchedule(-50_000_000))).not.toThrow();
+    expect(() => assertValidTerminationSchedule(lockupSchedule, buildVestingSchedule(-500_000_000))).not.toThrow();
+
+    const vestingSchedule2 = [
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_900_000_000, balance: '100000' },
+    ];
+
+    expect(() => assertValidTerminationSchedule(lockupSchedule, vestingSchedule2)).not.toThrow();
+  });
+
+  it('fails on leading lockup schedule', () => {
+    const lockupSchedule = [
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_600_000_000, balance: '20000' },
+      { timestamp: 1_700_000_000, balance: '30000' },
+    ];
+    let buildVestingSchedule = (offset: number) => {
+      return [
+        { timestamp: 1_500_000_000 + offset, balance: '0' },
+        { timestamp: 1_600_000_000 + offset, balance: '20000' },
+        { timestamp: 1_700_000_000 + offset, balance: '30000' },
+      ];
+    };
+    let error = /is ahead of/;
+    expect(() => assertValidTerminationSchedule(lockupSchedule, buildVestingSchedule(1))).toThrow(error);
+    expect(() => assertValidTerminationSchedule(lockupSchedule, buildVestingSchedule(50_000_000))).toThrow(error);
+    expect(() => assertValidTerminationSchedule(lockupSchedule, buildVestingSchedule(500_000_000))).toThrow(error);
+
+    const vestingSchedule2 = [
+      { timestamp: 1_400_000_000, balance: '0' },
+      { timestamp: 1_600_000_000, balance: '25000' },
+    ];
+
+    expect(() => assertValidTerminationSchedule(lockupSchedule, vestingSchedule2)).toThrow(error);
+
+    const vestingSchedule3 = [
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_600_000_000, balance: '15000' },
+      { timestamp: 1_700_000_000, balance: '30000' },
+    ];
+
+    expect(() => assertValidTerminationSchedule(lockupSchedule, vestingSchedule3)).toThrow(error);
   });
 });
