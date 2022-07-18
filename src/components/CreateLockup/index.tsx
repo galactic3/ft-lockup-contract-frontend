@@ -35,16 +35,41 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [accountId, setAccountId] = useState<string>('');
+  const [accountStatus, setAccountStatus] = useState<string>('pending'); // pending success error
+  const [amount, setAmount] = useState<string>('');
 
   const onScheduleSelect = (value: any) => {
     setSchedule(value.target.value);
   };
 
-  const handleChangeAccountId = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChangeAmount = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const perform = async () => {
+      if (!near) return;
       const { value } = event.target;
 
+      setAmount(value);
+    };
+
+    perform();
+  };
+
+  const handleChangeAccountId = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const perform = async () => {
+      if (!near) return;
+      const { value } = event.target;
+
+      console.log(accountStatus, setAccountStatus);
+
       setAccountId(value);
+      setAccountStatus('pending');
+
+      try {
+        const { total } = (await (await near.near.account(value)).getAccountBalance());
+        console.log(total);
+        setAccountStatus('success');
+      } catch (e) {
+        setAccountStatus('error');
+      }
     };
 
     perform();
@@ -63,12 +88,10 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
 
     e.preventDefault();
 
-    const { amount } = e.target.elements;
-
-    console.log(amount.value);
+    console.log(amount);
 
     const lockupContractId = near?.api.getContract().contractId || '';
-    const lockupTotalAmount = new Big(amount.value).mul(new Big(10).pow(token.decimals))
+    const lockupTotalAmount = new Big(amount).mul(new Big(10).pow(token.decimals))
       .round(0, Big.roundDown).toString();
 
     const getScheduleList = (date: Date, balanceInput: string, selected: string): [TSchedule, TSchedule | null] => {
@@ -102,6 +125,8 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
     );
   };
 
+  const validAmount = !Number.isNaN(parseFloat(amount));
+
   return (
     <>
       <button className="button" type="button" onClick={handleOpen}>Create Lockup</button>
@@ -130,6 +155,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
               fullWidth
               variant="standard"
               onChange={handleChangeAccountId}
+              color={accountStatus === 'success' ? 'success' : accountStatus === 'error' ? 'error' : 'primary'}
             />
             <TextField
               margin="normal"
@@ -141,6 +167,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
                 endAdornment: <InputAdornment position="end">{token.symbol}</InputAdornment>,
               }}
               fullWidth
+              onChange={handleChangeAmount}
             />
             <br />
             <FormControl
@@ -180,7 +207,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
             </LocalizationProvider>
           </DialogContent>
           <DialogActions sx={{ padding: '14px 24px 24px' }}>
-            <button disabled={!startDate} className="button fullWidth noMargin" type="submit">Create</button>
+            <button disabled={!startDate || accountStatus === 'error' || !validAmount} className="button fullWidth noMargin" type="submit">Create</button>
           </DialogActions>
         </form>
       </Dialog>

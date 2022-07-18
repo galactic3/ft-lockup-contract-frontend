@@ -27,6 +27,7 @@ export interface INearProps {
   factoryApi: FactoryApi;
   rpcProvider: nearAPI.providers.JsonRpcProvider;
   isContractFtStoragePaid: boolean;
+  near: nearAPI.Near;
 }
 
 export const NearContext = createContext<any>(null);
@@ -108,5 +109,6 @@ export const connectNear = async (): Promise<INearProps> => {
     rpcProvider,
     isContractFtStoragePaid,
     lockupContractId,
+    near,
   };
 };
