@@ -91,6 +91,7 @@
           "allowSamePrecedence": true
         }
       ],
+      "no-nested-ternary": "off",
       "max-len": [
         "error",
         {
