@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
 import DraftsTable from '../DraftsTable';
-import { parseRawSpreadsheetInput, Lockup } from '../../services/spreadsheetImport';
+import { parseRawSpreadsheetInputWithErrors, TLockupOrError } from '../../services/spreadsheetImport';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 
@@ -12,7 +12,8 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
   const location = useLocation();
   const { near }: { near: INearProps | null } = useContext(NearContext);
 
-  const [data, setData] = useState<Lockup[]>([]);
+  const [data, setData] = useState<TLockupOrError[]>([]);
+  const [parseError, setParseError] = useState<string | null>(null);
   const [importProgress, setImportProgress] = useState<boolean>(false);
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -22,10 +23,17 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
       }
       console.log(token);
       const input = event.target.value;
-      const lockups = parseRawSpreadsheetInput(input, token.decimals);
+      const lockups = parseRawSpreadsheetInputWithErrors(input, token.decimals);
+      const errorsFiltered = lockups.filter((x) => x instanceof Error).map((x) => x as Error);
       setData(lockups);
+      setParseError(null);
+      if (errorsFiltered.length > 0) {
+        setParseError(`Error: ${JSON.stringify(errorsFiltered.map((x) => x.message))}`);
+      }
     } catch (e) {
       if (e instanceof Error) {
+        setData([]);
+        setParseError(e.message);
         console.log(e);
       }
     }
@@ -115,7 +123,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
         </div>
         <DraftsTable lockups={data} token={token} adminControls={adminControls} progressShow={false} />
         <button
-          disabled={!(data.length >= 1 && !importProgress)}
+          disabled={!(data.length >= 1 && !parseError && !importProgress)}
           onClick={handleClickImport}
           type="button"
           className="button"

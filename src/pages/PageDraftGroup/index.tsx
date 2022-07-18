@@ -22,10 +22,6 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
   const [drafts, setDrafts] = useState<any[]>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
 
-  console.log(token);
-  console.log(draftGroup);
-  console.log(setDraftGroup);
-
   useEffect(() => {
     const fetchDraftGroup = async () => {
       setDraftGroup(null);
@@ -125,10 +121,10 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
           </h5>
           <TokenAmountPreview token={token} amount={amount.label} />
         </div>
-        {!draftGroup.funded && (
+        {!draftGroup.funded && adminControls && (
           <div className="draft-group-fund-button-wrapper">
-            {adminControls && !draftGroup.discarded && <FundButton draftGroupIndex={draftGroupId} amount={amount.value} /> }
-            {!draftGroup.discarded && (<FundWithDaoButton draftGroupIndex={draftGroupId} amount={amount} />)}
+            {!draftGroup.discarded && <FundButton draftGroupIndex={draftGroupId} amount={amount.value} /> }
+            {!draftGroup.discarded && <FundWithDaoButton draftGroupIndex={draftGroupId} amount={amount} />}
             <DeleteDraftGroupButton
               draftGroupId={draftGroup.id}
               draftIds={draftGroup.draft_indices}
@@ -136,7 +132,7 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
             />
           </div>
         )}
-        {draftGroup.funded && draftGroup.draft_indices.length > 0 && (
+        {draftGroup.funded && draftGroup.draft_indices.length > 0 && adminControls && (
           <div className="draft-group-fund-button-wrapper">
             <LoadingButton
               className="button"

@@ -74,3 +74,22 @@ export const sumSchedules = (schedules: TSchedule[]) : TSchedule => {
 
   return result;
 };
+
+export const assertValidTerminationSchedule = (lockupSchedule: TSchedule, vestingSchedule: TSchedule) => {
+  lockupSchedule.forEach((checkpoint) => {
+    const { timestamp } = checkpoint;
+    const lockupBalance = checkpoint.balance;
+    const vestingBalance = interpolateSchedule(vestingSchedule, timestamp).balance;
+    if (!(new Big(lockupBalance).lte(new Big(vestingBalance)))) {
+      throw new Error(`The lockup schedule is ahead of the termination schedule at timestamp ${timestamp}`);
+    }
+  });
+  vestingSchedule.forEach((checkpoint) => {
+    const { timestamp } = checkpoint;
+    const lockupBalance = interpolateSchedule(lockupSchedule, timestamp).balance;
+    const vestingBalance = checkpoint.balance;
+    if (!(new Big(lockupBalance).lte(new Big(vestingBalance)))) {
+      throw new Error(`The lockup schedule is ahead of the termination schedule at timestamp ${timestamp}`);
+    }
+  });
+};
