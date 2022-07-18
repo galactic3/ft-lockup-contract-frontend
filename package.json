@@ -29,6 +29,7 @@
     "near-api-js": "^0.44.2",
     "notistack": "^2.0.5",
     "react": "^17.0.2",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.2.1",
     "react-scripts": "4.0.3",
@@ -93,7 +94,7 @@
       "max-len": [
         "error",
         {
-          "code": 180
+          "code": 200
         }
       ],
       "@typescript-eslint/naming-convention": [
@@ -157,6 +158,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-copy-to-clipboard": "^5.0.3",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint-config-airbnb": "19.0.4",

@@ -32,6 +32,8 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
 
   const selectedAccountPage = window.location.href.split('/').pop() === row.account_id;
 
+  const selectedLockupId = window.location.href.split('/').pop() === row.id.toString();
+
   const claimedAmount = `${convertAmount(row.claimed_balance, token.decimals)}`;
   const availbleAmount = `${convertAmount(row.unclaimed_balance, token.decimals)}`;
   const vestedAmount = `${convertAmount(row.total_balance - row.claimed_balance - row.unclaimed_balance, token.decimals)}`;
@@ -87,10 +89,10 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
           </IconButton>
         </TableCell>
         <TableCell align="left">
-          {row.id}
+          {!selectedLockupId ? <Link to={`${row.id}`}>{row.id}</Link> : row.id}
         </TableCell>
         <TableCell align="left">
-          <Link to={`${selectedAccountPage ? '' : row.account_id}`}>{row.account_id}</Link>
+          {!selectedAccountPage && !selectedLockupId ? <Link to={row.account_id}>{row.account_id}</Link> : row.account_id}
         </TableCell>
         <TableCell align="right">
           {convertTimestamp(row.schedule[0].timestamp)}

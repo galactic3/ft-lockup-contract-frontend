@@ -25,6 +25,7 @@ import { TMetadata } from '../../services/tokenApi';
 import Homepage from '../../pages/Homepage';
 import NotFoundContract from '../../pages/NotFoundContract';
 import Footer from '../Footer';
+import PageDraft from '../../pages/PageDraft';
 
 function Customer({
   lockups, token, contractId, near,
@@ -41,8 +42,10 @@ function Customer({
         <Route path="/about" element={<About lockups={lockups} token_account_id={contractId} />} />
         <Route path="/lockups" element={contractId && near && <Lockups lockups={lockups} token={{ ...token, contractId }} adminControls={false} />} />
         <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} token={token} adminControls={false} />} />
+        <Route path="/lockups/:userId/:id" element={<UserLockups lockups={lockups} token={token} adminControls={false} />} />
         <Route path="/draft_groups" element={<PageDraftGroupsIndex token={token} adminControls={false} />} />
         <Route path="/draft_groups/:draftGroupId" element={<PageDraftGroup token={token} adminControls={false} />} />
+        <Route path="/drafts/:draftId" element={<PageDraft token={token} adminControls={false} />} />
       </Routes>
     </>
   );
@@ -65,8 +68,10 @@ function Admin({
         <Route path="/about" element={<About lockups={lockups} token_account_id={tokenContractId} />} />
         <Route path="/lockups" element={showLockups && <RequireAuth><Lockups lockups={lockups} token={{ ...token, contractId: tokenContractId }} adminControls /></RequireAuth>} />
         <Route path="/lockups/:userId" element={<RequireAuth><UserLockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
+        <Route path="/lockups/:userId/:id" element={<RequireAuth><UserLockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
         <Route path="/draft_groups" element={<RequireAuth><PageDraftGroupsIndex token={token} adminControls /></RequireAuth>} />
         <Route path="/draft_groups/:draftGroupId" element={<RequireAuth><PageDraftGroup token={token} adminControls /></RequireAuth>} />
+        <Route path="/drafts/:draftId" element={<PageDraft token={token} adminControls />} />
         <Route path="/import_draft_group" element={<RequireAuth><ImportDraftGroup token={token} adminControls /></RequireAuth>} />
       </Routes>
     </>
