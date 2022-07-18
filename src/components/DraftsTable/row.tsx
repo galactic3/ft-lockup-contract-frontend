@@ -34,6 +34,18 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
 
   if (!near) return null;
 
+  if (row instanceof Error) {
+    return (
+      <TableRow>
+        <TableCell style={{ padding: 0 }} colSpan={8}>
+          <div className="row-error">
+            {row.message}
+          </div>
+        </TableCell>
+      </TableRow>
+    );
+  }
+
   const vestingSchedule = row?.vesting_schedule?.Schedule;
 
   const currentContractName = location.pathname.split('/')[1];

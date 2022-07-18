@@ -561,3 +561,12 @@ span.discarded-marker {
   border-radius: 10px;
   padding: 0 5px;
 }
+
+div.row-error {
+  background-color: var(--red);
+  height: 66px;
+  padding: 16px;
+  line-height: 34px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
