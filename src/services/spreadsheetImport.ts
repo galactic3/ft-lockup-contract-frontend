@@ -7,6 +7,16 @@ BN.prototype.toJSON = function toJSON() {
   return this.toString();
 };
 
+const prefixErrorWith = (prefix: string, callback: () => any) => {
+  try {
+    return callback();
+  } catch (e) {
+    if (!(e instanceof Error)) throw new Error('unreachable');
+    e.message = `${prefix}: ${e.message}`;
+    throw e;
+  }
+};
+
 export const parseSpreadsheetColumns = (input: string): any[] => {
   const colSep = '\t';
   const rowSep = '\n';
@@ -96,6 +106,20 @@ type CliffInfo = {
   percentage: number,
 };
 
+const parsePercentage = (input: string): number => {
+  if (!(input.match(/^\d+$/))) {
+    throw new Error('invalid cliff percentage');
+  }
+
+  const percentage = parseInt(input, 10);
+
+  if (percentage < 0 || percentage > 100) {
+    throw new Error('invalid cliff percentage');
+  }
+
+  return percentage;
+};
+
 export const parseCliffInfo = (input: string): CliffInfo => {
   const parts = input.split(':');
   if (parts.length !== 2) {
@@ -103,10 +127,7 @@ export const parseCliffInfo = (input: string): CliffInfo => {
   }
   const [durationRaw, percentageRaw] = parts;
   const duration = parseDuration(durationRaw);
-  const percentage = parseInt(percentageRaw, 10);
-  if (percentage < 0 || percentage > 100) {
-    throw new Error('invalid cliff percentage');
-  }
+  const percentage = prefixErrorWith('percentage', () => parsePercentage(percentageRaw));
   return { duration, percentage };
 };
 
@@ -131,10 +152,10 @@ export const parseHumanFriendlySchedule = (schedule: string): HumanFriendlySched
     releaseEveryRaw,
   ] = parts;
 
-  const timestampStart = parseTimestamp(timestampStartRaw);
-  const durationTotal = parseDuration(durationTotalRaw);
-  const cliffInfo = parseCliffInfo(cliffInfoRaw);
-  const releaseEvery = parseDuration(releaseEveryRaw);
+  const timestampStart = prefixErrorWith('start timestamp', () => parseTimestamp(timestampStartRaw));
+  const durationTotal = prefixErrorWith('duration', () => parseDuration(durationTotalRaw));
+  const cliffInfo = prefixErrorWith('cliff', () => parseCliffInfo(cliffInfoRaw));
+  const releaseEvery = prefixErrorWith('release every', () => parseDuration(releaseEveryRaw));
 
   return {
     timestampStart,
@@ -145,12 +166,7 @@ export const parseHumanFriendlySchedule = (schedule: string): HumanFriendlySched
   };
 };
 
-type RawSpreadsheetRow = {
-  account_id: string,
-  amount: string,
-  lockup_schedule: string,
-  vesting_schedule: string,
-};
+type RawSpreadsheetRow = any;
 
 type SpreadsheetRow = {
   account_id: NearAccountId,
@@ -160,10 +176,26 @@ type SpreadsheetRow = {
 };
 
 export const parseToSpreadsheetRow = (input: RawSpreadsheetRow): SpreadsheetRow => {
+  const allowedKeys = ['account_id', 'amount', 'lockup_schedule', 'vesting_schedule'];
+  Object.keys(input).forEach((key) => {
+    if (!allowedKeys.includes(key)) {
+      throw new Error(`unknown column '${key}'`);
+    }
+  });
+
+  if (!input.account_id) throw new Error("column 'account_id' not found");
   const accountId = parseValidAccountId(input.account_id);
+
+  if (!input.amount) throw new Error("column 'amount' not found");
   const amount = parseTokenAmount(input.amount);
-  const lockupSchedule = parseHumanFriendlySchedule(input.lockup_schedule);
-  const vestingSchedule = input.vesting_schedule === '' ? null : parseHumanFriendlySchedule(input.vesting_schedule);
+
+  if (!input.lockup_schedule) throw new Error("column 'lockup_schedule' not found");
+  const lockupSchedule = prefixErrorWith('lockup schedule', () => parseHumanFriendlySchedule(input.lockup_schedule));
+  let vestingSchedule = null;
+
+  if (input.vesting_schedule) {
+    vestingSchedule = prefixErrorWith('vesting schedule', () => parseHumanFriendlySchedule(input.vesting_schedule));
+  }
 
   return {
     account_id: accountId,
