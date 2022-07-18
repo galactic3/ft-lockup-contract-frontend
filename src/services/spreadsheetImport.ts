@@ -335,3 +335,19 @@ export const parseRawSpreadsheetInput = (spreadsheetInput: string, tokenDecimals
   const rows = parseSpreadsheetColumns(spreadsheetInput);
   return rows.map((x, index: number) => parseLockup(x, tokenDecimals, index));
 };
+
+export type TLockupOrError = Lockup | Error;
+
+export const parseRawSpreadsheetInputWithErrors = (spreadsheetInput: string, tokenDecimals: number): TLockupOrError[] => {
+  const rows = parseSpreadsheetColumns(spreadsheetInput);
+  return rows.map((x, index: number) => {
+    try {
+      return parseLockup(x, tokenDecimals, index);
+    } catch (e) {
+      if (e instanceof Error) {
+        return e;
+      }
+      throw new Error('unreachable');
+    }
+  });
+};

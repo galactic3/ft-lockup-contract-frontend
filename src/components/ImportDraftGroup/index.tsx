@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
 import DraftsTable from '../DraftsTable';
-import { parseRawSpreadsheetInput, Lockup } from '../../services/spreadsheetImport';
+import { parseRawSpreadsheetInputWithErrors, Lockup } from '../../services/spreadsheetImport';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 
@@ -23,9 +23,16 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
       }
       console.log(token);
       const input = event.target.value;
-      const lockups = parseRawSpreadsheetInput(input, token.decimals);
-      setData(lockups);
+      const lockups = parseRawSpreadsheetInputWithErrors(input, token.decimals);
+      const lockupsFiltered = lockups.filter((x) => !(x instanceof Error)).map((x) => x as Lockup);
+      const errorsFiltered = lockups.filter((x) => x instanceof Error).map((x) => (x as Error).message);
+      setData(lockupsFiltered);
       setParseError(null);
+      if (errorsFiltered.length > 0) {
+        setParseError(`Error: ${JSON.stringify(errorsFiltered)}`);
+      } else {
+        setParseError(null);
+      }
     } catch (e) {
       if (e instanceof Error) {
         setData([]);
