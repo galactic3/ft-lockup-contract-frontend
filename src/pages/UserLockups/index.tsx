@@ -13,9 +13,15 @@ import { TMetadata } from '../../services/tokenApi';
 import { convertAmount } from '../../utils';
 
 export default function UserLockups({ lockups: allLockups, token, adminControls }: { lockups: any[], token: TMetadata, adminControls: boolean }) {
-  const { userId } = useParams();
+  const { userId, id } = useParams();
 
-  const lockups = allLockups.filter((x) => x.account_id === userId);
+  const lockups = allLockups.filter((x) => {
+    if (id) {
+      return x.id.toString() === id;
+    }
+
+    return x.account_id === userId || x.id.toString() === userId;
+  });
 
   const totalUnclaimedBalance = lockups.reduce((acc, obj) => acc + parseFloat(obj.unclaimed_balance), 0);
 

@@ -10,6 +10,9 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link, useLocation } from 'react-router-dom';
 
+import LinkIcon from '@mui/icons-material/Link';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useSnackbar } from 'notistack';
 import { convertAmount, convertTimestamp } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
@@ -22,6 +25,7 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
   const {
     row, token, adminControls, progressShow,
   } = props;
+  const { enqueueSnackbar } = useSnackbar();
   const {
     near,
   }: {
@@ -33,6 +37,9 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
   const vestingSchedule = row?.vesting_schedule?.Schedule;
 
   const currentContractName = location.pathname.split('/')[1];
+
+  const selectedDraftId = location.pathname.split('/').pop() === row.id.toString();
+  const draftPage = location.pathname.split('/').includes('drafts');
 
   const claimedAmount = `${convertAmount(row.claimed_balance, token.decimals)}`;
   const availbleAmount = `${convertAmount(row.unclaimed_balance, token.decimals)}`;
@@ -51,14 +58,29 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="left">{row.id}</TableCell>
         <TableCell align="left">
-          <Link to={adminControls
-            ? `${currentContractName}/admin/lockups/${row.account_id}`
-            : `${currentContractName}/lockups/${row.account_id}`}
+          {selectedDraftId && draftPage
+            ? row.id
+            : (
+              <Link
+                to={adminControls
+                  ? `/${currentContractName}/admin/drafts/${row.id}`
+                  : `/${currentContractName}/drafts/${row.id}`}
+              >
+                {row.id}
+              </Link>
+            )}
+          <CopyToClipboard
+            text={`${window.location.origin}/#/${currentContractName}/drafts/${row.id}`}
+            onCopy={() => enqueueSnackbar('Copied', { variant: 'success', autoHideDuration: 1000 })}
           >
-            {row.account_id}
-          </Link>
+            <IconButton aria-label="copy link">
+              <LinkIcon />
+            </IconButton>
+          </CopyToClipboard>
+        </TableCell>
+        <TableCell align="left">
+          {row.account_id}
         </TableCell>
         <TableCell align="right">
           {convertTimestamp(row.schedule[0].timestamp)}

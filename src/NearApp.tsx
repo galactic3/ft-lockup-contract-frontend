@@ -64,7 +64,6 @@ export default function NearApp() {
     const sp = new URLSearchParams(url.search);
     sp.delete('transactionHashes');
     url.search = sp.toString();
-    console.log(url);
     window.history.pushState({}, null as any, url.toString());
   };
 
