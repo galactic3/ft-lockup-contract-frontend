@@ -34,9 +34,20 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
   const [schedule, setSchedule] = useState<string>('4_year');
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [accountId, setAccountId] = useState<string>('');
 
   const onScheduleSelect = (value: any) => {
     setSchedule(value.target.value);
+  };
+
+  const handleChangeAccountId = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const perform = async () => {
+      const { value } = event.target;
+
+      setAccountId(value);
+    };
+
+    perform();
   };
 
   const handleCreateLockup = async (e: any) => {
@@ -52,12 +63,11 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
 
     e.preventDefault();
 
-    const { account, amount } = e.target.elements;
+    const { amount } = e.target.elements;
 
-    console.log(account.value, amount.value);
+    console.log(amount.value);
 
     const lockupContractId = near?.api.getContract().contractId || '';
-    const userAccountId = account.value;
     const lockupTotalAmount = new Big(amount.value).mul(new Big(10).pow(token.decimals))
       .round(0, Big.roundDown).toString();
 
@@ -86,7 +96,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
     near.tokenApi.createLockup(
       lockupContractId,
       lockupTotalAmount.toString(),
-      userAccountId,
+      accountId,
       lockupSchedule,
       vestingSchedule,
     );
@@ -119,6 +129,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
               type="text"
               fullWidth
               variant="standard"
+              onChange={handleChangeAccountId}
             />
             <TextField
               margin="normal"
