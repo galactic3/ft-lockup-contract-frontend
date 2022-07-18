@@ -22,10 +22,6 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
   const [drafts, setDrafts] = useState<any[]>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
 
-  console.log(token);
-  console.log(draftGroup);
-  console.log(setDraftGroup);
-
   useEffect(() => {
     const fetchDraftGroup = async () => {
       setDraftGroup(null);
