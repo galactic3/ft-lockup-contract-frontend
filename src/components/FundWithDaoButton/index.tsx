@@ -19,7 +19,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const { draftGroupIndex, amount } = props;
 
-  const defaultDescription = `Fund draft group ${draftGroupIndex} with amount ${amount?.label}. Draft group link: ${window.location.href}`;
+  const defaultDescription = `Fund draft group ${draftGroupIndex} with amount ${amount?.label}. Draft group link: ${window.location.href.replace(/\/admin/, '')}`;
   const [description, setDescription] = useState(defaultDescription);
   const [astroDAOContractAddress, setAstroDAOContractAddress] = useState('');
 
