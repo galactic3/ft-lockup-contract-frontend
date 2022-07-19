@@ -54,6 +54,7 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
 
   const selectedDraftId = location.pathname.split('/').pop() === row.id.toString();
   const draftPage = location.pathname.split('/').includes('drafts');
+  const importDraftPage = location.pathname.split('/').includes('import_draft_group');
 
   const claimedAmount = `${convertAmount(row.claimed_balance, token.decimals)}`;
   const availbleAmount = `${convertAmount(row.unclaimed_balance, token.decimals)}`;
@@ -73,7 +74,7 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
           </IconButton>
         </TableCell>
         <TableCell align="left">
-          {selectedDraftId && draftPage
+          {selectedDraftId && draftPage || importDraftPage
             ? row.id
             : (
               <Link
@@ -84,6 +85,7 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
                 {row.id}
               </Link>
             )}
+          {!importDraftPage && (
           <CopyToClipboard
             text={`${window.location.origin}/#/${currentContractName}/drafts/${row.id}`}
             onCopy={() => enqueueSnackbar('Copied', { variant: 'success', autoHideDuration: 1000 })}
@@ -92,6 +94,7 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
               <LinkIcon />
             </IconButton>
           </CopyToClipboard>
+          )}
         </TableCell>
         <TableCell align="left">
           {row.account_id}

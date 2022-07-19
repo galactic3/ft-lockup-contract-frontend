@@ -179,7 +179,7 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
 
                   <div className="terminate">
                     <span className="fine-print">{payerMessage}</span>
-                    {terminateButton(terminatorId)}
+                    {terminatorId && terminateButton(terminatorId)}
 
                   </div>
                 </div>

@@ -74,7 +74,7 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
               <TableCell align="center">Funded</TableCell>
               <TableCell align="center">Number&nbsp;of&nbsp;lockups</TableCell>
               <TableCell align="right">Total&nbsp;amount</TableCell>
-              <TableCell align="right" width="0%">Delete</TableCell>
+              {adminControls && <TableCell align="right" width="0%">Delete</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -92,6 +92,7 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
                 &nbsp;
                   <TokenIcon url={token.icon || ''} size={32} />
                 </TableCell>
+                {adminControls && (
                 <TableCell align="right">
                   <DeleteDraftGroupButton
                     draftGroupId={group.id}
@@ -99,14 +100,17 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
                     disabled={group.funded}
                   />
                 </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>
         </Table>
 
+        {adminControls && (
         <Link to={importDraftGroupPath}>
           <button className="button" type="button">Import Draft Group</button>
         </Link>
+        )}
       </div>
     </div>
   );

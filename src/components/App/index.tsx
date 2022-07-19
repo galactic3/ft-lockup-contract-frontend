@@ -71,7 +71,7 @@ function Admin({
         <Route path="/lockups/:userId/:id" element={<RequireAuth><UserLockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
         <Route path="/draft_groups" element={<RequireAuth><PageDraftGroupsIndex token={token} adminControls /></RequireAuth>} />
         <Route path="/draft_groups/:draftGroupId" element={<RequireAuth><PageDraftGroup token={token} adminControls /></RequireAuth>} />
-        <Route path="/drafts/:draftId" element={<PageDraft token={token} adminControls />} />
+        <Route path="/drafts/:draftId" element={<RequireAuth><PageDraft token={token} adminControls /></RequireAuth>} />
         <Route path="/import_draft_group" element={<RequireAuth><ImportDraftGroup token={token} adminControls /></RequireAuth>} />
       </Routes>
     </>

@@ -5,6 +5,8 @@ import PayForContractStorage from '../PayForContractStorage';
 
 export default function RequireAuth({ children }: { children: JSX.Element }) {
   const location = useLocation();
+  const currentPathname = location.pathname;
+  const draftGroupURL = location.pathname.split('/').includes('draft_groups');
   const {
     near,
   }: {
@@ -18,6 +20,9 @@ export default function RequireAuth({ children }: { children: JSX.Element }) {
   const currentContractName = location.pathname.split('/')[1];
 
   if (!signedIn || !(isAdmin || isCouncilMember)) {
+    if (draftGroupURL) {
+      return <Navigate to={currentPathname.replace(/\/admin/, '')} replace />;
+    }
     return <Navigate to={`/${currentContractName}/admin`} replace />;
   }
 
