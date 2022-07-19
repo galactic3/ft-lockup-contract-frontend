@@ -150,7 +150,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
         </div>
         <DraftsTable lockups={data} token={token} adminControls={adminControls} progressShow={false} />
         <button
-          disabled={!(data.length >= 1 && parseErrors.length > 0 && !importProgress)}
+          disabled={!(data.length >= 1 && parseErrors.length === 0 && !importProgress)}
           onClick={handleClickImport}
           type="button"
           className="button"
