@@ -82,7 +82,7 @@ export const buildFundDraftGroupProposalLink = (
   const json = {
     receiver_id: lockupContractAddress,
     amount: amountValue,
-    msg: JSON.stringify({ draft_group_id: draftGroupIndex }),
+    msg: JSON.stringify({ draft_group_id: draftGroupIndex, try_convert: true }),
   };
   const actionsGas = '100'; // with this amount transaction completes in one go (without resubmit with additional gas)
   const actionDeposit = ONE_YOKTO;
