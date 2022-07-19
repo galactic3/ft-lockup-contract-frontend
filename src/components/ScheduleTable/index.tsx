@@ -20,7 +20,7 @@ export default function ScheduleTable(params: { token: TMetadata, title: String,
         <TableHead>
           <TableRow>
             <TableCell>DATE</TableCell>
-            <TableCell align="right">AMOUNT</TableCell>
+            <TableCell align="right">CUMULATIVE AMOUNT</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
