@@ -46,6 +46,7 @@ type TLockupCreate = {
 
 type TDraftGroupFund = {
   draft_group_id: number,
+  try_convert: boolean,
 };
 
 type TTokenContract = Contract & TTokenChangeMethods & TTokenViewMethods;
@@ -91,6 +92,7 @@ class TokenApi {
       amount,
       msg: {
         draft_group_id: draftGroupId,
+        try_convert: true,
       },
     });
 
