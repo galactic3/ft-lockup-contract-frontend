@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState, useContext } from 'react';
 import {
   Collapse,
   IconButton,
@@ -6,6 +6,7 @@ import {
   TableRow,
   Tooltip,
 } from '@mui/material';
+import { Big } from 'big.js';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link, useLocation } from 'react-router-dom';
@@ -20,6 +21,50 @@ import { TMetadata } from '../../services/tokenApi';
 import TokenIcon from '../TokenIcon';
 import ScheduleTable from '../ScheduleTable';
 import { chartData } from '../../services/chartHelpers';
+import { lockupTotalBalance } from '../../services/spreadsheetImport';
+import { interpolateSchedule } from '../../services/scheduleHelpers';
+
+type TBalancesRaw = {
+  claimed: string,
+  unclaimed: string,
+  vested: string,
+  unvested: string,
+  total: string,
+};
+
+const calcBalancesRaw = (row: any, now: number): TBalancesRaw => {
+  const totalBalanceRaw = row.schedule[row.schedule.length - 1].balance;
+  const claimedBalanceRaw = '0';
+
+  const m1 = interpolateSchedule;
+  const m2 = lockupTotalBalance;
+  console.log(m1, m2);
+
+  const unclaimedBalanceRaw = interpolateSchedule(row.schedule, now).balance;
+  let vestedBalanceFullRaw = null;
+  const vestingSchedule = row.vesting_schedule?.Schedule;
+  if (vestingSchedule) {
+    vestedBalanceFullRaw = interpolateSchedule(vestingSchedule, now).balance;
+  } else {
+    vestedBalanceFullRaw = lockupTotalBalance(row);
+  }
+  const vestedBalanceRaw = new Big(vestedBalanceFullRaw)
+    .sub(new Big(claimedBalanceRaw))
+    .sub(new Big(unclaimedBalanceRaw))
+    .toString();
+  const unvestedBalanceRaw = new Big(totalBalanceRaw)
+    .sub(new Big(vestedBalanceFullRaw))
+    .toString();
+  console.log(totalBalanceRaw, claimedBalanceRaw, unclaimedBalanceRaw, vestedBalanceRaw, unvestedBalanceRaw);
+
+  return {
+    claimed: claimedBalanceRaw,
+    unclaimed: unclaimedBalanceRaw,
+    vested: vestedBalanceRaw,
+    unvested: unvestedBalanceRaw,
+    total: totalBalanceRaw,
+  };
+};
 
 export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMetadata, adminControls: boolean, progressShow: boolean }) {
   const location = useLocation();
@@ -33,6 +78,8 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
   }: {
     near: INearProps | null
   } = useContext(NearContext);
+
+  const [now, _setNow] = useState<number>(Math.floor(new Date().getTime() / 1000));
 
   if (!near) return null;
 
@@ -56,10 +103,7 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
   const draftPage = location.pathname.split('/').includes('drafts');
   const importDraftPage = location.pathname.split('/').includes('import_draft_group');
 
-  const claimedAmount = `${convertAmount(row.claimed_balance, token.decimals)}`;
-  const availbleAmount = `${convertAmount(row.unclaimed_balance, token.decimals)}`;
-  const vestedAmount = `${convertAmount(row.total_balance - row.claimed_balance - row.unclaimed_balance, token.decimals)}`;
-  const unvestedAmount = `${convertAmount(row.total_balance - row.total_balance, token.decimals)}`;
+  const balancesRaw = calcBalancesRaw(row, now);
 
   return (
     <>
@@ -106,7 +150,7 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
           {convertTimestamp(row.schedule[row.schedule.length - 1].timestamp)}
         </TableCell>
         <TableCell align="right">
-          {convertAmount(row.total_balance, token.decimals)}
+          {convertAmount(balancesRaw.total, token.decimals)}
           &nbsp;
           {token.symbol}
           &nbsp;
@@ -119,25 +163,25 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
               <div className="progress-bar__tooltip">
                 <span>
                   <i className="claimed">&nbsp;</i>
-                  <b>{claimedAmount}</b>
+                  <b>{convertAmount(balancesRaw.claimed, token.decimals)}</b>
                   {' '}
                   Claimed
                 </span>
                 <span>
                   <i className="available">&nbsp;</i>
-                  <b>{availbleAmount}</b>
+                  <b>{convertAmount(balancesRaw.unclaimed, token.decimals)}</b>
                   {' '}
                   Available
                 </span>
                 <span>
                   <i className="vested">&nbsp;</i>
-                  <b>{vestedAmount}</b>
+                  <b>{convertAmount(balancesRaw.vested, token.decimals)}</b>
                   {' '}
                   Vested
                 </span>
                 <span>
                   <i className="unvested">&nbsp;</i>
-                  <b>{unvestedAmount}</b>
+                  <b>{convertAmount(balancesRaw.unvested, token.decimals)}</b>
                   {' '}
                   Unvested
                 </span>
@@ -147,16 +191,18 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
             arrow
           >
             <div className="progress-bar">
-              <div style={{ width: `${(row.claimed_balance / row.total_balance) * 100}%` }} className="claimed">
+              <div style={{ width: `${(parseFloat(balancesRaw.claimed) / parseFloat(balancesRaw.total)) * 100}%` }} className="claimed">
                 &nbsp;
               </div>
-              <div style={{ width: `${(row.unclaimed_balance / row.total_balance) * 100}%` }} className="available">
+              <div style={{ width: `${(parseFloat(balancesRaw.unclaimed) / parseFloat(balancesRaw.total)) * 100}%` }} className="available">
                 &nbsp;
               </div>
-              <div style={{ width: `${((row.total_balance - row.claimed_balance - row.unclaimed_balance) / row.total_balance) * 100}%` }} className="vested">
+              <div style={{ width: `${(parseFloat(balancesRaw.vested) / parseFloat(balancesRaw.total)) * 100}%` }} className="vested">
                 &nbsp;
               </div>
-              <div style={{ width: `${(row.total_balance - row.total_balance) * 100}%` }} className="unvested">&nbsp;</div>
+              <div style={{ width: `${(parseFloat(balancesRaw.unvested) / parseFloat(balancesRaw.total)) * 100}%` }} className="unvested">
+                &nbsp;
+              </div>
             </div>
           </Tooltip>
         </TableCell>

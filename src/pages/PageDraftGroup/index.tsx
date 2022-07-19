@@ -23,22 +23,67 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
   const [draftGroup, setDraftGroup] = useState<any>(null);
   const [drafts, setDrafts] = useState<any[]>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
+  const [isConverted, setIsConverted] = useState<string>('pending');
+
+  useEffect(() => {
+    const perform = async () => {
+      setIsConverted('pending');
+      console.log(`fetchIsConverted: ${draftGroupId} ${'pending'}`);
+
+      if (!near) return;
+
+      const searchParams = new URLSearchParams(window.location.search);
+      const transactionHashesRaw: string | null = searchParams.get('transactionHashes');
+      if (!transactionHashesRaw) {
+        setIsConverted('unknown');
+        console.log(`fetchIsConverted: ${draftGroupId} ${'unknown'}`);
+        return;
+      }
+      const txHash = transactionHashesRaw.split(',')[0];
+      console.log('txHash', txHash);
+      const txStatus = await near.rpcProvider.txStatus(txHash, 'sender.testnet');
+      console.log(txStatus);
+
+      const methodName = txStatus.transaction.actions[0].FunctionCall.method_name;
+
+      const successValue = (txStatus.status as any).SuccessValue;
+
+      const args = JSON.parse(atob(txStatus.transaction.actions[0].FunctionCall.args));
+      const msg = args.msg && JSON.parse(args.msg);
+      const msgDraftGroupId = msg && msg.draft_group_id;
+
+      console.log(methodName, successValue, args, msg, msgDraftGroupId);
+
+      const result = methodName === 'ft_transfer_call' && msgDraftGroupId && msgDraftGroupId === draftGroupId;
+
+      if (result) {
+        setIsConverted('converted');
+        console.log(`fetchIsConverted: ${draftGroupId} ${'converted'}`);
+      } else {
+        setIsConverted('unknown');
+        console.log(`fetchIsConverted: ${draftGroupId} ${'unknown'}`);
+      }
+    };
+    perform();
+  }, [near, draftGroupId]);
 
   useEffect(() => {
     const fetchDraftGroup = async () => {
       setDraftGroup(null);
-      console.log('fetchDraftGroup called');
-      if (!near) {
+
+      console.log(`fetchDraftGroup called: ${draftGroupId} ${isConverted}`);
+      if (!near) return;
+      console.log(isConverted);
+      if (isConverted === 'pending') {
         return;
       }
+
       const result = await near.api.getDraftGroup(draftGroupId);
-      debugger;
-      console.log(result);
       setDraftGroup(result || 'not_found');
     };
 
     fetchDraftGroup(); // .catch(console.error);
-  }, [near, draftGroupId]);
+  }, [near, draftGroupId, isConverted]);
 
   useEffect(() => {
     const fetchDrafts = async () => {
@@ -51,7 +96,6 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
         return;
       }
       const result = await near.api.getDrafts(draftGroup.draft_indices);
-      console.log(result);
       setDrafts(result.map((x: any) => Object.assign(x[1].lockup_create, { id: x[0] })));
     };
 
@@ -112,9 +156,9 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
     const currentContractName = location.pathname.split('/')[1];
     return (
       <div className="container">
-        <h1>Draft group not found.</h1>
+        <h1>{isConverted === 'converted' ? `Success! Draft group ${draftGroupId} have been converted!` : 'Draft group not found.'}</h1>
         <div>
-          It may have been converted, deleted, or have never existed at all.
+          {!(isConverted === 'converted') && 'It may have been converted, deleted, or have never existed at all.' || true}
           <br />
           Check
           {' '}
