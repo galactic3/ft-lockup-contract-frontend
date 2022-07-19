@@ -34,7 +34,7 @@ export default function PageDraft({
 
   console.log(draft);
 
-  const progressShow = false;
+  const progressShow = true;
 
   return (
     <div className="container">

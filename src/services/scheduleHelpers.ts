@@ -23,7 +23,7 @@ export const interpolate = (checkpoint0: TCheckpoint, checkpoint1: TCheckpoint, 
     timestamp,
   );
 
-  return { timestamp, balance: balance.toString() };
+  return { timestamp, balance: new Big(balance.toString()).toFixed() };
 };
 
 export const interpolateSchedule = (schedule: TCheckpoint[], timestamp: TNearTimestamp) : TCheckpoint => {
