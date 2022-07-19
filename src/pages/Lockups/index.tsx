@@ -11,11 +11,7 @@ import LockupsTable from '../../components/LockupsTable';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import FavouriteAccounts from '../../components/FavouriteAccounts';
-import {
-  TCheckpoint, TNearAmount, TNearTimestamp, TSchedule,
-} from '../../services/api';
-import { convertAmount } from '../../utils';
-import { sumSchedules } from '../../services/scheduleHelpers';
+import { chartData } from '../../services/chartHelpers';
 
 type TToken = TMetadata & { contractId: string };
 
@@ -35,50 +31,11 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
   const [favouriteAccounts, setFavouriteAccounts] = useState<string[]>(favouriteAccountsFromLocalStorage);
   const favouriteAccountsLockups = lockups.filter((lockup) => favouriteAccounts.includes(lockup.account_id));
 
-  const buildVestedSchedule = (from: TNearTimestamp, balance: TNearAmount) => [
-    { timestamp: from - 1, balance: '0' },
-    { timestamp: from, balance },
-  ];
-
-  const chartData = (lockupsList: any[]): any => {
-    const lockupSchedules = Array.from(
-      lockupsList.map((x) => x.schedule),
-    ) as TSchedule[];
-
-    const now = Math.round(new Date().getTime() / 1000);
-    const minTimestampsLockup = lockupsList.map((x) => x.schedule[0].timestamp);
-    const minTimestampsVesting = lockupsList.map((x) => x?.termination_config?.vesting_schedule[0]?.timestamp).filter((x) => x);
-
-    const minTimestamp = Math.min(...minTimestampsLockup, ...minTimestampsVesting, now);
-
-    const vestingSchedules = Array.from(
-      lockupsList.map((x) => {
-        const result = x?.termination_config?.vesting_schedule?.Schedule;
-        if (result) return result;
-        return result || buildVestedSchedule(minTimestamp, x.schedule[x.schedule.length - 1].balance);
-      }),
-    ) as TSchedule[];
-
-    const sumVesting = sumSchedules(vestingSchedules);
-    const sumLockup = sumSchedules(lockupSchedules);
-
-    if (sumVesting[sumVesting.length - 1]?.timestamp !== sumLockup[sumLockup.length - 1].timestamp) {
-      sumVesting.push(sumLockup[sumLockup.length - 1]);
-    }
-
-    const convertSchedule = (schedule: TSchedule, decimals: number) => schedule.map((s: TCheckpoint) => [s.timestamp * 1000, convertAmount(s.balance, decimals)]);
-
-    return {
-      unlocked: lockupsList.length ? convertSchedule(sumLockup, token.decimals) : [],
-      vested: lockupsList.length ? convertSchedule(sumVesting, token.decimals) : [],
-    };
-  };
-
   const lockupsPage = (lockupsList: any): any => {
     if (lockupsList.length > 0) {
       return (
         <>
-          <Chart data={chartData(lockupsList)} />
+          <Chart data={chartData(lockupsList, token.decimals)} />
 
           { signedIn && adminControls && isAdmin && <CreateLockup token={token} /> }
 

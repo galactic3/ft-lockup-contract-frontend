@@ -177,6 +177,7 @@ div.process-log {
 }
 
 .import-draft-group-wrapper {
+  border-radius: 16px;
   padding: 32px;
   background: var(--white);
 }
