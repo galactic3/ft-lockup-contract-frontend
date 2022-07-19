@@ -565,12 +565,19 @@ span.discarded-marker {
 }
 
 div.row-error {
-  background-color: var(--red);
+  background: #ffefee;
+
   height: 66px;
-  padding: 16px;
+  padding: 16px 32px;
   line-height: 34px;
   font-size: 16px;
   box-sizing: border-box;
+
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+
+  color: #FF594E;
 }
 
 span.parse-error-label {
