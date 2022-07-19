@@ -112,7 +112,7 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
 
   return (
     <div className="container">
-      <div className="draft-group-preview-wrapper">
+      <div className="draft-group-preview-wrapper draft-group-preview-inner">
         <div className="draft-group-preview-info" style={{ display: 'flex' }}>
           <h5>
             {`Draft group ${draftGroupId}`}

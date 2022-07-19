@@ -190,6 +190,7 @@ div.process-log {
 .import-draft-group-textarea {
   min-width: 100%;
   border: 1px solid var(--light-gray);
+  border-radius: 4px;
 }
 
 .draft-group-preview-wrapper {
@@ -206,7 +207,7 @@ div.process-log {
   flex-direction: column;
 }
 
-.draft-group-preview-wrapper h5 {
+.draft-group-preview-inner h5 {
   font-size: 16px;
   font-weight: 400;
   margin: 0 0 12px;
@@ -217,7 +218,7 @@ div.process-log {
   margin-left: auto;
 }
 
-.draft-group-preview-wrapper button {
+.draft-group-preview-inner button {
   height: 48px;
   width: 180px;
   font-weight: 700;
@@ -569,4 +570,11 @@ div.row-error {
   line-height: 34px;
   font-size: 16px;
   box-sizing: border-box;
+}
+
+span.parse-error-label {
+  /* font-weight: 800; */
+  background-color: var(--red);
+  border-radius: 10px;
+  padding: 0 5px;
 }

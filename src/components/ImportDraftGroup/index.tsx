@@ -2,18 +2,23 @@ import { TextareaAutosize } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import Big from 'big.js';
 
 import DraftsTable from '../DraftsTable';
-import { parseRawSpreadsheetInputWithErrors, TLockupOrError } from '../../services/spreadsheetImport';
+import {
+  parseRawSpreadsheetInputWithErrors, TLockupOrError, Lockup, lockupTotalBalance,
+} from '../../services/spreadsheetImport';
+import TokenAmountPreview from '../TokenAmountPreview';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
+import { convertAmount } from '../../utils';
 
 function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   const location = useLocation();
   const { near }: { near: INearProps | null } = useContext(NearContext);
 
   const [data, setData] = useState<TLockupOrError[]>([]);
-  const [parseError, setParseError] = useState<string | null>(null);
+  const [parseErrors, setParseErrors] = useState<Error[]>([]);
   const [importProgress, setImportProgress] = useState<boolean>(false);
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -26,14 +31,11 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
       const lockups = parseRawSpreadsheetInputWithErrors(input, token.decimals);
       const errorsFiltered = lockups.filter((x) => x instanceof Error).map((x) => x as Error);
       setData(lockups);
-      setParseError(null);
-      if (errorsFiltered.length > 0) {
-        setParseError(`Error: ${JSON.stringify(errorsFiltered.map((x) => x.message))}`);
-      }
+      setParseErrors(errorsFiltered);
     } catch (e) {
       if (e instanceof Error) {
         setData([]);
-        setParseError(e.message);
+        setParseErrors([e]);
         console.log(e);
       }
     }
@@ -97,13 +99,38 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
     }
   };
 
+  const calcTotalBalance = (lockups: TLockupOrError[]) => {
+    const lockupsFiltered = lockups.filter((x: TLockupOrError) => !(x instanceof Error)).map((x) => x as Lockup);
+    const balances = lockupsFiltered.map((x: Lockup) => lockupTotalBalance(x));
+    let result = new Big('0');
+
+    balances.forEach((x) => {
+      result = result.add(new Big(x));
+    });
+    return result.toString();
+  };
+
+  const totalBalance = convertAmount(calcTotalBalance(data), token.decimals);
+
   return (
     <div className="main">
       <div className="container">
         <h2>
           Import Draft Group
         </h2>
+
         <div className="import-draft-group-wrapper">
+          <div className="draft-group-preview-inner">
+            <div className="draft-group-preview-info" style={{ display: 'flex' }}>
+              <h5>
+                {`New draft group with ${data.length} lockup${data.length > 1 ? 's' : ''}`}
+                {' '}
+                {parseErrors.length > 0 && (<span className="parse-error-label">{`${parseErrors.length} parse error${parseErrors.length > 1 ? 's' : ''}`}</span>)}
+              </h5>
+              <TokenAmountPreview token={token} amount={totalBalance} />
+            </div>
+          </div>
+
           <p>
             Copy lockups from a spreadsheet editor and paste into the area below.
             See
@@ -123,7 +150,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
         </div>
         <DraftsTable lockups={data} token={token} adminControls={adminControls} progressShow={false} />
         <button
-          disabled={!(data.length >= 1 && !parseError && !importProgress)}
+          disabled={!(data.length >= 1 && parseErrors.length > 0 && !importProgress)}
           onClick={handleClickImport}
           type="button"
           className="button"

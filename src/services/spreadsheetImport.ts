@@ -383,3 +383,5 @@ export const parseRawSpreadsheetInputWithErrors = (spreadsheetInput: string, tok
     }
   });
 };
+
+export const lockupTotalBalance = (lockup: Lockup): Balance => lockup.schedule[lockup.schedule.length - 1].balance;
