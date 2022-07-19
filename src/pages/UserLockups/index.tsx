@@ -28,32 +28,34 @@ export default function UserLockups({ lockups: allLockups, token, adminControls 
   console.log('user lockups', userId, lockups);
 
   return (
-    <div className="container">
+    <div className="main">
+      <div className="container">
 
-      {!adminControls && <ClaimAllLockups accountId={userId} token={token} total={convertAmount(totalUnclaimedBalance, token.decimals)} />}
+        {!adminControls && <ClaimAllLockups accountId={userId} token={token} total={convertAmount(totalUnclaimedBalance, token.decimals)} />}
 
-      <TableContainer sx={{ boxShadow: 'unset' }}>
-        <Table className="main-table" aria-label="collapsible table">
-          <TableHead className="table-head">
-            <TableRow>
-              <TableCell />
-              <TableCell align="left">ID</TableCell>
-              <TableCell align="left">Account ID</TableCell>
-              <TableCell align="right">Start&nbsp;date</TableCell>
-              <TableCell align="right">End&nbsp;date</TableCell>
-              <TableCell align="right">Terminatable</TableCell>
-              <TableCell align="right">Total&nbsp;amount</TableCell>
-              <TableCell align="center">Progress</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {lockups.map((lockup) => (
-              <Row key={lockup.id} row={lockup} token={token} adminControls={adminControls} />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+        <TableContainer sx={{ boxShadow: 'unset' }}>
+          <Table className="main-table" aria-label="collapsible table">
+            <TableHead className="table-head">
+              <TableRow>
+                <TableCell />
+                <TableCell align="left">ID</TableCell>
+                <TableCell align="left">Account ID</TableCell>
+                <TableCell align="right">Start&nbsp;date</TableCell>
+                <TableCell align="right">End&nbsp;date</TableCell>
+                <TableCell align="right">Terminatable</TableCell>
+                <TableCell align="right">Total&nbsp;amount</TableCell>
+                <TableCell align="center">Progress</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {lockups.map((lockup) => (
+                <Row key={lockup.id} row={lockup} token={token} adminControls={adminControls} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
+      </div>
     </div>
   );
 }

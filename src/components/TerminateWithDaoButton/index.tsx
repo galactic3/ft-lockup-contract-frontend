@@ -1,4 +1,5 @@
 import { useContext, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
@@ -7,6 +8,7 @@ import { buildTerminateLockupProposalLink } from '../../services/DAOs/astroDAO/u
 
 function TerminateWithDaoButton(
   props: {
+    accountId: string,
     adminControls: boolean,
     lockupIndex: number | undefined,
     config: { beneficiary_id: String, vesting_schedule: [] | null } | null,
@@ -16,6 +18,7 @@ function TerminateWithDaoButton(
 ) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const {
+    accountId,
     adminControls,
     lockupIndex,
     config,
@@ -27,8 +30,14 @@ function TerminateWithDaoButton(
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const location = useLocation();
 
-  const defaultDescription = `Terminate lockup ${lockupIndex}. Lockup link: ${window.location.href}`;
+  const currentContractName = location.pathname.split('/')[1];
+  const pathname = `/${currentContractName}/lockups/${accountId}/${lockupIndex}`;
+  const uri = new URL(window.location.href);
+  uri.hash = `#${pathname}`;
+  const defaultDescription = `Terminate lockup ${lockupIndex}. Lockup link: ${uri.toString()}`;
+
   const [description, setDescription] = useState(defaultDescription);
   const [astroDAOContractAddress, setAstroDAOContractAddress] = useState((config?.beneficiary_id || '') as string);
 
