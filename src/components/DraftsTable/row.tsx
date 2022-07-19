@@ -9,15 +9,17 @@ import {
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link, useLocation } from 'react-router-dom';
-
 import LinkIcon from '@mui/icons-material/Link';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useSnackbar } from 'notistack';
+
+import Chart from '../Chart';
 import { convertAmount, convertTimestamp } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import TokenIcon from '../TokenIcon';
 import ScheduleTable from '../ScheduleTable';
+import { chartData } from '../../services/chartHelpers';
 
 export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMetadata, adminControls: boolean, progressShow: boolean }) {
   const location = useLocation();
@@ -166,6 +168,11 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
                 {vestingSchedule && (
                   <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
                 )}
+                <div style={{ flex: 1 }}>
+                  <div style={{ height: 300 }}>
+                    <Chart data={chartData([row], token.decimals)} />
+                  </div>
+                </div>
               </div>
             </div>
           </Collapse>

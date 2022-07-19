@@ -9,6 +9,8 @@ import {
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link } from 'react-router-dom';
+
+import Chart from '../Chart';
 import { convertAmount, convertTimestamp } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
@@ -16,6 +18,7 @@ import TerminateLockup from '../TerminateLockup';
 import TerminateWithDaoButton from '../TerminateWithDaoButton';
 import TokenIcon from '../TokenIcon';
 import ScheduleTable from '../ScheduleTable';
+import { chartData } from '../../services/chartHelpers';
 
 export default function Row(props: { adminControls: boolean, row: ReturnType<any>, token: TMetadata }) {
   const [open, setOpen] = useState(false);
@@ -168,10 +171,17 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
                 {vestingSchedule && (
                   <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
                 )}
-                <div className="terminate">
-                  <span className="fine-print">{payerMessage}</span>
-                  {terminateButton(terminatorId)}
 
+                <div style={{ flex: '1' }}>
+                  <div style={{ height: 300 }}>
+                    <Chart data={chartData([row], token.decimals)} />
+                  </div>
+
+                  <div className="terminate">
+                    <span className="fine-print">{payerMessage}</span>
+                    {terminateButton(terminatorId)}
+
+                  </div>
                 </div>
               </div>
             </div>

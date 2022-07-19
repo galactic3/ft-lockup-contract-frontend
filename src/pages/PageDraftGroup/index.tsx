@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import { Alert } from '@mui/material';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import {
+  useNavigate, useParams, useLocation, Link,
+} from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { LoadingButton } from '@mui/lab';
 
@@ -30,8 +32,9 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
         return;
       }
       const result = await near.api.getDraftGroup(draftGroupId);
+      debugger;
       console.log(result);
-      setDraftGroup(result);
+      setDraftGroup(result || 'not_found');
     };
 
     fetchDraftGroup(); // .catch(console.error);
@@ -44,7 +47,7 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
       if (!near) {
         return;
       }
-      if (!draftGroup) {
+      if (!draftGroup || draftGroup === 'not_found') {
         return;
       }
       const result = await near.api.getDrafts(draftGroup.draft_indices);
@@ -103,6 +106,28 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
 
   if (!draftGroup) {
     return null;
+  }
+
+  if (draftGroup === 'not_found') {
+    const currentContractName = location.pathname.split('/')[1];
+    return (
+      <div className="container">
+        <h1>Draft group not found.</h1>
+        <div>
+          It may have been converted, deleted, or have never existed at all.
+          <br />
+          Check
+          {' '}
+          <Link to={`/${currentContractName}${adminControls ? '/admin' : ''}/lockups`}>lockups</Link>
+          {' '}
+          to find converted lockups or
+          {' '}
+          <Link to={`/${currentContractName}${adminControls ? '/admin' : ''}/draft_groups`}>draft groups</Link>
+          {' '}
+          to see all existing draft groups.
+        </div>
+      </div>
+    );
   }
 
   const amount = {

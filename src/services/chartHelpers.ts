@@ -22,7 +22,9 @@ export const chartData = (lockupsList: any[], tokenDecimals: number): any => {
 
   const vestingSchedules = Array.from(
     lockupsList.map((x) => {
-      const result = x?.termination_config?.vesting_schedule?.Schedule;
+      // for lockups and drafts
+      const result = x?.termination_config?.vesting_schedule?.Schedule
+        || x?.vesting_schedule?.Schedule;
       if (result) return result;
       return result || buildVestedSchedule(minTimestamp, x.schedule[x.schedule.length - 1].balance);
     }),

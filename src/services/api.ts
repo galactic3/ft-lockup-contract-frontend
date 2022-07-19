@@ -152,7 +152,7 @@ class NearApi {
   }
 
   async convertDrafts(indices: DraftIndex[]): Promise<LockupIndex[]> {
-    const result = await this.contract.convert_drafts({ args: { draft_ids: indices }, gas: '200000000000000' });
+    const result = await this.contract.convert_drafts({ args: { draft_ids: indices }, gas: '300000000000000' });
 
     return result;
   }
