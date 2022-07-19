@@ -6,7 +6,7 @@ import PayForContractStorage from '../PayForContractStorage';
 export default function RequireAuth({ children }: { children: JSX.Element }) {
   const location = useLocation();
   const currentPathname = location.pathname;
-  const draftGroupURL = location.pathname.split('/').includes('draft_groups');
+  const draftGroupURL = location.pathname.includes('draft');
   const {
     near,
   }: {
