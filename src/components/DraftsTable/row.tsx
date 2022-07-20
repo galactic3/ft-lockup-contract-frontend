@@ -66,11 +66,11 @@ const calcBalancesRaw = (row: any, now: number): TBalancesRaw => {
   };
 };
 
-export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMetadata, adminControls: boolean, progressShow: boolean }) {
+export default function DraftsTableRow(props: { pageIndex: number, row: ReturnType<any>, token: TMetadata, adminControls: boolean, progressShow: boolean }) {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const {
-    row, token, adminControls, progressShow,
+    pageIndex, row, token, adminControls, progressShow,
   } = props;
   const { enqueueSnackbar } = useSnackbar();
   const {
@@ -88,6 +88,9 @@ export default function DraftsTableRow(props: { row: ReturnType<any>, token: TMe
       <TableRow>
         <TableCell style={{ padding: 0 }} colSpan={8}>
           <div className="row-error">
+            {'row '}
+            {pageIndex}
+            {': '}
             {row.message}
           </div>
         </TableCell>

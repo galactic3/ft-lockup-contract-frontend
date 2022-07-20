@@ -588,6 +588,10 @@ div.row-error {
   color: #FF594E;
 }
 
+.new-draft-count-text {
+  line-height: 30px;
+}
+
 .parse-error-label {
   font-weight: 800;
   background-color: #ffefee;
