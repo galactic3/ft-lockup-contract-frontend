@@ -166,22 +166,20 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
         <TableCell style={{ padding: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">
-              <div style={{ display: 'flex', gap: 20 }}>
-                <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
-                {vestingSchedule && (
-                  <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
-                )}
+              <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
+              {vestingSchedule && (
+              <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
+              )}
 
-                <div style={{ flex: '1' }}>
-                  <div style={{ height: 300 }}>
-                    <Chart data={chartData([row], token.decimals)} />
-                  </div>
+              <div className="lockup-row-column chart">
+                <div style={{ height: 300 }}>
+                  <Chart data={chartData([row], token.decimals)} />
+                </div>
 
-                  <div className="terminate">
-                    <span className="fine-print">{payerMessage}</span>
-                    {terminatorId && terminateButton(terminatorId)}
+                <div className="terminate">
+                  <span className="fine-print">{payerMessage}</span>
+                  {terminatorId && terminateButton(terminatorId)}
 
-                  </div>
                 </div>
               </div>
             </div>

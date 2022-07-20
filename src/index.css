@@ -52,6 +52,14 @@ code {
 
 .lockup-row {
   padding: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+.lockup-row-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .terminate {
