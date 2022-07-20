@@ -580,9 +580,11 @@ div.row-error {
   color: #FF594E;
 }
 
-span.parse-error-label {
-  /* font-weight: 800; */
-  background-color: var(--red);
+.parse-error-label {
+  font-weight: 800;
+  background-color: #ffefee;
+  color: var(--red);
   border-radius: 10px;
-  padding: 0 5px;
+  padding: 5px 10px;
+  display: inline-block;
 }
