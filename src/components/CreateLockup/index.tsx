@@ -18,7 +18,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { INearProps, NearContext } from '../../services/near';
-import { addYear } from '../../utils';
+import { addYear, startOfDay, addDays } from '../../utils';
 import { TMetadata } from '../../services/tokenApi';
 import { TSchedule } from '../../services/api';
 
@@ -32,7 +32,12 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
   const [open, setOpen] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [schedule, setSchedule] = useState<string>('4_year');
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    const newValue = addDays(startOfDay(new Date()), 1);
+    console.log('setStartDate', newValue?.getTime());
+    setStartDate(newValue);
+    setOpen(true);
+  };
   const handleClose = () => setOpen(false);
   const [accountId, setAccountId] = useState<string>('');
   const [accountStatus, setAccountStatus] = useState<string>('pending'); // pending success error
@@ -191,6 +196,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
                 label="Start date"
                 value={startDate}
                 onChange={(newValue) => {
+                  console.log('setStartDate', newValue?.getTime());
                   setStartDate(newValue);
                 }}
                 renderInput={

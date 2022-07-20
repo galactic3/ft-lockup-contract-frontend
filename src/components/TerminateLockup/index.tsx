@@ -5,6 +5,7 @@ import Big from 'big.js';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 import TerminateModal from '../TerminateModal';
+import { startOfDay, addDays } from '../../utils';
 
 function TerminateLockup(
   props: {
@@ -28,7 +29,13 @@ function TerminateLockup(
   const [date, setDate] = useState<Date | null>(null);
 
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    const newValue = addDays(startOfDay(new Date()), 1);
+    console.log('setDate', newValue?.getTime());
+    setDate(newValue);
+
+    return setOpen(true);
+  };
   const handleClose = () => setOpen(false);
 
   if (!near) {
@@ -66,7 +73,10 @@ function TerminateLockup(
       datePicker: {
         currentState: {
           value: date,
-          setValue: setDate,
+          setValue: (newValue: Date | null) => {
+            console.log('setDate', newValue?.getTime());
+            setDate(newValue);
+          },
         },
       },
     },

@@ -28,6 +28,18 @@ export const convertTimestamp = (time: number) => new Date(time * 1000).toLocale
 export const convertAmount = (value: number | string, decimals: number) => Big(value || '0').div(10 ** decimals).toFixed(NEAR_ROUND_DIGITS);
 // @ts-ignore
 export const addYear = (date: Date, year: number) => new Date(new Date(date).setFullYear((date.getFullYear()) + year)).getTime() / 1000;
+export const startOfDay = (date: Date) => {
+  const msInDay = 1_000 * 60 * 60 * 24;
+  const result = new Date(Math.floor(date.getTime() / msInDay) * msInDay);
+
+  return result;
+};
+export const addDays = (date: Date, days: number) => {
+  const msInDay = 1_000 * 60 * 60 * 24;
+  const result = new Date(date.getTime() + msInDay * days);
+
+  return result;
+};
 
 export const dumpLocalStorage = (dumpKey: string = 'dump') => {
   const dumpValue = Object.keys(localStorage).map((key) => [key, localStorage.getItem(key)]);
