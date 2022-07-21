@@ -91,21 +91,21 @@ export default function About(
 
       <h2>Technical Info</h2>
 
-      <div>
+      <p>
         FT lockup account id:
         {' '}
         <span className="code">{config.contractName}</span>
-      </div>
-      <div>
+      </p>
+      <p>
         Token account id:
         {' '}
         <span className="code">{token_account_id}</span>
-      </div>
-      <div>
+      </p>
+      <p>
         Total number of lockups:
         {' '}
         <span className="code">{lockups.length}</span>
-      </div>
+      </p>
     </div>
   );
 }
