@@ -73,7 +73,7 @@ function TerminateWithDaoButton(
       onSubmit: handleTerminate,
     },
     dialog: {
-      datePicker: {
+      dateTimePicker: {
         currentState: {
           value: date,
           setValue: setDate,

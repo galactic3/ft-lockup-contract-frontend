@@ -16,11 +16,11 @@ import Big from 'big.js';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { INearProps, NearContext } from '../../services/near';
 import { addYear, startOfDay, addDays } from '../../utils';
 import { TMetadata } from '../../services/tokenApi';
 import { TSchedule } from '../../services/api';
+import UTCDateTimePicker from '../UTCDateTimePicker';
 
 export default function CreateLockup({ token } : { token: TMetadata }) {
   const {
@@ -192,23 +192,14 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
               </Select>
             </FormControl>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label="Start date"
+              <UTCDateTimePicker
                 value={startDate}
-                onChange={(newValue) => {
+                setValue={(newValue) => {
                   console.log('setStartDate', newValue?.getTime());
                   setStartDate(newValue);
                 }}
-                renderInput={
-                  (params) => (
-                    <TextField
-                      margin="normal"
-                      fullWidth
-                      variant="standard"
-                      {...params}
-                    />
-                  )
-                }
+                label="Start date and time"
+                minTime={null}
               />
             </LocalizationProvider>
           </DialogContent>

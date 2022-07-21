@@ -70,7 +70,7 @@ function TerminateLockup(
       onSubmit: handleTerminateLockup,
     },
     dialog: {
-      datePicker: {
+      dateTimePicker: {
         currentState: {
           value: date,
           setValue: (newValue: Date | null) => {
