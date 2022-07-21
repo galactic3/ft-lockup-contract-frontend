@@ -426,15 +426,33 @@ div.process-log {
   line-height: 24px;
   font-weight: 700;
   border-radius: 8px;
-  color: #fff;
+  color: var(--white);
   border: unset;
   padding: 12px 32px;
   cursor: pointer;
   box-shadow: none;
+  min-width: 120px;
+  text-transform: none;
+}
+
+.MuiLoadingButton-root .MuiLoadingButton-loadingIndicator {
+  color: var(--white);
+}
+
+.MuiLoadingButton-root.Mui-disabled.button {
+  color: var(--white);
+}
+
+.MuiLoadingButton-root.Mui-disabled.MuiLoadingButton-loading {
+  color: transparent;
 }
 
 .MuiLoadingButton-root.button:hover {
   background: var(--green);
+}
+
+.MuiLoadingButton-root.button.red:hover {
+  background: var(--red);
 }
 
 .submit {
@@ -565,27 +583,20 @@ svg {
   margin: 0;
 }
 
-span.discarded-marker {
+.discarded-marker {
   font-weight: 800;
   background-color: var(--light-gray);
   border-radius: 10px;
-  padding: 0 5px;
+  padding: 3px 10px;
 }
 
-div.row-error {
+.row-error {
   background: #ffefee;
-
-  height: 66px;
   padding: 16px 32px;
   line-height: 34px;
   font-size: 16px;
-  box-sizing: border-box;
-
-  font-family: 'Inter';
-  font-style: normal;
   font-weight: 700;
-
-  color: #FF594E;
+  color: var(--red);
 }
 
 .new-draft-count-text {
@@ -601,11 +612,9 @@ div.row-error {
   display: inline-block;
 }
 
-span.code {
-  background-color: var(--light-gray);
-  color: var(--primary);
-  line-height: 2;
+.code {
   font-family: monospace;
+  background-color: var(--light-gray);
   padding: 0 5px;
   border-radius: 4px;
 }

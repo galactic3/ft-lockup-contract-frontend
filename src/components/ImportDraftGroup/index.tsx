@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import Big from 'big.js';
 
+import { LoadingButton } from '@mui/lab';
 import DraftsTable from '../DraftsTable';
 import {
   parseRawSpreadsheetInputWithErrors, TLockupOrError, Lockup, lockupTotalBalance,
@@ -151,14 +152,15 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
           />
         </div>
         <DraftsTable lockups={data} token={token} adminControls={adminControls} progressShow />
-        <button
+        <LoadingButton
           disabled={!(data.length >= 1 && parseErrors.length === 0 && !importProgress)}
           onClick={handleClickImport}
+          loading={importProgress}
           type="button"
           className="button"
         >
           Import
-        </button>
+        </LoadingButton>
       </div>
     </div>
   );
