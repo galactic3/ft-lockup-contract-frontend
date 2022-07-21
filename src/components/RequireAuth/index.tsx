@@ -5,19 +5,17 @@ import PayForContractStorage from '../PayForContractStorage';
 
 export default function RequireAuth({ children }: { children: JSX.Element }) {
   const location = useLocation();
-  const currentPathname = location.pathname;
-  const draftGroupURL = location.pathname.includes('draft');
   const {
     near,
   }: {
     near: INearProps | null, signIn: () => void, signOut: () => void,
   } = useContext(NearContext);
-
   if (!near) return null;
-
   const { signedIn, isAdmin, isCouncilMember } = near.currentUser;
-
+  const currentPathname = location.pathname;
   const currentContractName = location.pathname.split('/')[1];
+  const currentPathWithoutContract = location.pathname.split(currentContractName)[1];
+  const draftGroupURL = currentPathWithoutContract.includes('/draft');
 
   if (!signedIn || !(isAdmin || isCouncilMember)) {
     if (draftGroupURL) {
