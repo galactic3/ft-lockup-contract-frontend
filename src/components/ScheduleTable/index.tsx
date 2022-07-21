@@ -7,7 +7,8 @@ import {
 } from '@mui/material';
 import { TSchedule } from '../../services/api';
 import { TMetadata } from '../../services/tokenApi';
-import { convertAmount, convertTimestamp } from '../../utils';
+import TimestampDisplay from '../TimestampDisplay';
+import { convertAmount } from '../../utils';
 import TokenIcon from '../TokenIcon';
 
 export default function ScheduleTable(params: { token: TMetadata, title: String, schedule: TSchedule }) {
@@ -27,14 +28,18 @@ export default function ScheduleTable(params: { token: TMetadata, title: String,
           {schedule.map((x: any) => (
             <TableRow key={x.timestamp}>
               <TableCell component="th" scope="row">
-                {convertTimestamp(x.timestamp)}
+                <div className="nowrap">
+                  <TimestampDisplay unixSeconds={x.timestamp} />
+                </div>
               </TableCell>
               <TableCell align="right">
-                {convertAmount(x.balance, token.decimals)}
-                &nbsp;
-                {token.symbol}
-                &nbsp;
-                <TokenIcon url={token.icon || ''} size={32} />
+                <div className="nowrap">
+                  {convertAmount(x.balance, token.decimals)}
+                  &nbsp;
+                  {token.symbol}
+                  &nbsp;
+                  <TokenIcon url={token.icon || ''} size={32} />
+                </div>
               </TableCell>
             </TableRow>
           ))}

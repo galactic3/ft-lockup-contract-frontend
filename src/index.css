@@ -330,7 +330,7 @@ div.process-log {
 
 .inner-table_wrapper {
   background: var(--white);
-  width: 320px;
+  width: 340px;
   padding: 20px 0;
   border-radius: 10px;
 }
@@ -608,4 +608,14 @@ span.code {
   font-family: monospace;
   padding: 0 5px;
   border-radius: 4px;
+}
+
+span.timestamp-display {
+}
+
+span.timestamp-date-display {
+}
+
+.nowrap {
+  white-space: nowrap;
 }

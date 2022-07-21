@@ -10,8 +10,9 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link } from 'react-router-dom';
 
+import TimestampDateDisplay from '../TimestampDateDisplay';
 import Chart from '../Chart';
-import { convertAmount, convertTimestamp } from '../../utils';
+import { convertAmount } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import TerminateLockup from '../TerminateLockup';
@@ -99,10 +100,10 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
           {!selectedAccountPage && !selectedLockupId ? <Link to={row.account_id}>{row.account_id}</Link> : row.account_id}
         </TableCell>
         <TableCell align="right">
-          {convertTimestamp(row.schedule[0].timestamp)}
+          <TimestampDateDisplay unixSeconds={row.schedule[0].timestamp} />
         </TableCell>
         <TableCell align="right">
-          {convertTimestamp(row.schedule[row.schedule.length - 1].timestamp)}
+          <TimestampDateDisplay unixSeconds={row.schedule[row.schedule.length - 1].timestamp} />
         </TableCell>
         <TableCell align="center">
           {vestingSchedule ? 'Yes' : 'No'}
@@ -148,16 +149,16 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
             arrow
           >
             <div className="progress-bar">
-              <div style={{ width: `${(row.claimed_balance / row.total_balance) * 100}%` }} className="claimed">
+              <div style={{ width: `${row.total_balance === '0' ? '100' : (row.claimed_balance / row.total_balance) * 100}%` }} className="claimed">
                 &nbsp;
               </div>
-              <div style={{ width: `${(row.unclaimed_balance / row.total_balance) * 100}%` }} className="available">
+              <div style={{ width: `${row.total_balance === '0' ? '0' : (row.unclaimed_balance / row.total_balance) * 100}%` }} className="available">
                 &nbsp;
               </div>
-              <div style={{ width: `${((row.total_balance - row.claimed_balance - row.unclaimed_balance) / row.total_balance) * 100}%` }} className="vested">
+              <div style={{ width: `${row.total_balance === '0' ? '0' : ((row.total_balance - row.claimed_balance - row.unclaimed_balance) / row.total_balance) * 100}%` }} className="vested">
                 &nbsp;
               </div>
-              <div style={{ width: `${(row.total_balance - row.total_balance) * 100}%` }} className="unvested">&nbsp;</div>
+              <div style={{ width: `${row.total_balance === '0' ? '0' : (row.total_balance - row.total_balance) * 100}%` }} className="unvested">&nbsp;</div>
             </div>
           </Tooltip>
         </TableCell>

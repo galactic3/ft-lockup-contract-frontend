@@ -4,8 +4,9 @@ import '../../styles/chart.scss';
 
 export default function Chart({ data }: { data: { vested: any[], unlocked: any[] } }) {
   const option = {
+    useUTC: true,
     title: {
-      text: '',
+      text: 'Schedule in UTC',
     },
     tooltip: {
       trigger: 'axis',
@@ -28,7 +29,7 @@ export default function Chart({ data }: { data: { vested: any[], unlocked: any[]
     xAxis: [
       {
         type: 'time',
-        boundaryGap: ['1%', '1%'],
+        boundaryGap: ['3%', '3%'],
         splitNumber: 15,
       },
     ],

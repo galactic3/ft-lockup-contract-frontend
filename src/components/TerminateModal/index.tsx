@@ -3,16 +3,15 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  TextField,
 } from '@mui/material';
 
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import DaoSelector from '../WithDao/DaoSelector';
 import DaoProposalDescription from '../WithDao/DaoProposalDescription';
+import UTCDateTimePicker from '../UTCDateTimePicker';
 
 type TUIElement<Ctype> = {
   currentState: {
@@ -31,7 +30,7 @@ type TProps = {
     onSubmit: any,
   },
   dialog: {
-    datePicker: TUIElement<Date | null>,
+    dateTimePicker: TUIElement<Date | null>,
     daoSelector?: TUIElement<string>,
     daoProposalDescription?: TUIElement<string>,
   },
@@ -57,27 +56,16 @@ function TerminateModal({ currentState, handlers, dialog }: TProps) {
         </DialogTitle>
         <DialogContent sx={{ maxWidth: '320px' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            { dialog.datePicker && (
-              <DatePicker
-                label="Custom termination date"
-                minDate={new Date()}
-                value={dialog.datePicker.currentState.value}
-                onChange={(newValue) => {
-                  dialog.datePicker.currentState.setValue(newValue);
+            {dialog.dateTimePicker && (
+              <UTCDateTimePicker
+                value={dialog.dateTimePicker.currentState.value}
+                setValue={(newValue) => {
+                  dialog.dateTimePicker.currentState.setValue(newValue);
                 }}
-                renderInput={
-                  (params) => (
-                    <TextField
-                      sx={{ margin: '0px 0 24px' }}
-                      margin="normal"
-                      fullWidth
-                      variant="standard"
-                      {...params}
-                    />
-                  )
-                }
+                label="Custom termination date and time"
+                minTime={new Date()}
               />
-            ) }
+            )}
             { dialog?.daoSelector && (
               <DaoSelector
                 selectedAddress={dialog.daoSelector.currentState.value}
