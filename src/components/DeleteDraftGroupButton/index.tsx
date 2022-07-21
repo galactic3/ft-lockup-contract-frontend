@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
+import { LoadingButton } from '@mui/lab';
 import { INearProps, NearContext } from '../../services/near';
 
 function DeleteDraftGroupButton(props: { draftGroupId: number, draftIds: [number], disabled: boolean }) {
@@ -87,7 +88,16 @@ function DeleteDraftGroupButton(props: { draftGroupId: number, draftIds: [number
   };
 
   return (
-    <button className="button compact red" type="button" onClick={handleDelete} disabled={disabled || inProgress}>Delete</button>
+    <LoadingButton
+      className="button compact red"
+      type="button"
+      variant="contained"
+      onClick={handleDelete}
+      loading={inProgress}
+      disabled={disabled || inProgress}
+    >
+      Delete
+    </LoadingButton>
   );
 }
 

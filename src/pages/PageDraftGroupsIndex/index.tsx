@@ -16,7 +16,6 @@ import DeleteDraftGroupButton from '../../components/DeleteDraftGroupButton';
 
 export default function PageDraftGroupsIndex({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   const location = useLocation();
-  console.log(location);
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [draftGroups, setDraftGroups] = useState<any[]>([]);
 
@@ -28,7 +27,6 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
         return;
       }
       const result = await near.api.getDraftGroupsAll();
-      console.log(result);
       setDraftGroups(result);
     };
 
@@ -93,13 +91,15 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
                   <TokenIcon url={token.icon || ''} size={32} />
                 </TableCell>
                 {adminControls && (
-                <TableCell align="right">
-                  <DeleteDraftGroupButton
-                    draftGroupId={group.id}
-                    draftIds={group.draft_indices}
-                    disabled={group.funded}
-                  />
-                </TableCell>
+                  <TableCell align="right">
+                    {!group.funded && (
+                    <DeleteDraftGroupButton
+                      draftGroupId={group.id}
+                      draftIds={group.draft_indices}
+                      disabled={group.funded}
+                    />
+                    )}
+                  </TableCell>
                 )}
               </TableRow>
             ))}
