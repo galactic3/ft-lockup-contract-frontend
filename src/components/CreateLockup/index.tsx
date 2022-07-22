@@ -200,6 +200,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
                 }}
                 label="Start date and time"
                 minTime={null}
+                disabled={false}
               />
             </LocalizationProvider>
           </DialogContent>
