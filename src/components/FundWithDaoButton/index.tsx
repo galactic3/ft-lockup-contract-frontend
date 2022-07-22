@@ -51,8 +51,6 @@ function FundWithDaoButton(props: { draftGroupIndex: number | undefined, amount:
       astroDAOContractAddress,
     );
 
-    debugger;
-
     window.open(link, '_blank')?.focus();
   };
 

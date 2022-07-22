@@ -16,10 +16,12 @@ function Authorize() {
 
   if (!near) return null;
 
-  const { signedIn, isAdmin, isCouncilMember } = near.currentUser;
+  const {
+    signedIn, isAdmin, isCouncilMember, isDraftOperator,
+  } = near.currentUser;
 
-  const showAlertForUser = signedIn && !(isAdmin || isCouncilMember);
-  const showLockups = signedIn && (isAdmin || isCouncilMember);
+  const showAlertForUser = signedIn && !(isAdmin || isCouncilMember || isDraftOperator);
+  const showLockups = signedIn && (isAdmin || isCouncilMember || isDraftOperator);
 
   return (
     <Auth>

@@ -13,6 +13,7 @@ const LOCKUP_VIEW_METHODS = [
   'get_lockups_paged',
   'get_token_account_id',
   'get_deposit_whitelist',
+  'get_draft_operators_whitelist',
 ];
 
 const LOCKUP_CHANGE_METHODS = [
@@ -33,6 +34,7 @@ type TViewMethods = {
   'get_lockups_paged': any,
   'get_token_account_id': any,
   'get_deposit_whitelist': any,
+  'get_draft_operators_whitelist': any,
 };
 
 type TChangeMethods = {
@@ -201,6 +203,10 @@ class NearApi {
 
   getDepositWhitelist(): Promise<Array<string>> {
     return (this.contract as TLockupContract).get_deposit_whitelist();
+  }
+
+  getDraftOperatorsWhitelist(): Promise<Array<string>> {
+    return this.contract.get_draft_operators_whitelist();
   }
 
   loadAllLockups(): Promise<TLockup[]> {

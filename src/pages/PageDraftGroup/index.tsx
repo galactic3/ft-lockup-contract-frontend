@@ -18,7 +18,7 @@ import DeleteDraftGroupButton from '../../components/DeleteDraftGroupButton';
 export default function PageDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
-  const draftGroupId = parseInt(useParams().draftGroupId || '', 10);
+  const draftGroupId: number = parseInt(useParams().draftGroupId || '', 10);
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [draftGroup, setDraftGroup] = useState<any>(null);
   const [drafts, setDrafts] = useState<any[]>([]);
@@ -54,7 +54,7 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
 
       console.log(methodName, successValue, args, msg, msgDraftGroupId);
 
-      const result = methodName === 'ft_transfer_call' && msgDraftGroupId && msgDraftGroupId === draftGroupId;
+      const result = methodName === 'ft_transfer_call' && msgDraftGroupId !== undefined && msgDraftGroupId === draftGroupId;
 
       if (result) {
         setIsConverted('converted');
@@ -179,6 +179,9 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
     label: convertAmount(draftGroup.total_amount, token.decimals) || '',
   };
 
+  if (!near) return null;
+  const { isAdmin } = near.currentUser;
+
   return (
     <div className="container">
       <div className="draft-group-preview-wrapper draft-group-preview-inner">
@@ -192,7 +195,7 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
         </div>
         {!draftGroup.funded && adminControls && (
           <div className="draft-group-fund-button-wrapper">
-            {!draftGroup.discarded && <FundButton draftGroupIndex={draftGroupId} amount={amount.value} /> }
+            {!draftGroup.discarded && isAdmin && <FundButton draftGroupIndex={draftGroupId} amount={amount.value} /> }
             {!draftGroup.discarded && <FundWithDaoButton draftGroupIndex={draftGroupId} amount={amount} />}
             <DeleteDraftGroupButton
               draftGroupId={draftGroup.id}

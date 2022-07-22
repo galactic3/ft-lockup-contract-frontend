@@ -51,7 +51,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
         There are no lockups yet.
         {adminControls && (
           <div>
-            Create single lockup or create batch of them via
+            {isAdmin && 'Create single lockup or create a batch of lockups via' || 'Create a batch of lockups via'}
             {' '}
             <Link to={`/${near.lockupContractId}/admin/import_draft_group`}>Draft Groups</Link>
             .

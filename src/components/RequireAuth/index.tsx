@@ -11,13 +11,15 @@ export default function RequireAuth({ children }: { children: JSX.Element }) {
     near: INearProps | null, signIn: () => void, signOut: () => void,
   } = useContext(NearContext);
   if (!near) return null;
-  const { signedIn, isAdmin, isCouncilMember } = near.currentUser;
+  const {
+    signedIn, isAdmin, isCouncilMember, isDraftOperator,
+  } = near.currentUser;
   const currentPathname = location.pathname;
   const currentContractName = location.pathname.split('/')[1];
   const currentPathWithoutContract = location.pathname.split(currentContractName)[1];
   const draftGroupURL = currentPathWithoutContract.includes('/draft');
 
-  if (!signedIn || !(isAdmin || isCouncilMember)) {
+  if (!signedIn || !(isAdmin || isCouncilMember || isDraftOperator)) {
     if (draftGroupURL) {
       return <Navigate to={currentPathname.replace(/\/admin/, '')} replace />;
     }

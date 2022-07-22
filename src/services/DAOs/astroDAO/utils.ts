@@ -5,7 +5,7 @@ import {
 import AstroDaoApi from './api';
 
 // TODO move to the .env
-const ASTRO_DAO_HOST = 'https://dev.app.astrodao.com';
+const ASTRO_DAO_HOST = 'https://testnet.app.astrodao.com';
 
 export const MAX_GAS = '300';
 export const ONE_YOKTO = '0.000000000000000000000001';

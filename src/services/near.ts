@@ -16,6 +16,7 @@ export interface INearProps {
   currentUser: {
     signedIn: boolean;
     isAdmin: boolean;
+    isDraftOperator: boolean;
     isCouncilMember: boolean;
     signedAccountId: string | null;
     daos: string[];
@@ -50,15 +51,23 @@ export const connectNear = async (): Promise<INearProps> => {
   const signedAccountId = walletConnection.getAccountId();
   let tokenContractId: string = '';
   let isAdmin: boolean = false;
+  let isDraftOperator: boolean = false;
   let depositWhitelist: string[] = [];
+  let draftOperatorsWhitelist: string[] = [];
   let daos: string[] = [];
   try {
     tokenContractId = await api.getTokenAccountId();
     depositWhitelist = await api.getDepositWhitelist();
+    draftOperatorsWhitelist = await api.getDraftOperatorsWhitelist();
     console.log('depositWhitelist', depositWhitelist);
     isAdmin = depositWhitelist.includes(signedAccountId);
     console.log('isAdmin', isAdmin);
-    const daosCouncilMembers = (await Promise.all(depositWhitelist.map((dwID):Promise<any[]> => daoCouncilMembers(walletConnection, dwID)))).filter((value) => !!value);
+    isDraftOperator = draftOperatorsWhitelist.includes(signedAccountId);
+    console.log('isDraftOperator', isDraftOperator);
+    const dcm = daoCouncilMembers;
+    console.log(dcm);
+    const daosCouncilMembers = (await Promise.all(depositWhitelist.map((dwID): Promise<any[]> => daoCouncilMembers(walletConnection, dwID)))).filter((value) => !!value);
+    console.log(daosCouncilMembers);
     const userDaosCouncils = daosCouncilMembers.filter((daoCMs) => Object.values(daoCMs).pop().includes(signedAccountId));
     if (userDaosCouncils?.length > 0) {
       daos = userDaosCouncils.map((daoCMs) => Object.keys(daoCMs).pop() || '');
@@ -101,6 +110,7 @@ export const connectNear = async (): Promise<INearProps> => {
     currentUser: {
       signedIn: !!signedAccountId,
       isAdmin,
+      isDraftOperator,
       isCouncilMember: daos.length > 0,
       signedAccountId,
       daos,

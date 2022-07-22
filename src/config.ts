@@ -8,8 +8,8 @@ export interface INearConfig {
   factoryContractName: string,
 }
 
-export const DEFAULT_CONTRACT_NAME = process.env.DEFAULT_CONTRACT_NAME || 'example.factory010.ft-lockup.testnet';
-export const FACTORY_CONTRACT_NAME = process.env.FACTORY_CONTRACT_NAME || 'factory010.ft-lockup.testnet';
+export const DEFAULT_CONTRACT_NAME = process.env.REACT_APP_DEFAULT_CONTRACT_NAME as string;
+export const FACTORY_CONTRACT_NAME = process.env.REACT_APP_FACTORY_CONTRACT_NAME as string;
 
 const getCurrentContractName = (): string => {
   const contractNameFromUrl = window.location.hash.split('/')[1];

@@ -22,6 +22,8 @@ export default function NewLockupContract() {
         // const lockupCreator: string = near.signedAccountId;
         const lockupOperators: string[] = e.target.elements.lockup_operators.value
           .split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0);
+        const draftOperators: string[] = e.target.elements.draft_operators.value
+          .split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0);
         const tokenAccountId: string = e.target.elements.token_account_id.value;
         const lockupSubaccountId: string = e.target.elements.lockup_subaccount_id.value;
 
@@ -49,6 +51,7 @@ export default function NewLockupContract() {
           lockupSubaccountId,
           tokenAccountId,
           lockupOperators,
+          draftOperators,
           `${window.location.origin + window.location.pathname}#/${lockupSubaccountId}.${FACTORY_CONTRACT_NAME}/admin/lockups`,
         );
 
@@ -103,6 +106,10 @@ export default function NewLockupContract() {
             <div className="form-row">
               <span>Lockup operators: </span>
               <input type="text" id="lockup_operators" />
+            </div>
+            <div className="form-row">
+              <span>Draft operators: </span>
+              <input type="text" id="draft_operators" />
             </div>
             <div className="form-row">
               <span>Fungible token contract address: </span>

@@ -5,7 +5,7 @@ import {
 } from 'near-api-js';
 
 const MAX_GAS = 300_000_000_000_000;
-const DEPLOY_DEPOSIT = new Big(4).mul(new Big(10).pow(24)).toString();
+const DEPLOY_DEPOSIT = new Big(10).mul(new Big(10).pow(24)).toString();
 
 const FACTORY_CHANGE_METHODS = [
   'create',
@@ -37,10 +37,17 @@ class FactoryApi {
     return this.contract;
   }
 
-  async create(name: string, tokenAccountId: string, depositWhitelist: string[], callbackUrl: string): Promise<void> {
+  async create(
+    name: string,
+    tokenAccountId: string,
+    depositWhitelist: string[],
+    draftOperatorsWhitelist: string[],
+    callbackUrl: string,
+  ): Promise<void> {
     const argsRaw = {
       token_account_id: tokenAccountId,
       deposit_whitelist: depositWhitelist,
+      draft_operators_whitelist: draftOperatorsWhitelist,
     };
     const argsPacked = JSON.stringify(argsRaw);
     const result = await this.contract.create({

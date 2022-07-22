@@ -32,6 +32,8 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
 
   if (!near) return null;
 
+  const { isAdmin } = near.currentUser;
+
   const vestingSchedule = row?.termination_config?.vesting_schedule?.Schedule;
 
   const selectedAccountPage = window.location.href.split('/').pop() === row.account_id;
@@ -59,13 +61,15 @@ export default function Row(props: { adminControls: boolean, row: ReturnType<any
     return (
       <>
         <div>
-          <TerminateLockup
-            token={token}
-            adminControls={adminControls}
-            lockupIndex={row.id}
-            config={row.termination_config}
-            buttonText={terminator ? 'Terminate' : 'No termination config'}
-          />
+          {isAdmin && (
+            <TerminateLockup
+              token={token}
+              adminControls={adminControls}
+              lockupIndex={row.id}
+              config={row.termination_config}
+              buttonText={terminator ? 'Terminate' : 'No termination config'}
+            />
+          )}
         </div>
         <div>
           <TerminateWithDaoButton
