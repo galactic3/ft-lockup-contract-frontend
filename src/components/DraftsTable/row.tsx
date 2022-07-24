@@ -14,11 +14,12 @@ import LinkIcon from '@mui/icons-material/Link';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useSnackbar } from 'notistack';
 
+import TimestampDateDisplay from '../TimestampDateDisplay';
 import Chart from '../Chart';
-import { convertAmount, convertTimestamp } from '../../utils';
+import { formatTokenAmount } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
-import TokenIcon from '../TokenIcon';
+import TokenAmountDisplay from '../TokenAmountDisplay';
 import ScheduleTable from '../ScheduleTable';
 import { chartData } from '../../services/chartHelpers';
 import { lockupTotalBalance } from '../../services/spreadsheetImport';
@@ -147,17 +148,13 @@ export default function DraftsTableRow(props: { pageIndex: number, row: ReturnTy
           {row.account_id}
         </TableCell>
         <TableCell align="right">
-          {convertTimestamp(row.schedule[0].timestamp)}
+          <TimestampDateDisplay unixSeconds={row.schedule[0].timestamp} />
         </TableCell>
         <TableCell align="right">
-          {convertTimestamp(row.schedule[row.schedule.length - 1].timestamp)}
+          <TimestampDateDisplay unixSeconds={row.schedule[row.schedule.length - 1].timestamp} />
         </TableCell>
         <TableCell align="right">
-          {convertAmount(balancesRaw.total, token.decimals)}
-          &nbsp;
-          {token.symbol}
-          &nbsp;
-          <TokenIcon url={token.icon || ''} size={32} />
+          <TokenAmountDisplay amount={balancesRaw.total} token={token} />
         </TableCell>
         {progressShow && (
         <TableCell align="center">
@@ -166,25 +163,25 @@ export default function DraftsTableRow(props: { pageIndex: number, row: ReturnTy
               <div className="progress-bar__tooltip">
                 <span>
                   <i className="claimed">&nbsp;</i>
-                  <b>{convertAmount(balancesRaw.claimed, token.decimals)}</b>
+                  <b>{formatTokenAmount(balancesRaw.claimed, token.decimals)}</b>
                   {' '}
                   Claimed
                 </span>
                 <span>
                   <i className="available">&nbsp;</i>
-                  <b>{convertAmount(balancesRaw.unclaimed, token.decimals)}</b>
+                  <b>{formatTokenAmount(balancesRaw.unclaimed, token.decimals)}</b>
                   {' '}
                   Available
                 </span>
                 <span>
                   <i className="vested">&nbsp;</i>
-                  <b>{convertAmount(balancesRaw.vested, token.decimals)}</b>
+                  <b>{formatTokenAmount(balancesRaw.vested, token.decimals)}</b>
                   {' '}
                   Vested
                 </span>
                 <span>
                   <i className="unvested">&nbsp;</i>
-                  <b>{convertAmount(balancesRaw.unvested, token.decimals)}</b>
+                  <b>{formatTokenAmount(balancesRaw.unvested, token.decimals)}</b>
                   {' '}
                   Unvested
                 </span>
@@ -215,15 +212,13 @@ export default function DraftsTableRow(props: { pageIndex: number, row: ReturnTy
         <TableCell style={{ padding: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">
-              <div style={{ display: 'flex', gap: 20 }}>
-                <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
-                {vestingSchedule && (
-                  <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
-                )}
-                <div style={{ flex: 1 }}>
-                  <div style={{ height: 300 }}>
-                    <Chart data={chartData([row], token.decimals)} />
-                  </div>
+              <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
+              {vestingSchedule && (
+                <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
+              )}
+              <div className="lockup-row-column chart">
+                <div style={{ height: 300 }}>
+                  <Chart data={chartData([row], token.decimals)} />
                 </div>
               </div>
             </div>

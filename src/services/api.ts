@@ -64,6 +64,13 @@ export type TCheckpointWithIndex = {
 
 export type TSchedule = TCheckpoint[];
 
+export type TTerminationConfig = {
+  beneficiary_id: TNearAmount,
+  vesting_schedule: {
+    Schedule: TSchedule,
+  },
+};
+
 export type TLockup = {
   id: number,
   account_id: string,
@@ -72,6 +79,7 @@ export type TLockup = {
   timestamp: TNearTimestamp,
   total_balance: TNearAmount,
   unclaimed_balance: TNearAmount,
+  termination_config: TTerminationConfig | null,
 };
 
 export type TLockupContract = Contract & TViewMethods & TChangeMethods;

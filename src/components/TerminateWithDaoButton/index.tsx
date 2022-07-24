@@ -5,13 +5,14 @@ import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 import TerminateModal from '../TerminateModal';
 import { buildTerminateLockupProposalLink } from '../../services/DAOs/astroDAO/utils';
+import { TTerminationConfig } from '../../services/api';
 
 function TerminateWithDaoButton(
   props: {
     accountId: string,
     adminControls: boolean,
     lockupIndex: number | undefined,
-    config: { beneficiary_id: String, vesting_schedule: [] | null } | null,
+    config: TTerminationConfig | null,
     token: TMetadata,
     buttonText: string,
   },

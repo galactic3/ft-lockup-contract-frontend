@@ -5,36 +5,49 @@ import {
 
 describe('interpolateRaw test', () => {
   it('test interpolate doesn\'t throw', () => {
-    interpolateRaw(1_500_000_000, 10_000, 1_700_000_000, 14_000, 1_550_000_000);
+    interpolateRaw(1_500_000_000, (10_000).toString(), 1_700_000_000, (14_000).toString(), 1_550_000_000);
   });
   it('raises error if invalid input', () => {
     expect(() => interpolateRaw(
       1_800_000_000,
-      10_000,
+      (10_000).toString(),
       1_700_000_000,
-      14_000,
+      (14_000).toString(),
       1_550_000_000,
     )).toThrow('invalid range');
     expect(() => interpolateRaw(
       1_500_000_000,
-      10_000,
+      (10_000).toString(),
       1_700_000_000,
-      14_000,
+      (14_000).toString(),
       1_450_000_000,
     )).toThrow('xM out of bound');
     expect(() => interpolateRaw(
       1_500_000_000,
-      10_000,
+      (10_000).toString(),
       1_700_000_000,
-      14_000,
+      (14_000).toString(),
       1_750_000_000,
     )).toThrow('xM out of bound');
   });
   it('returns starting value at the beginning of range', () => {
-    expect(interpolateRaw(1_500_000_000, 10_000, 1_700_000_000, 14_000, 1_500_000_000)).toStrictEqual(10_000);
+    expect(interpolateRaw(1_500_000_000, (10_000).toString(), 1_700_000_000, (14_000).toString(), 1_500_000_000))
+      .toStrictEqual((10_000).toString());
   });
   it('returns valid intermediate value', () => {
-    expect(interpolateRaw(1_500_000_000, 10_000, 1_700_000_000, 14_000, 1_550_000_000)).toStrictEqual(11_000);
+    expect(interpolateRaw(1_500_000_000, (10_000).toString(), 1_700_000_000, (14_000).toString(), 1_550_000_000))
+      .toStrictEqual((11_000).toString());
+  });
+
+  it('doesnt round less significant digits', () => {
+    expect(
+      interpolateRaw(
+        1_500_000_000, (0).toString(),
+        1_800_000_000, (1_000_000_000_000_000_000_000_000).toString(),
+        1_700_000_000,
+      )
+    )
+      .toStrictEqual(('666_666_666_666_666_666_666_666'.replaceAll('_', '')).toString());
   });
 });
 

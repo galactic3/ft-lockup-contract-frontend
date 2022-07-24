@@ -12,7 +12,6 @@ import {
 import TokenAmountPreview from '../TokenAmountPreview';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
-import { convertAmount } from '../../utils';
 
 function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   const location = useLocation();
@@ -111,8 +110,6 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
     return result.toString();
   };
 
-  const totalBalance = convertAmount(calcTotalBalance(data), token.decimals);
-
   return (
     <div className="main">
       <div className="container">
@@ -130,7 +127,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
                 {' '}
                 {parseErrors.length > 0 && (<span className="parse-error-label">{`${parseErrors.length} parse error${parseErrors.length > 1 ? 's' : ''}`}</span>)}
               </h5>
-              <TokenAmountPreview token={token} amount={totalBalance} />
+              <TokenAmountPreview amount={calcTotalBalance(data)} token={token} />
             </div>
           </div>
 

@@ -1,7 +1,7 @@
 import {
   TSchedule, TNearTimestamp, TNearAmount, TCheckpoint,
 } from './api';
-import { convertAmount } from '../utils';
+import { formatTokenAmount } from '../utils';
 import { sumSchedules } from './scheduleHelpers';
 
 const buildVestedSchedule = (from: TNearTimestamp, balance: TNearAmount) => [
@@ -37,7 +37,7 @@ export const chartData = (lockupsList: any[], tokenDecimals: number): any => {
     sumVesting.push(sumLockup[sumLockup.length - 1]);
   }
 
-  const convertSchedule = (schedule: TSchedule, decimals: number) => schedule.map((s: TCheckpoint) => [s.timestamp * 1000, convertAmount(s.balance, decimals)]);
+  const convertSchedule = (schedule: TSchedule, decimals: number) => schedule.map((s: TCheckpoint) => [s.timestamp * 1000, formatTokenAmount(s.balance, decimals)]);
 
   return {
     unlocked: lockupsList.length ? convertSchedule(sumLockup, tokenDecimals) : [],

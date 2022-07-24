@@ -8,8 +8,7 @@ import {
 import { TSchedule } from '../../services/api';
 import { TMetadata } from '../../services/tokenApi';
 import TimestampDisplay from '../TimestampDisplay';
-import { convertAmount } from '../../utils';
-import TokenIcon from '../TokenIcon';
+import TokenAmountDisplay from '../TokenAmountDisplay';
 
 export default function ScheduleTable(params: { token: TMetadata, title: String, schedule: TSchedule }) {
   const { schedule, title, token } = params;
@@ -34,11 +33,7 @@ export default function ScheduleTable(params: { token: TMetadata, title: String,
               </TableCell>
               <TableCell align="right">
                 <div className="nowrap">
-                  {convertAmount(x.balance, token.decimals)}
-                  &nbsp;
-                  {token.symbol}
-                  &nbsp;
-                  <TokenIcon url={token.icon || ''} size={32} />
+                  <TokenAmountDisplay amount={x.balance} token={token} />
                 </div>
               </TableCell>
             </TableRow>

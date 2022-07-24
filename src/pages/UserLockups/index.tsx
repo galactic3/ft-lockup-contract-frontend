@@ -7,10 +7,11 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import Big from 'big.js';
+
 import Row from '../../components/table/row';
 import ClaimAllLockups from '../../components/Claim';
 import { TMetadata } from '../../services/tokenApi';
-import { convertAmount } from '../../utils';
 
 export default function UserLockups({ lockups: allLockups, token, adminControls }: { lockups: any[], token: TMetadata, adminControls: boolean }) {
   const { userId, id } = useParams();
@@ -23,7 +24,7 @@ export default function UserLockups({ lockups: allLockups, token, adminControls 
     return x.account_id === userId || x.id.toString() === userId;
   });
 
-  const totalUnclaimedBalance = lockups.reduce((acc, obj) => acc + parseFloat(obj.unclaimed_balance), 0);
+  const totalUnclaimedBalance: string = lockups.reduce((acc, obj) => new Big(acc).add(obj.unclaimed_balance), '0');
 
   console.log('user lockups', userId, lockups);
 
@@ -31,7 +32,7 @@ export default function UserLockups({ lockups: allLockups, token, adminControls 
     <div className="main">
       <div className="container">
 
-        {!adminControls && <ClaimAllLockups accountId={userId} token={token} total={convertAmount(totalUnclaimedBalance, token.decimals)} />}
+        {!adminControls && <ClaimAllLockups accountId={userId} token={token} total={totalUnclaimedBalance} />}
 
         <TableContainer sx={{ boxShadow: 'unset' }}>
           <Table className="main-table" aria-label="collapsible table">

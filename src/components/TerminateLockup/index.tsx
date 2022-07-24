@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 
 import { useSnackbar } from 'notistack';
 import Big from 'big.js';
+import { TTerminationConfig } from '../../services/api';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 import TerminateModal from '../TerminateModal';
@@ -11,7 +12,7 @@ function TerminateLockup(
   props: {
     adminControls: boolean,
     lockupIndex: number | undefined,
-    config: { beneficiary_id: String, vesting_schedule: [] | null } | null,
+    config: TTerminationConfig | null,
     token: TMetadata,
     buttonText: string,
   },

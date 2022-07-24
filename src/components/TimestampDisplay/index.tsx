@@ -16,7 +16,7 @@ export default function TimestampDisplay(props: { unixSeconds: number }) {
   const formatted = `${year}-${month}-${monthDay} ${hours}:${minutes}:${seconds} UTC`;
 
   return (
-    <span className="timestamp-display">
+    <span className="timestamp-display" title={unixSeconds.toString()}>
       {formatted}
     </span>
   );

@@ -8,7 +8,6 @@ import { LoadingButton } from '@mui/lab';
 
 import DraftsTable from '../../components/DraftsTable';
 import { TMetadata } from '../../services/tokenApi';
-import { convertAmount } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import TokenAmountPreview from '../../components/TokenAmountPreview';
 import FundButton from '../../components/FundButton';
@@ -174,11 +173,6 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
     );
   }
 
-  const amount = {
-    value: draftGroup.total_amount,
-    label: convertAmount(draftGroup.total_amount, token.decimals) || '',
-  };
-
   if (!near) return null;
   const { isAdmin } = near.currentUser;
 
@@ -191,12 +185,12 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
             {' '}
             {draftGroup.discarded && (<span className="discarded-marker">DISCARDED</span>)}
           </h5>
-          <TokenAmountPreview token={token} amount={amount.label} />
+          <TokenAmountPreview token={token} amount={draftGroup.total_amount} />
         </div>
         {!draftGroup.funded && adminControls && (
           <div className="draft-group-fund-button-wrapper">
-            {!draftGroup.discarded && isAdmin && <FundButton draftGroupIndex={draftGroupId} amount={amount.value} /> }
-            {!draftGroup.discarded && <FundWithDaoButton draftGroupIndex={draftGroupId} amount={amount} />}
+            {!draftGroup.discarded && isAdmin && <FundButton draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} /> }
+            {!draftGroup.discarded && <FundWithDaoButton draftGroupIndex={draftGroupId} amount={draftGroup.total_amount} token={token} />}
             <DeleteDraftGroupButton
               draftGroupId={draftGroup.id}
               draftIds={draftGroup.draft_indices}

@@ -1,7 +1,7 @@
 import { Big } from 'big.js';
 import { TCheckpoint, TNearTimestamp, TSchedule } from './api';
 
-export const interpolateRaw = (x0: number, y0: number, x1: number, y1: number, xM: number) : Number => {
+export const interpolateRaw = (x0: number, y0: string, x1: number, y1: string, xM: number) : string => {
   if (x1 <= x0) {
     throw new Error('invalid range');
   }
@@ -9,21 +9,25 @@ export const interpolateRaw = (x0: number, y0: number, x1: number, y1: number, x
     throw new Error('xM out of bound');
   }
 
-  const yM = y0 + (y1 - y0) * (xM - x0) / (x1 - x0);
+  const yM = new Big(y0).add(
+    (new Big(y1).sub(new Big(y0)))
+      .mul(new Big(xM.toString()).sub(new Big(x0.toString())))
+      .div(new Big(x1.toString()).sub(new Big(x0.toString()))),
+  );
 
-  return yM;
+  return yM.toFixed(0, Big.roundDown);
 };
 
 export const interpolate = (checkpoint0: TCheckpoint, checkpoint1: TCheckpoint, timestamp: TNearTimestamp) : TCheckpoint => {
   const balance = interpolateRaw(
     checkpoint0.timestamp,
-    parseFloat(checkpoint0.balance),
+    checkpoint0.balance,
     checkpoint1.timestamp,
-    parseFloat(checkpoint1.balance),
+    checkpoint1.balance,
     timestamp,
   );
 
-  return { timestamp, balance: new Big(balance.toString()).toFixed() };
+  return { timestamp, balance };
 };
 
 export const interpolateSchedule = (schedule: TCheckpoint[], timestamp: TNearTimestamp) : TCheckpoint => {

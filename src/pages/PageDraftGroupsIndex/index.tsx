@@ -10,7 +10,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
-import { convertAmount } from '../../utils';
+import { formatTokenAmount } from '../../utils';
 import TokenIcon from '../../components/TokenIcon';
 import DeleteDraftGroupButton from '../../components/DeleteDraftGroupButton';
 
@@ -84,7 +84,7 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
                 <TableCell align="center">{group.funded ? 'Yes' : 'No'}</TableCell>
                 <TableCell align="center">{group.draft_indices.length}</TableCell>
                 <TableCell align="right">
-                  {convertAmount(group.total_amount, token.decimals)}
+                  {formatTokenAmount(group.total_amount, token.decimals)}
                 &nbsp;
                   {token.symbol}
                 &nbsp;

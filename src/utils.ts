@@ -24,8 +24,10 @@ export const nearToFloor = (
 ) => nearTo(value, digits, Big.roundDown);
 export const big = (value = '0') => Big(value);
 export const tsNear2JS = (time: number) => Math.floor(time / 1000000);
-export const convertTimestamp = (time: number) => new Date(time * 1000).toLocaleDateString('en-US');
-export const convertAmount = (value: number | string, decimals: number) => Big(value || '0').div(10 ** decimals).toFixed(NEAR_ROUND_DIGITS);
+
+// formats token amount, always two digits after comma, fixed, no group separators
+export const formatTokenAmount = (value: string, tokenDecimals: number) => new Big(value).div(10 ** tokenDecimals).toFixed(NEAR_ROUND_DIGITS, Big.roundDown);
+
 // @ts-ignore
 export const addYear = (date: Date, year: number) => new Date(new Date(date).setFullYear((date.getFullYear()) + year)).getTime() / 1000;
 export const startOfDay = (date: Date) => {
