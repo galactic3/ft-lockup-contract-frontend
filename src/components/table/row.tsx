@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Big } from 'big.js';
 
 import TimestampDateDisplay from '../TimestampDateDisplay';
@@ -24,6 +24,9 @@ import ScheduleTable from '../ScheduleTable';
 import { chartData } from '../../services/chartHelpers';
 
 export default function Row(props: { adminControls: boolean, row: TLockup, token: TMetadata }) {
+  const location = useLocation();
+  const currentContractName = location.pathname.split('/')[1];
+
   const [open, setOpen] = useState(false);
   const { adminControls, row, token } = props;
   const {
@@ -101,10 +104,10 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
           </IconButton>
         </TableCell>
         <TableCell align="left">
-          {!selectedLockupId ? <Link to={`${row.id}`}>{row.id}</Link> : row.id}
+          {!selectedLockupId ? <Link to={`/${currentContractName}${adminControls ? '/admin' : ''}/lockups/${row.account_id}/${row.id}`}>{row.id}</Link> : row.id}
         </TableCell>
         <TableCell align="left">
-          {!selectedAccountPage && !selectedLockupId ? <Link to={row.account_id}>{row.account_id}</Link> : row.account_id}
+          {!selectedAccountPage ? <Link to={`/${currentContractName}${adminControls ? '/admin' : ''}/lockups/${row.account_id}`}>{row.account_id}</Link> : row.account_id}
         </TableCell>
         <TableCell align="right">
           <TimestampDateDisplay unixSeconds={row.schedule[0].timestamp} />

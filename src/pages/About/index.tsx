@@ -1,8 +1,12 @@
 import { config } from '../../config';
 
+import useTitle from '../../services/useTitle';
+
 export default function About(
   { lockups, token_account_id }: { lockups: any[], token_account_id: string | null },
 ) {
+  useTitle('About | FT Lockup', { restoreOnUnmount: true });
+
   return (
     <div className="container">
       <h1>Fungible Token Lockup</h1>

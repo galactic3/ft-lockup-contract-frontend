@@ -9,6 +9,7 @@ import Chart from '../../components/Chart';
 import CreateLockup from '../../components/CreateLockup';
 import LockupsTable from '../../components/LockupsTable';
 import { INearProps, NearContext } from '../../services/near';
+import useTitle from '../../services/useTitle';
 import { TMetadata } from '../../services/tokenApi';
 import FavouriteAccounts from '../../components/FavouriteAccounts';
 import { chartData } from '../../services/chartHelpers';
@@ -16,6 +17,8 @@ import { chartData } from '../../services/chartHelpers';
 type TToken = TMetadata & { contractId: string };
 
 export default function Lockups({ lockups, token, adminControls }: { lockups: any[], token: TToken, adminControls: boolean }) {
+  useTitle('Lockups | FT Lockup', { restoreOnUnmount: true });
+
   const uniqueUsers = Array.from(new Set(lockups.map((x) => x.account_id)));
 
   const {

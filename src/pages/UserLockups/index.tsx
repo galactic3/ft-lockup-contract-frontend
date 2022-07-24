@@ -9,12 +9,14 @@ import {
 } from '@mui/material';
 import Big from 'big.js';
 
+import useTitle from '../../services/useTitle';
 import Row from '../../components/table/row';
 import ClaimAllLockups from '../../components/Claim';
 import { TMetadata } from '../../services/tokenApi';
 
 export default function UserLockups({ lockups: allLockups, token, adminControls }: { lockups: any[], token: TMetadata, adminControls: boolean }) {
   const { userId, id } = useParams();
+  useTitle(`Lockup${id ? ` #${id}` : 's'} for ${userId} | FT Lockup`, { restoreOnUnmount: true });
 
   const lockups = allLockups.filter((x) => {
     if (id) {
