@@ -5,6 +5,7 @@ import { useSnackbar } from 'notistack';
 import Big from 'big.js';
 
 import { LoadingButton } from '@mui/lab';
+import useTitle from '../../services/useTitle';
 import DraftsTable from '../DraftsTable';
 import {
   parseRawSpreadsheetInputWithErrors, TLockupOrError, Lockup, lockupTotalBalance,
@@ -14,6 +15,8 @@ import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 
 function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
+  useTitle('Import draft group | FT Lockup', { restoreOnUnmount: true });
+
   const location = useLocation();
   const { near }: { near: INearProps | null } = useContext(NearContext);
 

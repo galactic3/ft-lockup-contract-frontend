@@ -3,10 +3,13 @@ import { Link } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { useSnackbar } from 'notistack';
 
+import useTitle from '../../services/useTitle';
 import { FACTORY_CONTRACT_NAME } from '../../config';
 import { INearProps, NearContext } from '../../services/near';
 
 export default function NewLockupContract() {
+  useTitle('Create Lockup Contract | FT Lockup', { restoreOnUnmount: true });
+
   const { enqueueSnackbar } = useSnackbar();
   const { near, signIn }: { near: INearProps | null, signIn: () => void } = useContext(NearContext);
 

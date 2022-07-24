@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 
+import useTitle from '../../services/useTitle';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import { formatTokenAmount } from '../../utils';
@@ -15,6 +16,8 @@ import TokenIcon from '../../components/TokenIcon';
 import DeleteDraftGroupButton from '../../components/DeleteDraftGroupButton';
 
 export default function PageDraftGroupsIndex({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
+  useTitle('Draft Groups | FT Lockup', { restoreOnUnmount: true });
+
   const location = useLocation();
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [draftGroups, setDraftGroups] = useState<any[]>([]);

@@ -2,11 +2,15 @@ import { Box, InputAdornment, TextField } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChangeEvent, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
+
+import useTitle from '../../services/useTitle';
 import { DEFAULT_CONTRACT_NAME } from '../../config';
 
 export default function Homepage(
   { lockups }: { lockups: any[] },
 ) {
+  useTitle('Welcome | FT Lockup', { restoreOnUnmount: true });
+
   const [address, setAddress] = useState(DEFAULT_CONTRACT_NAME);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
