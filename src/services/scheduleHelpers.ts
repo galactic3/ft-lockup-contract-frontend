@@ -18,6 +18,23 @@ export const interpolateRaw = (x0: number, y0: string, x1: number, y1: string, x
   return yM.toFixed(0, Big.roundDown);
 };
 
+export const interpolateRawAtY = (x0: number, y0: string, x1: number, y1: string, yM: string) : TNearTimestamp => {
+  if (x1 <= x0) {
+    throw new Error('invalid range');
+  }
+  if (new Big(yM).lt(new Big(y0)) || new Big(yM).gte(y1)) {
+    throw new Error('yM out of bound');
+  }
+
+  const xM = new Big(x0).add(
+    (new Big(x1).sub(new Big(x0)))
+      .mul(new Big(yM.toString()).sub(new Big(y0.toString())))
+      .div(new Big(y1.toString()).sub(new Big(y0.toString()))),
+  );
+
+  return parseInt(xM.toFixed(0, Big.roundUp));
+};
+
 export const interpolate = (checkpoint0: TCheckpoint, checkpoint1: TCheckpoint, timestamp: TNearTimestamp) : TCheckpoint => {
   const balance = interpolateRaw(
     checkpoint0.timestamp,

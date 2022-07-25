@@ -1,6 +1,6 @@
 import {
   interpolate, interpolateRaw, interpolateSchedule, sumSchedules,
-  assertValidTerminationSchedule, terminateSchedule,
+  assertValidTerminationSchedule, terminateSchedule, interpolateRawAtY,
 } from './scheduleHelpers';
 
 describe('interpolateRaw test', () => {
@@ -48,6 +48,56 @@ describe('interpolateRaw test', () => {
       )
     )
       .toStrictEqual(('666_666_666_666_666_666_666_666'.replaceAll('_', '')).toString());
+  });
+});
+
+describe('interpolateRawAtY test', () => {
+  it('test interpolate doesnt throw', () => {
+    interpolateRawAtY(1_500_000_000, (10_000).toString(), 1_700_000_000, (14_000).toString(), (11_000).toString());
+  });
+  it('raises error if invalid input', () => {
+    expect(() => interpolateRawAtY(
+      1_800_000_000,
+      (10_000).toString(),
+      1_700_000_000,
+      (14_000).toString(),
+      (11_000).toString(),
+    )).toThrow('invalid range');
+    expect(() => interpolateRawAtY(
+      1_500_000_000,
+      (10_000).toString(),
+      1_700_000_000,
+      (14_000).toString(),
+      (9_000).toString(),
+    )).toThrow('yM out of bound');
+    expect(() => interpolateRawAtY(
+      1_500_000_000,
+      (10_000).toString(),
+      1_700_000_000,
+      (14_000).toString(),
+      (15_000).toString(),
+    )).toThrow('yM out of bound');
+  });
+  it('returns starting value at the beginning of range', () => {
+    expect(interpolateRawAtY(
+      1_500_000_000, (10_000).toString(), 1_700_000_000, (14_000).toString(), (10_000).toString())
+    ).toStrictEqual(1_500_000_000);
+  });
+  it('returns valid intermediate value', () => {
+    expect(interpolateRawAtY(
+      1_500_000_000, (10_000).toString(), 1_700_000_000, (14_000).toString(), (11_000).toString())
+    ).toStrictEqual(1_550_000_000);
+  });
+
+  it('doesnt round less significant digits', () => {
+    expect(
+      interpolateRawAtY(
+        1_500_000_000, (0).toString(),
+        1_600_000_000, '3_000_000_000_000_000_000_000_000'.replaceAll('_', ''),
+        '1_000_000_000_000_000_000_000_000'.replaceAll('_', ''),
+      )
+    )
+      .toStrictEqual(1_533_333_334);
   });
 });
 
