@@ -32,7 +32,7 @@ export const interpolateRawAtY = (x0: number, y0: string, x1: number, y1: string
       .div(new Big(y1.toString()).sub(new Big(y0.toString()))),
   );
 
-  return parseInt(xM.toFixed(0, Big.roundUp));
+  return parseInt(xM.toFixed(0, Big.roundUp), 10);
 };
 
 export const interpolate = (checkpoint0: TCheckpoint, checkpoint1: TCheckpoint, timestamp: TNearTimestamp) : TCheckpoint => {
@@ -145,11 +145,11 @@ export const terminateSchedule = (schedule: TSchedule, timestamp: TNearTimestamp
 
   const result = [];
 
-  for (let i = 0; i < schedule.length - 1; i++) {
+  for (let i = 0; i < schedule.length - 1; i += 1) {
     result.push(schedule[i]);
 
     if (timestamp < schedule[i + 1].timestamp) {
-      let finishCheckpoint = interpolate(schedule[i], schedule[i + 1], timestamp);
+      const finishCheckpoint = interpolate(schedule[i], schedule[i + 1], timestamp);
       result.push(finishCheckpoint);
       return result;
     }
@@ -181,11 +181,11 @@ export const terminateScheduleAtAmount = (schedule: TSchedule, amount: string, f
 
   const result = [];
 
-  for (let i = 0; i < schedule.length - 1; i++) {
+  for (let i = 0; i < schedule.length - 1; i += 1) {
     result.push(schedule[i]);
 
     if (new Big(amount).lt(new Big(schedule[i + 1].balance))) {
-      let finishCheckpoint = interpolateAtY(schedule[i], schedule[i + 1], amount);
+      const finishCheckpoint = interpolateAtY(schedule[i], schedule[i + 1], amount);
       result.push(finishCheckpoint);
       return result;
     }

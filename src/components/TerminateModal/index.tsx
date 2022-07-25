@@ -16,7 +16,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import TokenAmountDisplay from '../TokenAmountDisplay';
-import { interpolateSchedule } from '../../services/scheduleHelpers';
+import { interpolateSchedule, terminateScheduleAtAmount, terminateSchedule } from '../../services/scheduleHelpers';
 import DaoSelector from '../WithDao/DaoSelector';
 import DaoProposalDescription from '../WithDao/DaoProposalDescription';
 import UTCDateTimePicker from '../UTCDateTimePicker';
@@ -71,11 +71,23 @@ export function TerminateModal({
   const now = (dialog.dateTimePicker.currentState.value || new Date()).getTime() / 1_000;
   const vestedAmount: string = interpolateSchedule(vestingSchedule, now).balance;
 
+  const trimmedLockupSchedule = terminateScheduleAtAmount(lockup.schedule, vestedAmount, 0);
+  const trimmedVestingSchedule = terminateSchedule(vestingSchedule, now);
+
+  const patchedLockup = {
+    schedule: trimmedLockupSchedule,
+    termination_config: {
+      vesting_schedule: {
+        Schedule: trimmedVestingSchedule,
+      },
+    },
+  };
+
   return (
     <Dialog open={currentState.value} sx={{ padding: 2 }} maxWidth="md" onClose={handlers.onClose}>
       <form className="form-submit">
         <div style={{ height: 300 }}>
-          <Chart data={chartData([lockup], token.decimals)} />
+          <Chart data={chartData([patchedLockup], token.decimals)} />
         </div>
         <DialogTitle>
           Terminate Lockup
