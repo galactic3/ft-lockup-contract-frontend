@@ -3,9 +3,9 @@ import { useLocation } from 'react-router-dom';
 
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
-import TerminateModal from '../TerminateModal';
+import { TerminateModal } from '../TerminateModal';
 import { buildTerminateLockupProposalLink } from '../../services/DAOs/astroDAO/utils';
-import { TTerminationConfig } from '../../services/api';
+import { TTerminationConfig, TLockup, TSchedule } from '../../services/api';
 
 function TerminateWithDaoButton(
   props: {
@@ -15,6 +15,7 @@ function TerminateWithDaoButton(
     config: TTerminationConfig | null,
     token: TMetadata,
     buttonText: string,
+    lockup: TLockup,
   },
 ) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
@@ -23,7 +24,9 @@ function TerminateWithDaoButton(
     adminControls,
     lockupIndex,
     config,
+    token,
     buttonText,
+    lockup,
   } = props;
 
   const [date, setDate] = useState<Date | null>(null);
@@ -64,11 +67,17 @@ function TerminateWithDaoButton(
 
   const canTerminate = adminControls && config;
 
+  if (!lockup?.termination_config?.vesting_schedule?.Schedule) {
+    console.log('lockup doesnt have termination config');
+    return null;
+  }
   const modalProps = {
     currentState: {
       value: open,
       setValue: setOpen,
     },
+    schedule: lockup.schedule,
+    vestingSchedule: lockup?.termination_config?.vesting_schedule?.Schedule as TSchedule,
     handlers: {
       onClose: handleClose,
       onSubmit: handleTerminate,
@@ -93,6 +102,7 @@ function TerminateWithDaoButton(
         },
       },
     },
+    token,
   };
 
   return (

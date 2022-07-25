@@ -15,10 +15,14 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
+import TokenAmountDisplay from '../TokenAmountDisplay';
+import { interpolateSchedule } from '../../services/scheduleHelpers';
 import DaoSelector from '../WithDao/DaoSelector';
 import DaoProposalDescription from '../WithDao/DaoProposalDescription';
 import UTCDateTimePicker from '../UTCDateTimePicker';
 import { startOfDay, addDays } from '../../utils';
+import { TSchedule } from '../../services/api';
+import { TMetadata } from '../../services/tokenApi';
 
 type TUIElement<Ctype> = {
   currentState: {
@@ -27,11 +31,13 @@ type TUIElement<Ctype> = {
   },
 };
 
-type TProps = {
+export type TProps = {
   currentState: {
     value: boolean,
     setValue: any,
   },
+  schedule: TSchedule,
+  vestingSchedule: TSchedule,
   handlers: {
     onClose: any,
     onSubmit: any,
@@ -41,13 +47,25 @@ type TProps = {
     daoSelector?: TUIElement<string>,
     daoProposalDescription?: TUIElement<string>,
   },
+  token: TMetadata,
 };
 
-function TerminateModal({ currentState, handlers, dialog }: TProps) {
+export function TerminateModal({
+  currentState,
+  schedule,
+  vestingSchedule,
+  handlers,
+  dialog,
+  token,
+}: TProps) {
+  console.log(schedule);
   const [terminationMode, setTerminationMode] = useState<string>(
     dialog.dateTimePicker.currentState.value ? 'with_timestamp' : 'now',
   );
   const calcDefaultTimestamp = () => addDays(startOfDay(new Date()), 1);
+
+  const now = (dialog.dateTimePicker.currentState.value || new Date()).getTime() / 1_000;
+  const vestedAmount: string = interpolateSchedule(vestingSchedule, now).balance;
 
   return (
     <Dialog open={currentState.value} sx={{ padding: 2 }} maxWidth="xs" onClose={handlers.onClose}>
@@ -99,6 +117,14 @@ function TerminateModal({ currentState, handlers, dialog }: TProps) {
               />
             )}
           </LocalizationProvider>
+          <div className="vested-amount-info">
+            <div style={{ lineHeight: '30px' }}>
+              Vested amount:
+            </div>
+            <div>
+              <TokenAmountDisplay amount={vestedAmount} token={token} />
+            </div>
+          </div>
           { dialog?.daoSelector && (
             <DaoSelector
               selectedAddress={dialog.daoSelector.currentState.value}
@@ -126,5 +152,3 @@ function TerminateModal({ currentState, handlers, dialog }: TProps) {
     </Dialog>
   );
 }
-
-export default TerminateModal;

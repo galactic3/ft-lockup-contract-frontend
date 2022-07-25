@@ -74,6 +74,7 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
               lockupIndex={row.id}
               config={row.termination_config}
               buttonText={terminator ? 'Terminate' : 'No termination config'}
+              lockup={row}
             />
           )}
         </div>
@@ -85,6 +86,7 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
             lockupIndex={row.id}
             config={row.termination_config}
             buttonText={terminator ? 'Terminate with Dao' : 'No termination config'}
+            lockup={row}
           />
         </div>
       </>

@@ -628,3 +628,10 @@ span.timestamp-date-display {
 .nowrap {
   white-space: nowrap;
 }
+
+div.vested-amount-info {
+  display: flex;
+  justify-content: space-between;
+  vertical-align: middle;
+  margin-bottom: 20px;
+}
