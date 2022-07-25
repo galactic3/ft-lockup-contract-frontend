@@ -1,6 +1,6 @@
 import {
   interpolate, interpolateRaw, interpolateSchedule, sumSchedules,
-  assertValidTerminationSchedule,
+  assertValidTerminationSchedule, terminateSchedule,
 } from './scheduleHelpers';
 
 describe('interpolateRaw test', () => {
@@ -324,5 +324,50 @@ describe('assertValidTerminationSchedule', () => {
     ];
 
     expect(() => assertValidTerminationSchedule(lockupSchedule, vestingSchedule3)).toThrow(error);
+  });
+});
+
+describe('terminateSchedule', () => {
+  const schedule = [
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_600_000_000, balance: '20000' },
+    { timestamp: 1_700_000_000, balance: '30000' },
+  ];
+
+  it('before schedule', () => {
+    expect(terminateSchedule(schedule, 1_400_000_000)).toStrictEqual([
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_500_000_001, balance: '0' },
+    ]);
+  });
+
+  it('intermediate first segment', () => {
+    expect(terminateSchedule(schedule, 1_525_000_000)).toStrictEqual([
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_525_000_000, balance: '5000' },
+    ]);
+  });
+
+  it('midpoint', () => {
+    expect(terminateSchedule(schedule, 1_600_000_000)).toStrictEqual([
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_600_000_000, balance: '20000' },
+    ]);
+  });
+
+  it('intermediate second segment', () => {
+    expect(terminateSchedule(schedule, 1_625_000_000)).toStrictEqual([
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_600_000_000, balance: '20000' },
+      { timestamp: 1_625_000_000, balance: '22500' },
+    ]);
+  });
+
+  it('after schedule end', () => {
+    expect(terminateSchedule(schedule, 1_750_000_000)).toStrictEqual([
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_600_000_000, balance: '20000' },
+      { timestamp: 1_700_000_000, balance: '30000' },
+    ]);
   });
 });

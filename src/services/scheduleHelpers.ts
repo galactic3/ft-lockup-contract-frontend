@@ -97,3 +97,39 @@ export const assertValidTerminationSchedule = (lockupSchedule: TSchedule, vestin
     }
   });
 };
+
+export const terminateSchedule = (schedule: TSchedule, timestamp: TNearTimestamp) => {
+  if (schedule.length === 0) {
+    throw new Error('empty schedule');
+  }
+
+  if (timestamp <= schedule[0].timestamp) {
+    return [
+      schedule[0],
+      { timestamp: schedule[0].timestamp + 1, balance: schedule[0].balance },
+    ];
+  }
+
+  if (timestamp >= schedule[schedule.length - 1].timestamp) {
+    return schedule.slice(0, schedule.length);
+  }
+
+  const result = [];
+
+  for (let i = 0; i < schedule.length - 1; i++) {
+    result.push(schedule[i]);
+
+    if (timestamp < schedule[i + 1].timestamp) {
+      let finishCheckpoint = interpolate(schedule[i], schedule[i + 1], timestamp);
+      result.push(finishCheckpoint);
+      return result;
+    }
+
+    if (timestamp === schedule[i + 1].timestamp) {
+      result.push(schedule[i + 1]);
+      return result;
+    }
+  }
+
+  throw new Error('unreachable');
+};
