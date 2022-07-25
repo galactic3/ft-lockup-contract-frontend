@@ -6,7 +6,7 @@ export default function TimestampDisplay(props: { unixSeconds: number }) {
   const pad = (input: number | string, width: number) => input.toString().padStart(width, '0');
 
   const year = pad(date.getUTCFullYear(), 4);
-  const month = pad(date.getUTCMonth(), 2);
+  const month = pad(date.getUTCMonth() + 1, 2);
   const monthDay = pad(date.getUTCDate(), 2);
 
   const hours = pad(date.getUTCHours(), 2);
