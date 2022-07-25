@@ -47,6 +47,18 @@ export const interpolate = (checkpoint0: TCheckpoint, checkpoint1: TCheckpoint, 
   return { timestamp, balance };
 };
 
+export const interpolateAtY = (checkpoint0: TCheckpoint, checkpoint1: TCheckpoint, balance: string) : TCheckpoint => {
+  const timestamp = interpolateRawAtY(
+    checkpoint0.timestamp,
+    checkpoint0.balance,
+    checkpoint1.timestamp,
+    checkpoint1.balance,
+    balance,
+  );
+
+  return { timestamp, balance };
+};
+
 export const interpolateSchedule = (schedule: TCheckpoint[], timestamp: TNearTimestamp) : TCheckpoint => {
   if (schedule.length === 0) {
     throw new Error('empty schedule');
@@ -143,6 +155,42 @@ export const terminateSchedule = (schedule: TSchedule, timestamp: TNearTimestamp
     }
 
     if (timestamp === schedule[i + 1].timestamp) {
+      result.push(schedule[i + 1]);
+      return result;
+    }
+  }
+
+  throw new Error('unreachable');
+};
+
+export const terminateScheduleAtAmount = (schedule: TSchedule, amount: string, finishTimestamp: TNearTimestamp) => {
+  if (schedule.length === 0) {
+    throw new Error('empty schedule');
+  }
+
+  if (new Big(amount).eq(new Big('0'))) {
+    return [
+      schedule[0],
+      { timestamp: Math.max(schedule[0].timestamp + 1, finishTimestamp), balance: schedule[0].balance },
+    ];
+  }
+
+  if (new Big(amount).gte(new Big(schedule[schedule.length - 1].balance))) {
+    return schedule.slice(0, schedule.length);
+  }
+
+  const result = [];
+
+  for (let i = 0; i < schedule.length - 1; i++) {
+    result.push(schedule[i]);
+
+    if (new Big(amount).lt(new Big(schedule[i + 1].balance))) {
+      let finishCheckpoint = interpolateAtY(schedule[i], schedule[i + 1], amount);
+      result.push(finishCheckpoint);
+      return result;
+    }
+
+    if (new Big(amount).eq(new Big(schedule[i + 1].balance))) {
       result.push(schedule[i + 1]);
       return result;
     }

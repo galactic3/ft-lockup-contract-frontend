@@ -1,6 +1,7 @@
 import {
   interpolate, interpolateRaw, interpolateSchedule, sumSchedules,
   assertValidTerminationSchedule, terminateSchedule, interpolateRawAtY,
+  interpolateAtY, terminateScheduleAtAmount,
 } from './scheduleHelpers';
 
 describe('interpolateRaw test', () => {
@@ -107,6 +108,16 @@ describe('interpolate test', () => {
       { timestamp: 1_500_000_000, balance: '10000' },
       { timestamp: 1_700_000_000, balance: '14000' },
       1_550_000_000,
+    )).toStrictEqual({ timestamp: 1_550_000_000, balance: '11000' });
+  });
+});
+
+describe('interpolateAtY test', () => {
+  it('returns valid intermediate value', () => {
+    expect(interpolateAtY(
+      { timestamp: 1_500_000_000, balance: '10000' },
+      { timestamp: 1_700_000_000, balance: '14000' },
+      '11000',
     )).toStrictEqual({ timestamp: 1_550_000_000, balance: '11000' });
   });
 });
@@ -418,6 +429,78 @@ describe('terminateSchedule', () => {
       { timestamp: 1_500_000_000, balance: '0' },
       { timestamp: 1_600_000_000, balance: '20000' },
       { timestamp: 1_700_000_000, balance: '30000' },
+    ]);
+  });
+});
+
+describe('terminateScheduleAtAmount', () => {
+  const schedule = [
+    { timestamp: 1_400_000_000, balance: '0' },
+    { timestamp: 1_500_000_000, balance: '0' },
+    { timestamp: 1_600_000_000, balance: '20000' },
+    { timestamp: 1_700_000_000, balance: '30000' },
+  ];
+
+  it('before schedule', () => {
+    expect(terminateScheduleAtAmount(schedule, '0', 1_350_000_000)).toStrictEqual([
+      { timestamp: 1_400_000_000, balance: '0' },
+      { timestamp: 1_400_000_001, balance: '0' },
+    ]);
+  });
+
+  it('before schedule', () => {
+    expect(terminateScheduleAtAmount(schedule, '0', 1_450_000_000)).toStrictEqual([
+      { timestamp: 1_400_000_000, balance: '0' },
+      { timestamp: 1_450_000_000, balance: '0' },
+    ]);
+  });
+
+  it('intermediate first segment', () => {
+    expect(terminateScheduleAtAmount(schedule, '5000', 1234567890)).toStrictEqual([
+      { timestamp: 1_400_000_000, balance: '0' },
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_525_000_000, balance: '5000' },
+    ]);
+  });
+
+  it('midpoint', () => {
+    expect(terminateScheduleAtAmount(schedule, '20000', 1234567890)).toStrictEqual([
+      { timestamp: 1_400_000_000, balance: '0' },
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_600_000_000, balance: '20000' },
+    ]);
+  });
+
+  it('intermediate second segment', () => {
+    expect(terminateScheduleAtAmount(schedule, '22500', 123456789)).toStrictEqual([
+      { timestamp: 1_400_000_000, balance: '0' },
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_600_000_000, balance: '20000' },
+      { timestamp: 1_625_000_000, balance: '22500' },
+    ]);
+  });
+
+  it('after schedule end', () => {
+    expect(terminateSchedule(schedule, 1_750_000_000)).toStrictEqual([
+      { timestamp: 1_400_000_000, balance: '0' },
+      { timestamp: 1_500_000_000, balance: '0' },
+      { timestamp: 1_600_000_000, balance: '20000' },
+      { timestamp: 1_700_000_000, balance: '30000' },
+    ]);
+  });
+
+  const schedule2 = [
+    { timestamp: 1_400_000_000, balance: '0' },
+    { timestamp: 1_500_000_000, balance: '10000' },
+    { timestamp: 1_600_000_000, balance: '10000' },
+    { timestamp: 1_700_000_000, balance: '10000' },
+    { timestamp: 1_800_000_000, balance: '20000' },
+  ];
+
+  it('with plateau clash', () => {
+    expect(terminateScheduleAtAmount(schedule2, '10000', 1234567890)).toStrictEqual([
+      { timestamp: 1_400_000_000, balance: '0' },
+      { timestamp: 1_500_000_000, balance: '10000' },
     ]);
   });
 });
