@@ -21,8 +21,10 @@ import DaoSelector from '../WithDao/DaoSelector';
 import DaoProposalDescription from '../WithDao/DaoProposalDescription';
 import UTCDateTimePicker from '../UTCDateTimePicker';
 import { startOfDay, addDays } from '../../utils';
-import { TSchedule } from '../../services/api';
+import { TSchedule, TLockup } from '../../services/api';
 import { TMetadata } from '../../services/tokenApi';
+import Chart from '../Chart';
+import { chartData } from '../../services/chartHelpers';
 
 type TUIElement<Ctype> = {
   currentState: {
@@ -48,6 +50,7 @@ export type TProps = {
     daoProposalDescription?: TUIElement<string>,
   },
   token: TMetadata,
+  lockup: TLockup,
 };
 
 export function TerminateModal({
@@ -57,6 +60,7 @@ export function TerminateModal({
   handlers,
   dialog,
   token,
+  lockup,
 }: TProps) {
   console.log(schedule);
   const [terminationMode, setTerminationMode] = useState<string>(
@@ -68,8 +72,11 @@ export function TerminateModal({
   const vestedAmount: string = interpolateSchedule(vestingSchedule, now).balance;
 
   return (
-    <Dialog open={currentState.value} sx={{ padding: 2 }} maxWidth="xs" onClose={handlers.onClose}>
+    <Dialog open={currentState.value} sx={{ padding: 2 }} maxWidth="md" onClose={handlers.onClose}>
       <form className="form-submit">
+        <div style={{ height: 300 }}>
+          <Chart data={chartData([lockup], token.decimals)} />
+        </div>
         <DialogTitle>
           Terminate Lockup
           <IconButton
@@ -84,7 +91,7 @@ export function TerminateModal({
             <CloseRoundedIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ maxWidth: '320px' }}>
+        <DialogContent sx={{ minWidth: '720px' }}>
           <FormControl>
             <RadioGroup
               aria-labelledby="demo-radio-buttons-group-label"

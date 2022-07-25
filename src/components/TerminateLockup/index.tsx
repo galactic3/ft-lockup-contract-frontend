@@ -90,6 +90,7 @@ function TerminateLockup(
       },
     },
     token,
+    lockup,
   };
 
   return (

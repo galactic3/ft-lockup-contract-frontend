@@ -103,6 +103,7 @@ function TerminateWithDaoButton(
       },
     },
     token,
+    lockup,
   };
 
   return (
