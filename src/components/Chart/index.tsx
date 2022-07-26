@@ -2,12 +2,27 @@ import ReactEcharts from 'echarts-for-react';
 
 import '../../styles/chart.scss';
 
-export default function Chart({ data }: { data: { vested: any[], unlocked: any[] } }) {
+export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unlocked: any[] }, xMax?: number, yMax?: number }) {
+  const xMin = Math.min(...[data.unlocked[0][0], ...(data.vested[0][0] && [data.vested[0][0]] && [])]);
+  console.log('xMin', xMin / 1000);
+  console.log('xMax', xMax);
+  console.log('withOffset', xMax && (xMax + (xMax - xMin / 1000) * 0.03));
+  const computedMin = xMax && (xMin / 1000 - (xMax - xMin / 1000) * 0.03) * 1000;
+  const computedMax = xMax && (xMax + (xMax - xMin / 1000) * 0.03) * 1000;
+  console.log('computedMin', computedMin);
+  console.log('computedMax', computedMax);
   const option = {
     useUTC: true,
-    title: {
-      text: 'Schedule in UTC',
-    },
+    title: [
+      {
+        text: 'Schedule in UTC',
+        top: '10px',
+        left: 'center',
+        textStyle: {
+          fontWeight: 'normal',
+        },
+      },
+    ],
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -31,11 +46,14 @@ export default function Chart({ data }: { data: { vested: any[], unlocked: any[]
         type: 'time',
         boundaryGap: ['3%', '3%'],
         splitNumber: 15,
+        min: computedMin,
+        max: computedMax,
       },
     ],
     yAxis: [
       {
         type: 'value',
+        max: yMax,
       },
     ],
     series: [
@@ -50,7 +68,7 @@ export default function Chart({ data }: { data: { vested: any[], unlocked: any[]
           data: [
             [
               { xAxis: new Date(), yAxis: 0 },
-              { xAxis: new Date(), yAxis: 'max' },
+              { xAxis: new Date(), yAxis: yMax || 'max' },
             ],
           ],
           lineStyle: {
@@ -74,3 +92,8 @@ export default function Chart({ data }: { data: { vested: any[], unlocked: any[]
   };
   return <ReactEcharts option={option} />;
 }
+
+Chart.defaultProps = {
+  xMax: null,
+  yMax: null,
+};

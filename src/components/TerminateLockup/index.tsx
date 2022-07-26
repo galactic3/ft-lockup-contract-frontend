@@ -2,10 +2,10 @@ import { useContext, useState } from 'react';
 
 import { useSnackbar } from 'notistack';
 import Big from 'big.js';
-import { TTerminationConfig } from '../../services/api';
+import { TTerminationConfig, TLockup, TSchedule } from '../../services/api';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
-import TerminateModal from '../TerminateModal';
+import { TerminateModal, TProps } from '../TerminateModal';
 import { startOfDay, addDays } from '../../utils';
 
 function TerminateLockup(
@@ -15,6 +15,7 @@ function TerminateLockup(
     config: TTerminationConfig | null,
     token: TMetadata,
     buttonText: string,
+    lockup: TLockup,
   },
 ) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
@@ -24,6 +25,7 @@ function TerminateLockup(
     config,
     token,
     buttonText,
+    lockup,
   } = props;
 
   const { enqueueSnackbar } = useSnackbar();
@@ -61,11 +63,17 @@ function TerminateLockup(
 
   const canTerminate = adminControls && config;
 
-  const modalProps = {
+  if (!lockup?.termination_config?.vesting_schedule?.Schedule) {
+    console.log('lockup doesnt have termination config');
+    return null;
+  }
+  const modalProps: TProps = {
     currentState: {
       value: open,
       setValue: setOpen,
     },
+    schedule: lockup.schedule,
+    vestingSchedule: lockup?.termination_config?.vesting_schedule?.Schedule as TSchedule,
     handlers: {
       onClose: handleClose,
       onSubmit: handleTerminateLockup,
@@ -81,6 +89,8 @@ function TerminateLockup(
         },
       },
     },
+    token,
+    lockup,
   };
 
   return (
