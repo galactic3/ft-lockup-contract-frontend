@@ -68,13 +68,27 @@ export function TerminateModal({
   );
   const calcDefaultTimestamp = () => addDays(startOfDay(new Date()), 1);
 
-  const now = (dialog.dateTimePicker.currentState.value || new Date()).getTime() / 1_000;
-  const vestedAmount: string = interpolateSchedule(vestingSchedule, now).balance;
+  const xMax = Math.max(
+    schedule[schedule.length - 1].timestamp,
+    schedule[schedule.length - 1].timestamp,
+  );
+  const terminationTimestamp = (
+    (dialog.dateTimePicker.currentState.value && !Number.isNaN(dialog.dateTimePicker.currentState.value.getTime()))
+      ? new Date(Math.max(dialog.dateTimePicker.currentState.value.getTime(), new Date().getTime()))
+      : new Date()
+  ).getTime() / 1_000;
+
+  const vestedAmount: string = interpolateSchedule(vestingSchedule, terminationTimestamp).balance;
 
   const trimmedLockupSchedule = terminateScheduleAtAmount(lockup.schedule, vestedAmount, 0);
-  const trimmedVestingSchedule = terminateSchedule(vestingSchedule, now);
+  const trimmedVestingSchedule = terminateSchedule(vestingSchedule, terminationTimestamp);
 
-  const patchedLockup = {
+  const yMax = Math.max(
+    parseFloat(vestingSchedule[vestingSchedule.length - 1].balance),
+    parseFloat(vestingSchedule[vestingSchedule.length - 1].balance),
+  ) / 10 ** token.decimals;
+
+  const trimmedLockup = {
     schedule: trimmedLockupSchedule,
     termination_config: {
       vesting_schedule: {
@@ -86,9 +100,6 @@ export function TerminateModal({
   return (
     <Dialog open={currentState.value} sx={{ padding: 2 }} maxWidth="md" onClose={handlers.onClose}>
       <form className="form-submit">
-        <div style={{ height: 300 }}>
-          <Chart data={chartData([patchedLockup], token.decimals)} />
-        </div>
         <DialogTitle>
           Terminate Lockup
           <IconButton
@@ -104,6 +115,19 @@ export function TerminateModal({
           </IconButton>
         </DialogTitle>
         <DialogContent sx={{ minWidth: '720px' }}>
+          <div style={{ height: 300 }}>
+            <Chart data={chartData([trimmedLockup], token.decimals)} xMax={xMax} yMax={yMax} />
+          </div>
+          <div className="vested-amount-info">
+            <div style={{ lineHeight: '30px' }}>
+              Vested amount
+              {terminationMode === 'now' ? ' (approximate)' : ''}
+              :
+            </div>
+            <div>
+              <TokenAmountDisplay amount={vestedAmount} token={token} />
+            </div>
+          </div>
           <FormControl>
             <RadioGroup
               aria-labelledby="demo-radio-buttons-group-label"
@@ -136,14 +160,6 @@ export function TerminateModal({
               />
             )}
           </LocalizationProvider>
-          <div className="vested-amount-info">
-            <div style={{ lineHeight: '30px' }}>
-              Vested amount:
-            </div>
-            <div>
-              <TokenAmountDisplay amount={vestedAmount} token={token} />
-            </div>
-          </div>
           { dialog?.daoSelector && (
             <DaoSelector
               selectedAddress={dialog.daoSelector.currentState.value}
@@ -162,7 +178,18 @@ export function TerminateModal({
             style={{ marginTop: '40px' }}
             type="button"
             onClick={handlers.onSubmit}
-            disabled={terminationMode === 'with_timestamp' && !dialog.dateTimePicker.currentState.value}
+            disabled={
+              terminationMode === 'with_timestamp'
+                && (
+                  (
+                    !dialog.dateTimePicker.currentState.value
+                    || Number.isNaN(dialog.dateTimePicker.currentState.value.getTime())
+                    || (
+                      dialog.dateTimePicker.currentState.value.getTime() <= new Date().getTime()
+                    )
+                  )
+                )
+            }
           >
             Terminate
           </button>
