@@ -90,7 +90,7 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
       },
     ],
   };
-  return <ReactEcharts option={option} />;
+  return <ReactEcharts option={option} style={{ borderRadius: 10 }} />;
 }
 
 Chart.defaultProps = {

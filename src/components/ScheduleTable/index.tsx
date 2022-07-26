@@ -26,7 +26,7 @@ export default function ScheduleTable(params: { token: TMetadata, title: String,
         <TableBody>
           {schedule.map((x: any) => (
             <TableRow key={x.timestamp}>
-              <TableCell component="th" scope="row">
+              <TableCell scope="row">
                 <div className="nowrap">
                   <TimestampDisplay unixSeconds={x.timestamp} />
                 </div>

@@ -208,7 +208,7 @@ export default function DraftsTableRow(props: { pageIndex: number, row: ReturnTy
         </TableCell>
         )}
       </TableRow>
-      <TableRow sx={{ background: '#F4F7FC' }}>
+      <TableRow className="expanded">
         <TableCell style={{ padding: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">
