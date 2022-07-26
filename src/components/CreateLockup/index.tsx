@@ -40,7 +40,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
   };
   const handleClose = () => setOpen(false);
   const [accountId, setAccountId] = useState<string>('');
-  const [accountStatus, setAccountStatus] = useState<string>('pending'); // pending success error
+  const [accountStatuses, setAccountStatuses] = useState<any>({ '': 'error' }); // pending success error
   const [amount, setAmount] = useState<string>('');
 
   const onScheduleSelect = (value: any) => {
@@ -58,26 +58,47 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
     perform();
   };
 
-  const handleChangeAccountId = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChangeAccountId = (value: any) => {
     const perform = async () => {
       if (!near) return;
-      const { value } = event.target;
-
-      console.log(accountStatus, setAccountStatus);
+      console.log('accountStatuses', accountStatuses);
 
       setAccountId(value);
-      setAccountStatus('pending');
+
+      if (accountStatuses[value]) {
+        // lookup finished or in progress
+        return;
+      }
+
+      setAccountStatuses((acc: any) => {
+        console.log('.');
+        return { ...acc, [value]: 'pending' };
+      });
 
       try {
         const { total } = (await (await near.near.account(value)).getAccountBalance());
         console.log(total);
-        setAccountStatus('success');
+        setAccountStatuses((acc: any) => {
+          console.log('.');
+          return { ...acc, [value]: 'success' };
+        });
       } catch (e) {
-        setAccountStatus('error');
+        console.log(e);
+        setAccountStatuses((acc: any) => {
+          console.log('.');
+          return { ...acc, [value]: 'error' };
+        });
       }
+
+      console.log('accountStatuses', accountStatuses);
     };
 
     perform();
+  };
+
+  const handleChangeAccountIdEvent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = event.target;
+    return handleChangeAccountId(value);
   };
 
   const handleCreateLockup = async (e: any) => {
@@ -159,9 +180,14 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
               type="text"
               fullWidth
               variant="standard"
-              onChange={handleChangeAccountId}
-              color={accountStatus === 'success' ? 'success' : accountStatus === 'error' ? 'error' : 'primary'}
+              value={accountId}
+              onChange={handleChangeAccountIdEvent}
             />
+            <div style={{ fontSize: 10 }}>
+              {accountStatuses[accountId] === 'error' && <span style={{ color: '#FF594E' }}>Account does not exist</span>}
+              {accountStatuses[accountId] === 'pending' && <span style={{ color: '#808689' }}>Checking...</span>}
+              {accountStatuses[accountId] === 'success' && <span style={{ color: '#00B988' }}>Account found</span>}
+            </div>
             <TextField
               margin="normal"
               id="amount"
@@ -205,7 +231,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
             </LocalizationProvider>
           </DialogContent>
           <DialogActions sx={{ padding: '14px 24px 24px' }}>
-            <button disabled={!startDate || accountStatus === 'error' || !validAmount} className="button fullWidth noMargin" type="submit">Create</button>
+            <button disabled={!startDate || accountStatuses[accountId] === 'error' || !validAmount} className="button fullWidth noMargin" type="submit">Create</button>
           </DialogActions>
         </form>
       </Dialog>
