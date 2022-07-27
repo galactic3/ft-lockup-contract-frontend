@@ -7,7 +7,6 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import Big from 'big.js';
 
 import useTitle from '../../services/useTitle';
 import Row from '../../components/table/row';
@@ -26,15 +25,13 @@ export default function UserLockups({ lockups: allLockups, token, adminControls 
     return x.account_id === userId || x.id.toString() === userId;
   });
 
-  const totalUnclaimedBalance: string = lockups.reduce((acc, obj) => new Big(acc).add(obj.unclaimed_balance), '0');
-
   console.log('user lockups', userId, lockups);
 
   return (
     <div className="main">
       <div className="container">
 
-        {!adminControls && <ClaimAllLockups accountId={userId} token={token} total={totalUnclaimedBalance} />}
+        {!adminControls && <ClaimAllLockups accountId={userId} token={token} lockups={lockups} />}
 
         <TableContainer sx={{ boxShadow: 'unset' }}>
           <Table className="main-table" aria-label="collapsible table">

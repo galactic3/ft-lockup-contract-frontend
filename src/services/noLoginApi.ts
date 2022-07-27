@@ -30,6 +30,16 @@ class NoLoginApi {
     this.near.config.keyStore.clean();
   }
 
+  async claimSpecificLockups(accountId: string, lockupIds: number[]): Promise<void> {
+    dumpLocalStorage();
+
+    await this.setWalletAndContractWithAuth(accountId);
+
+    await this.buildContract().claim({ amounts: lockupIds.map((x) => [x, null]) }, MAX_GAS);
+
+    this.near.config.keyStore.clean();
+  }
+
   async setWalletAndContractWithAuth(
     accountId: string,
     contractName: string = this.near.config.contractName,

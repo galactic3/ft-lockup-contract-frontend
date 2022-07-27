@@ -1,13 +1,18 @@
 import { useContext, useState } from 'react';
+import { Big } from 'big.js';
 
 import ConfirmDialog from '../ConfirmDialog';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import TokenAmountPreview from '../TokenAmountPreview';
 
-function ClaimAllLockups(params: { accountId: string | undefined, token: TMetadata, total: string }) {
+function ClaimAllLockups(params: { accountId: string | undefined, token: TMetadata, lockups: any[] }) {
   const { near }: { near: INearProps | null } = useContext(NearContext);
-  const { accountId, token, total } = params;
+  const {
+    accountId, token, lockups,
+  } = params;
+
+  const total: string = lockups.reduce((acc, obj) => new Big(acc).add(obj.unclaimed_balance), '0').toFixed();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogConfirmCallback, setDialogConfirmCallback] = useState<any>(() => null);
@@ -32,7 +37,7 @@ function ClaimAllLockups(params: { accountId: string | undefined, token: TMetada
       const storageBalance = await near.tokenApi.storageBalanceOf(accountId);
       const isStoragePaid = (storageBalance !== null) && true;
       if (isStoragePaid) {
-        near.noLoginApi.claim(accountId);
+        near.noLoginApi.claimSpecificLockups(accountId, lockups.map((x) => x.id));
       } else {
         const bounds = await near.tokenApi.storageBalanceBounds();
         const amount = bounds.max;
