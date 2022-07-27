@@ -70,6 +70,14 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
         return;
       }
 
+      if (value.match(/^[0-9a-f]{64}$/)) {
+        setAccountStatuses((acc: any) => {
+          console.log('.');
+          return { ...acc, [value]: 'success' };
+        });
+        return;
+      }
+
       setAccountStatuses((acc: any) => {
         console.log('.');
         return { ...acc, [value]: 'pending' };
@@ -156,7 +164,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
   return (
     <>
       <button className="button" type="button" onClick={handleOpen}>Create Lockup</button>
-      <Dialog open={open} sx={{ padding: 2 }} maxWidth="xs" onClose={handleClose}>
+      <Dialog open={open} sx={{ padding: 2 }} maxWidth="md" onClose={handleClose}>
         <form className="form-submit" onSubmit={handleCreateLockup}>
           <DialogTitle>
             Create Lockup
