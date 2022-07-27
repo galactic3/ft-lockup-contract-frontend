@@ -64,6 +64,32 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
         throw new Error('near is null');
       }
       setImportProgress(true);
+
+      await withNotification(
+        'Check accounts',
+        async () => {
+          const accountIds = Array.from(new Set(
+            data.filter((x) => !(x instanceof Error)).map((x) => (x as Lockup).account_id),
+          ));
+
+          for (let i = 0; i < accountIds.length; i += 1) {
+            const accountId = accountIds[i];
+            if (!accountId.match(/^[0-9a-f]{64}$/)) {
+              try {
+                const { total } = (await (await near.near.account(accountId)).getAccountBalance());
+                console.log(`${accountId} balance: ${total}`);
+              } catch (e) {
+                const message = `Account ID ${accountId} does not exist`;
+                throw new Error(message);
+              }
+            }
+          }
+
+          console.log('all accounts exist');
+          enqueueSnackbar('Checked account existence.', { variant: 'success' });
+        },
+      );
+
       const draftGroupId = await withNotification(
         'Create draft group',
         async () => {
