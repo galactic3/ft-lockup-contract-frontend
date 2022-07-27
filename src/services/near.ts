@@ -77,6 +77,14 @@ export const connectNear = async (): Promise<INearProps> => {
     console.log('daos', daos);
   } catch (e) {
     console.log(e);
+    const nearConnectionError: any = e;
+    const currentContractName = window.location.hash.split('/')[1];
+    const notFoundPage = window.location.href.includes('not_found_contract');
+    if (nearConnectionError.type === 'AccountDoesNotExist' && !notFoundPage) {
+      const notFoundUrl = `${window.location.origin + window.location.pathname}#/${currentContractName}/not_found_contract`;
+      window.location.assign(notFoundUrl);
+      window.location.reload();
+    }
   }
   const tokenApi = new TokenApi(walletConnection, tokenContractId);
 
