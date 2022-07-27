@@ -533,6 +533,10 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
   margin: 0;
 }
 
+.button.large {
+  padding: 16px 32px;
+}
+
 .header .button {
   padding: 8px 32px;
 }
@@ -554,11 +558,21 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
   background: var(--red);
 }
 
-.MuiInputBase-input {
-  border: 1px solid var(--light-gray);
-  background: #fff;
-  border-radius: 12px;
-  color: var(--gray);
+span.red {
+  color: var(--red);
+}
+
+.MuiInputBase-root.MuiOutlinedInput-root {
+  color: var(--primary);
+}
+
+.MuiInputBase-root.MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+  border-color: var(--light-gray);
+  border-radius: 8px;
+}
+
+.MuiInputBase-root.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--gray);
 }
 
 .search-container .MuiInputAdornment-root {
@@ -568,12 +582,17 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
 .input {
   border: 1px solid var(--light-gray);
   background: #fff;
-  border-radius: 12px;
+  border-radius: 8px;
   color: var(--gray);
 }
 
-.home .input {
+.input.large {
   width: 800px;
+  margin-right: 32px;
+}
+
+.input.fullWidth {
+  width: calc(100% - 152px);
   margin-right: 32px;
 }
 
@@ -635,6 +654,19 @@ svg {
   font-size: 24px;
   font-weight: 500;
   margin-bottom: 40px;
+}
+
+.block {
+  margin: 32px 0;
+  background-color: var(--white);
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+}
+
+.left_part {
+  margin-left: auto;
 }
 
 .login .button {

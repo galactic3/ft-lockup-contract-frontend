@@ -18,6 +18,9 @@ export default function Homepage(
   const navigate = useNavigate();
 
   const handleOpenLockupContract = () => {
+    if (!address) {
+      return;
+    }
     const url = `/${address}/lockups`;
     navigate(url);
     window.location.reload();
@@ -68,7 +71,7 @@ export default function Homepage(
               variant="outlined"
               value={address}
               onChange={handleChange}
-              className="input"
+              className="input large"
               placeholder="Enter existing Lockup contract address"
               InputProps={{
                 startAdornment: (
