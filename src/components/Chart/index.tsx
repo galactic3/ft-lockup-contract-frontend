@@ -15,7 +15,7 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
     useUTC: true,
     title: [
       {
-        text: 'Vesting schedule Schedule timestamps are in UTC',
+        text: 'Schedule timestamps are in UTC',
         top: '10px',
         // left: 'center',
         left: '7px',
