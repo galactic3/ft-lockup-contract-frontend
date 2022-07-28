@@ -198,3 +198,41 @@ export const terminateScheduleAtAmount = (schedule: TSchedule, amount: string, f
 
   throw new Error('unreachable');
 };
+
+export type TBalancesRaw = {
+  claimed: string,
+  unclaimed: string,
+  vested: string,
+  unvested: string,
+  total: string,
+};
+
+export const calcBalancesRaw = (row: any, now: number): TBalancesRaw => {
+  const totalBalanceRaw = row.schedule[row.schedule.length - 1].balance;
+  const claimedBalanceRaw = '0';
+
+  const unclaimedBalanceRaw = interpolateSchedule(row.schedule, now).balance;
+  let vestedBalanceFullRaw = null;
+  const vestingSchedule = row.vesting_schedule?.Schedule;
+  if (vestingSchedule) {
+    vestedBalanceFullRaw = interpolateSchedule(vestingSchedule, now).balance;
+  } else {
+    vestedBalanceFullRaw = row.schedule[row.schedule.length - 1].balance;
+  }
+  const vestedBalanceRaw = new Big(vestedBalanceFullRaw)
+    .sub(new Big(claimedBalanceRaw))
+    .sub(new Big(unclaimedBalanceRaw))
+    .toString();
+  const unvestedBalanceRaw = new Big(totalBalanceRaw)
+    .sub(new Big(vestedBalanceFullRaw))
+    .toString();
+  console.log(totalBalanceRaw, claimedBalanceRaw, unclaimedBalanceRaw, vestedBalanceRaw, unvestedBalanceRaw);
+
+  return {
+    claimed: claimedBalanceRaw,
+    unclaimed: unclaimedBalanceRaw,
+    vested: vestedBalanceRaw,
+    unvested: unvestedBalanceRaw,
+    total: totalBalanceRaw,
+  };
+};

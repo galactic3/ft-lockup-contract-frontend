@@ -6,7 +6,6 @@ import {
   TableRow,
   Tooltip,
 } from '@mui/material';
-import { Big } from 'big.js';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link, useLocation } from 'react-router-dom';
@@ -22,50 +21,7 @@ import { TMetadata } from '../../services/tokenApi';
 import TokenAmountDisplay from '../TokenAmountDisplay';
 import ScheduleTable from '../ScheduleTable';
 import { chartData } from '../../services/chartHelpers';
-import { lockupTotalBalance } from '../../services/spreadsheetImport';
-import { interpolateSchedule } from '../../services/scheduleHelpers';
-
-type TBalancesRaw = {
-  claimed: string,
-  unclaimed: string,
-  vested: string,
-  unvested: string,
-  total: string,
-};
-
-const calcBalancesRaw = (row: any, now: number): TBalancesRaw => {
-  const totalBalanceRaw = row.schedule[row.schedule.length - 1].balance;
-  const claimedBalanceRaw = '0';
-
-  const m1 = interpolateSchedule;
-  const m2 = lockupTotalBalance;
-  console.log(m1, m2);
-
-  const unclaimedBalanceRaw = interpolateSchedule(row.schedule, now).balance;
-  let vestedBalanceFullRaw = null;
-  const vestingSchedule = row.vesting_schedule?.Schedule;
-  if (vestingSchedule) {
-    vestedBalanceFullRaw = interpolateSchedule(vestingSchedule, now).balance;
-  } else {
-    vestedBalanceFullRaw = lockupTotalBalance(row);
-  }
-  const vestedBalanceRaw = new Big(vestedBalanceFullRaw)
-    .sub(new Big(claimedBalanceRaw))
-    .sub(new Big(unclaimedBalanceRaw))
-    .toString();
-  const unvestedBalanceRaw = new Big(totalBalanceRaw)
-    .sub(new Big(vestedBalanceFullRaw))
-    .toString();
-  console.log(totalBalanceRaw, claimedBalanceRaw, unclaimedBalanceRaw, vestedBalanceRaw, unvestedBalanceRaw);
-
-  return {
-    claimed: claimedBalanceRaw,
-    unclaimed: unclaimedBalanceRaw,
-    vested: vestedBalanceRaw,
-    unvested: unvestedBalanceRaw,
-    total: totalBalanceRaw,
-  };
-};
+import { calcBalancesRaw } from '../../services/scheduleHelpers';
 
 export default function DraftsTableRow(props: { pageIndex: number, row: ReturnType<any>, token: TMetadata, adminControls: boolean, progressShow: boolean }) {
   const location = useLocation();
