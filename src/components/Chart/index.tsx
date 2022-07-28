@@ -41,7 +41,7 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
       icon: 'circle',
     },
     grid: {
-      top: '15%',
+      top: '50px',
       left: '12px',
       right: '12px',
       bottom: '15%',
