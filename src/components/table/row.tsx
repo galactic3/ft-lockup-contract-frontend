@@ -13,7 +13,7 @@ import { Link, useLocation } from 'react-router-dom';
 import TimestampDateDisplay from '../TimestampDateDisplay';
 import TokenAmountDisplay from '../TokenAmountDisplay';
 import Chart from '../Chart';
-import { formatTokenAmount } from '../../utils';
+import { formatTokenAmount, toCompactString } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import { TLockup } from '../../services/api';
@@ -109,10 +109,14 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
           </IconButton>
         </TableCell>
         <TableCell align="left">
-          {!selectedLockupId ? <Link to={`/${currentContractName}${adminControls ? '/admin' : ''}/lockups/${row.account_id}/${row.id}`}>{row.id}</Link> : row.id}
+          {!selectedLockupId
+            ? <Link to={`/${currentContractName}${adminControls ? '/admin' : ''}/lockups/${row.account_id}/${row.id}`}>{row.id}</Link>
+            : row.id}
         </TableCell>
         <TableCell align="left">
-          {!selectedAccountPage ? <Link to={`/${currentContractName}${adminControls ? '/admin' : ''}/lockups/${row.account_id}`}>{row.account_id}</Link> : row.account_id}
+          {!selectedAccountPage
+            ? <Link to={`/${currentContractName}${adminControls ? '/admin' : ''}/lockups/${row.account_id}`}>{toCompactString(row.account_id)}</Link>
+            : toCompactString(row.account_id)}
         </TableCell>
         <TableCell align="right">
           <TimestampDateDisplay unixSeconds={row.schedule[0].timestamp} />
@@ -130,25 +134,25 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
           <Tooltip
             title={(
               <div className="progress-bar__tooltip">
-                <span>
+                <span className="nowrap">
                   <i className="claimed">&nbsp;</i>
                   <b>{claimedAmount}</b>
                   {' '}
                   Claimed
                 </span>
-                <span>
+                <span className="nowrap">
                   <i className="available">&nbsp;</i>
                   <b>{availbleAmount}</b>
                   {' '}
                   Available
                 </span>
-                <span>
+                <span className="nowrap">
                   <i className="vested">&nbsp;</i>
                   <b>{vestedAmount}</b>
                   {' '}
                   Vested
                 </span>
-                <span>
+                <span className="nowrap">
                   <i className="unvested">&nbsp;</i>
                   <b>{unvestedAmount}</b>
                   {' '}

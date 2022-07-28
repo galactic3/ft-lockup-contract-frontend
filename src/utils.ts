@@ -63,4 +63,11 @@ export const restoreLocalStorage = (dumpKey: string = 'dump') => {
   dumpValue.forEach((record:string[]) => localStorage.setItem(record[0], record[1]));
 };
 
+export const toCompactString = (string: string) => {
+  if (string.length > 24) {
+    return `${string.slice(0, 12)}...${string.slice(-12)}`;
+  }
+  return string;
+};
+
 export const txLinkInExplorer = (txHash: string) => `${config.explorerUrl}/transactions/${txHash}`;

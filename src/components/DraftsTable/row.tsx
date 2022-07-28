@@ -15,7 +15,7 @@ import { useSnackbar } from 'notistack';
 
 import TimestampDateDisplay from '../TimestampDateDisplay';
 import Chart from '../Chart';
-import { formatTokenAmount } from '../../utils';
+import { formatTokenAmount, toCompactString } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
 import TokenAmountDisplay from '../TokenAmountDisplay';
@@ -101,7 +101,7 @@ export default function DraftsTableRow(props: { pageIndex: number, row: ReturnTy
           )}
         </TableCell>
         <TableCell align="left">
-          {row.account_id}
+          {toCompactString(row.account_id)}
         </TableCell>
         <TableCell align="right">
           <TimestampDateDisplay unixSeconds={row.schedule[0].timestamp} />
@@ -117,25 +117,25 @@ export default function DraftsTableRow(props: { pageIndex: number, row: ReturnTy
           <Tooltip
             title={(
               <div className="progress-bar__tooltip">
-                <span>
+                <span className="nowrap">
                   <i className="claimed">&nbsp;</i>
                   <b>{formatTokenAmount(balancesRaw.claimed, token.decimals)}</b>
                   {' '}
                   Claimed
                 </span>
-                <span>
+                <span className="nowrap">
                   <i className="available">&nbsp;</i>
                   <b>{formatTokenAmount(balancesRaw.unclaimed, token.decimals)}</b>
                   {' '}
                   Available
                 </span>
-                <span>
+                <span className="nowrap">
                   <i className="vested">&nbsp;</i>
                   <b>{formatTokenAmount(balancesRaw.vested, token.decimals)}</b>
                   {' '}
                   Vested
                 </span>
-                <span>
+                <span className="nowrap">
                   <i className="unvested">&nbsp;</i>
                   <b>{formatTokenAmount(balancesRaw.unvested, token.decimals)}</b>
                   {' '}
