@@ -16,13 +16,13 @@ export default function LockupsTable(
       <TableHead className="table-head">
         <TableRow>
           <TableCell />
-          <TableCell align="left">ID</TableCell>
-          <TableCell align="left">Account ID</TableCell>
-          <TableCell align="right">Start date (UTC)</TableCell>
-          <TableCell align="right">End date (UTC)</TableCell>
-          <TableCell align="center">Terminatable</TableCell>
-          <TableCell align="right">Total amount</TableCell>
-          <TableCell align="center">Progress</TableCell>
+          <TableCell align="left"><span className="nowrap">ID</span></TableCell>
+          <TableCell align="left"><span className="nowrap">Account ID</span></TableCell>
+          <TableCell align="right"><span className="nowrap">Start date (UTC)</span></TableCell>
+          <TableCell align="right"><span className="nowrap">End date (UTC)</span></TableCell>
+          <TableCell align="center"><span className="nowrap">Terminatable</span></TableCell>
+          <TableCell align="right"><span className="nowrap">Total amount</span></TableCell>
+          <TableCell align="center"><span className="nowrap">Progress</span></TableCell>
         </TableRow>
       </TableHead>
       <TableBody>

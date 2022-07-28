@@ -15,16 +15,17 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
     useUTC: true,
     title: [
       {
-        text: 'Schedule timestamps are in UTC',
-        top: '13px',
-        left: 'center',
+        text: 'Vesting schedule Schedule timestamps are in UTC',
+        top: '10px',
+        // left: 'center',
+        left: '7px',
         // right: '30px',
         textStyle: {
-          fontWeight: 'normal',
+          fontWeight: '700',
           fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
           fontSize: '14px',
           color: '#242F57',
-          opacity: 0.5,
+          opacity: 1.0,
         },
       },
     ],
@@ -41,8 +42,8 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
     },
     grid: {
       top: '15%',
-      left: '30px',
-      right: '30px',
+      left: '12px',
+      right: '12px',
       bottom: '15%',
       containLabel: true,
     },

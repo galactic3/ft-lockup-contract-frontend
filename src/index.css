@@ -353,6 +353,10 @@ td.MuiTableCell-root {
   padding: 16px 12px;
 }
 
+th.MuiTableCell-root {
+  padding: 16px 12px;
+}
+
 .table-head .MuiTableCell-head {
   color: var(--primary);
   background: var(--bg);
@@ -413,15 +417,15 @@ td.MuiTableCell-root {
   width: 350px;
   height: 500px;
   overflow-y: auto;
-  padding: 20px 0;
+  padding: 10px 0 10px 0;
   border-radius: 10px;
 }
 
 .inner-table_wrapper h5 {
   font-size: 14px;
   font-weight: 700;
-  margin: 4px 0 14px;
-  padding: 0 16px;
+  margin: 0 0 0 0;
+  padding: 0 12px;
 }
 
 .inner-table {

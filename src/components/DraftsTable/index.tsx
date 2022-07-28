@@ -17,11 +17,11 @@ export default function DraftsTable({
         {lockups.length > 0 && (
         <TableRow>
           <TableCell />
-          <TableCell align="left">ID</TableCell>
-          <TableCell align="left">Account ID</TableCell>
-          <TableCell align="right">Start date (UTC)</TableCell>
-          <TableCell align="right">End date (UTC)</TableCell>
-          <TableCell align="right">Total amount</TableCell>
+          <TableCell align="left"><span className="nowrap">ID</span></TableCell>
+          <TableCell align="left"><span className="nowrap">Account ID</span></TableCell>
+          <TableCell align="right"><span className="nowrap">Start date (UTC)</span></TableCell>
+          <TableCell align="right"><span className="nowrap">End date (UTC)</span></TableCell>
+          <TableCell align="right"><span className="nowrap">Total amount</span></TableCell>
           {progressShow && <TableCell align="center">Progress</TableCell>}
         </TableRow>
         )}

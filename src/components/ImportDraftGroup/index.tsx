@@ -53,7 +53,10 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
       const result = await func();
       return result;
     } catch (e) {
-      enqueueSnackbar(`${name} failed with error: '${e}'`, { variant: 'error' });
+      if (!(e instanceof Error)) {
+        throw new Error('unreachable');
+      }
+      enqueueSnackbar(`${name} failed: ${e.message}`, { variant: 'error' });
       throw e;
     }
   };
