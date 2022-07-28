@@ -155,9 +155,8 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
     const currentContractName = location.pathname.split('/')[1];
     return (
       <div className="container">
-        <h1>{isConverted === 'converted' ? `Success! Draft group ${draftGroupId} have been converted!` : 'Draft group not found.'}</h1>
+        <h1>{isConverted === 'converted' ? `Success! Draft group ${draftGroupId} have been converted!` : `Draft group ${draftGroupId} have been converted or deleted.`}</h1>
         <div>
-          {!(isConverted === 'converted') && 'It may have been converted, deleted, or have never existed at all.' || true}
           <br />
           Check
           {' '}
