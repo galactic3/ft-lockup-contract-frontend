@@ -9,10 +9,15 @@ export default function TimestampDateDisplay(props: { unixSeconds: number }) {
   const month = pad(date.getUTCMonth() + 1, 2);
   const monthDay = pad(date.getUTCDate(), 2);
 
-  const formatted = `${year}-${month}-${monthDay} UTC`;
+  const hours = pad(date.getUTCHours(), 2);
+  const minutes = pad(date.getUTCMinutes(), 2);
+  const seconds = pad(date.getUTCSeconds(), 2);
+
+  const formatted = `${year}-${month}-${monthDay}`;
+  const formattedWithTime = `${year}-${month}-${monthDay} ${hours}:${minutes}:${seconds}`;
 
   return (
-    <span className="timestamp-display" title={unixSeconds.toString()}>
+    <span className="timestamp-display" title={formattedWithTime}>
       {formatted}
     </span>
   );

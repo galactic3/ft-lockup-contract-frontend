@@ -11,7 +11,7 @@ export default function TokenAmountDisplay(params: { token: TMetadata, amount: T
   console.log(token, amount);
 
   return (
-    <span title={amount}>
+    <span className="nowrap" title={amount}>
       {formatTokenAmount(amount, token.decimals)}
       {' '}
       {token.symbol}

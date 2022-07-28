@@ -407,6 +407,8 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
 .inner-table_wrapper {
   background: var(--white);
   width: 340px;
+  height: 500px;
+  overflow-y: scroll;
   padding: 20px 0;
   border-radius: 10px;
 }

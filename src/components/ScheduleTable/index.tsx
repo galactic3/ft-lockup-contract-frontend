@@ -32,9 +32,7 @@ export default function ScheduleTable(params: { token: TMetadata, title: String,
                 </div>
               </TableCell>
               <TableCell align="right">
-                <div className="nowrap">
-                  <TokenAmountDisplay amount={x.balance} token={token} />
-                </div>
+                <TokenAmountDisplay amount={x.balance} token={token} />
               </TableCell>
             </TableRow>
           ))}

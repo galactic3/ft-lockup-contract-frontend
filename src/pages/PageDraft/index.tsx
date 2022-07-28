@@ -45,9 +45,9 @@ export default function PageDraft({
             <TableCell />
             <TableCell align="left">ID</TableCell>
             <TableCell align="left">Account ID</TableCell>
-            <TableCell align="right">Start&nbsp;date</TableCell>
-            <TableCell align="right">End&nbsp;date</TableCell>
-            <TableCell align="right">Total&nbsp;amount</TableCell>
+            <TableCell align="right">Start date (UTC)</TableCell>
+            <TableCell align="right">End date (UTC)</TableCell>
+            <TableCell align="right">Total amount</TableCell>
             {progressShow && <TableCell align="center">Progress</TableCell>}
           </TableRow>
         </TableHead>
