@@ -1,6 +1,7 @@
 import {
   WalletConnection,
 } from 'near-api-js';
+import { TRY_CONVERT } from '../../../config';
 
 import AstroDaoApi from './api';
 
@@ -82,7 +83,7 @@ export const buildFundDraftGroupProposalLink = (
   const json = {
     receiver_id: lockupContractAddress,
     amount: amountValue,
-    msg: JSON.stringify({ draft_group_id: draftGroupIndex, try_convert: true }),
+    msg: JSON.stringify({ draft_group_id: draftGroupIndex, try_convert: TRY_CONVERT }),
   };
   const actionsGas = '100'; // with this amount transaction completes in one go (without resubmit with additional gas)
   const actionDeposit = ONE_YOKTO;

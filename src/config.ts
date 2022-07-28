@@ -10,6 +10,7 @@ export interface INearConfig {
 
 export const DEFAULT_CONTRACT_NAME = process.env.REACT_APP_DEFAULT_CONTRACT_NAME as string;
 export const FACTORY_CONTRACT_NAME = process.env.REACT_APP_FACTORY_CONTRACT_NAME as string;
+export const TRY_CONVERT = true;
 
 const getCurrentContractName = (): string => {
   const contractNameFromUrl = window.location.hash.split('/')[1];
