@@ -461,7 +461,7 @@ td.MuiTableCell-root {
 }
 
 .progress-bar__tooltip {
-  width: 150px;
+  width: 300px;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -474,7 +474,7 @@ td.MuiTableCell-root {
 
 .progress-bar__tooltip span {
   display: block;
-  width: calc(100% - 10px);
+  width: calc(50% - 10px);
   font-size: 12px;
   margin: 5px;
 }
