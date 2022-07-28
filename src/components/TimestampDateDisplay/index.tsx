@@ -14,10 +14,10 @@ export default function TimestampDateDisplay(props: { unixSeconds: number }) {
   const seconds = pad(date.getUTCSeconds(), 2);
 
   const formatted = `${year}-${month}-${monthDay}`;
-  const formattedWithTime = `${year}-${month}-${monthDay} ${hours}:${minutes}:${seconds}`;
+  const formattedWithTime = `${year}-${month}-${monthDay} ${hours}:${minutes}:${seconds} UTC`;
 
   return (
-    <span className="timestamp-display" title={formattedWithTime}>
+    <span className="nowrap timestamp-display" title={formattedWithTime}>
       {formatted}
     </span>
   );

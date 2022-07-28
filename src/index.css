@@ -349,6 +349,10 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
   border-bottom-right-radius: 10px;
 }
 
+td.MuiTableCell-root {
+  padding: 12px;
+}
+
 .table-head .MuiTableCell-head {
   color: var(--primary);
   background: var(--bg);
@@ -457,6 +461,7 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
 }
 
 .progress-bar__tooltip {
+  width: 150px;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -464,14 +469,14 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
 
 .progress-bar__tooltip span {
   display: block;
-  width: 50%;
+  width: 100%;
 }
 
 .progress-bar__tooltip span {
   display: block;
-  width: calc(50% - 2px);
+  width: calc(100% - 10px);
   font-size: 12px;
-  margin: 5px 1px;
+  margin: 5px;
 }
 
 .progress-bar__tooltip span i {

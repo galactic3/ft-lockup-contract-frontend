@@ -9,7 +9,6 @@ import {
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link, useLocation } from 'react-router-dom';
-import { Big } from 'big.js';
 
 import TimestampDateDisplay from '../TimestampDateDisplay';
 import TokenAmountDisplay from '../TokenAmountDisplay';
@@ -22,6 +21,7 @@ import TerminateLockup from '../TerminateLockup';
 import TerminateWithDaoButton from '../TerminateWithDaoButton';
 import ScheduleTable from '../ScheduleTable';
 import { chartData } from '../../services/chartHelpers';
+import { calcBalancesRaw } from '../../services/scheduleHelpers';
 
 export default function Row(props: { adminControls: boolean, row: TLockup, token: TMetadata }) {
   const location = useLocation();
@@ -35,6 +35,8 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
     near: INearProps | null
   } = useContext(NearContext);
 
+  const [now, _setNow] = useState<number>(Math.floor(new Date().getTime() / 1000));
+
   if (!near) return null;
 
   const { isAdmin } = near.currentUser;
@@ -45,11 +47,12 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
 
   const selectedLockupId = window.location.href.split('/').pop() === row.id.toString();
 
-  // TODO: calculate vested amount, unvested amount
-  const claimedAmount = `${formatTokenAmount(row.claimed_balance, token.decimals)}`;
-  const availbleAmount = `${formatTokenAmount(row.unclaimed_balance, token.decimals)}`;
-  const vestedAmount = `${formatTokenAmount(new Big(row.total_balance).sub(new Big(row.claimed_balance)).sub(new Big(row.unclaimed_balance)).toFixed(0), token.decimals)}`;
-  const unvestedAmount = `${formatTokenAmount('0', token.decimals)}`;
+  const balancesRaw = calcBalancesRaw(row, now);
+
+  const claimedAmount = `${formatTokenAmount(balancesRaw.claimed, token.decimals)}`;
+  const availbleAmount = `${formatTokenAmount(balancesRaw.unclaimed, token.decimals)}`;
+  const vestedAmount = `${formatTokenAmount(balancesRaw.vested, token.decimals)}`;
+  const unvestedAmount = `${formatTokenAmount(balancesRaw.unvested, token.decimals)}`;
 
   let payerMessage;
   if (!row.termination_config?.beneficiary_id) {
@@ -152,34 +155,24 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
                   Unvested
                 </span>
               </div>
-)}
+            )}
             placement="top"
             arrow
           >
             <div className="progress-bar-outer">
               <div className="progress-bar">
-                <div style={{ width: `${row.total_balance === '0' ? '100' : (parseFloat(row.claimed_balance) / parseFloat(row.total_balance)) * 100}%` }} className="claimed">
-                &nbsp;
+                <div style={{ width: `${balancesRaw.total === '0' ? '100' : (parseFloat(balancesRaw.claimed) / parseFloat(balancesRaw.total)) * 100}%` }} className="claimed">
+                  &nbsp;
                 </div>
-                <div style={{ width: `${row.total_balance === '0' ? '0' : (parseFloat(row.unclaimed_balance) / parseFloat(row.total_balance)) * 100}%` }} className="available">
-                &nbsp;
+                <div style={{ width: `${balancesRaw.total === '0' ? '0' : (parseFloat(balancesRaw.unclaimed) / parseFloat(row.total_balance)) * 100}%` }} className="available">
+                  &nbsp;
                 </div>
-                <div
-                  style={{
-                    width: `${row.total_balance === '0' ? '0' : (
-                      (
-                        parseFloat(row.total_balance)
-                      - parseFloat(row.claimed_balance)
-                      - parseFloat(row.unclaimed_balance)
-                      )
-                    / parseFloat(row.total_balance)
-                    ) * 100}%`,
-                  }}
-                  className="vested"
-                >
-                &nbsp;
+                <div style={{ width: `${balancesRaw.total === '0' ? '0' : (parseFloat(balancesRaw.vested) / parseFloat(row.total_balance)) * 100}%` }} className="vested">
+                  &nbsp;
                 </div>
-                <div style={{ width: `${row.total_balance === '0' ? '0' : (0) * 100}%` }} className="unvested">&nbsp;</div>
+                <div style={{ width: `${balancesRaw.total === '0' ? '0' : (parseFloat(balancesRaw.unvested) / parseFloat(row.total_balance)) * 100}%` }} className="unvested">
+                  &nbsp;
+                </div>
               </div>
             </div>
           </Tooltip>

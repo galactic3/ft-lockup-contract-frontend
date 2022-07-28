@@ -13,10 +13,10 @@ export default function TimestampDisplay(props: { unixSeconds: number }) {
   const minutes = pad(date.getUTCMinutes(), 2);
   const seconds = pad(date.getUTCSeconds(), 2);
 
-  const formatted = `${year}-${month}-${monthDay} ${hours}:${minutes}:${seconds}`;
+  const formatted = `${year}-${month}-${monthDay} ${hours}:${minutes}:${seconds} UTC`;
 
   return (
-    <span className="timestamp-display" title={formatted}>
+    <span className="nowrap timestamp-display" title={formatted}>
       {formatted}
     </span>
   );
