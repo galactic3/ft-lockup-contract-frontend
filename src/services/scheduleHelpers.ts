@@ -209,11 +209,11 @@ export type TBalancesRaw = {
 
 export const calcBalancesRaw = (row: any, now: number): TBalancesRaw => {
   const totalBalanceRaw = row.schedule[row.schedule.length - 1].balance;
-  const claimedBalanceRaw = '0';
+  const claimedBalanceRaw = row.claimed_balance || '0';
 
-  const unclaimedBalanceRaw = interpolateSchedule(row.schedule, now).balance;
+  const unclaimedBalanceRaw = new Big(interpolateSchedule(row.schedule, now).balance).sub(new Big(claimedBalanceRaw)).toFixed();
   let vestedBalanceFullRaw = null;
-  const vestingSchedule = row.vesting_schedule?.Schedule;
+  const vestingSchedule = row.vesting_schedule?.Schedule || row.termination_config?.vesting_schedule?.Schedule;
   if (vestingSchedule) {
     vestedBalanceFullRaw = interpolateSchedule(vestingSchedule, now).balance;
   } else {
