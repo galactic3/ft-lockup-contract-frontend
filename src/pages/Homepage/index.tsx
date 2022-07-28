@@ -12,15 +12,23 @@ export default function Homepage(
   useTitle('Welcome | FT Lockup', { restoreOnUnmount: true });
 
   const [address, setAddress] = useState(DEFAULT_CONTRACT_NAME);
+  const [error, setError] = useState('');
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
+    setError('');
   };
   const navigate = useNavigate();
 
   const handleOpenLockupContract = () => {
-    if (!address) {
+    if (!address || address.length < 5) {
+      setError('length should be more than 5 symbols');
       return;
     }
+    if (!address.match(/^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+\.(testnet|near)$/)) {
+      setError('address should be for NEAR network');
+      return;
+    }
+    setError('');
     const url = `/${address}/lockups`;
     navigate(url);
     window.location.reload();
@@ -60,7 +68,7 @@ export default function Homepage(
           </ul>
 
           <h2>Manage token vesting on NEAR</h2>
-          <p>Create new lockup contract to be used by startup</p>
+          <h5>Create new lockup contract to be used by startup</h5>
 
           <Link to="/new_lockup_contract" className="button link-button">Create Lockup Contract</Link>
 
@@ -71,6 +79,11 @@ export default function Homepage(
               variant="outlined"
               value={address}
               onChange={handleChange}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleOpenLockupContract();
+                }
+              }}
               className="input large"
               placeholder="Enter existing Lockup contract address"
               InputProps={{
@@ -80,6 +93,8 @@ export default function Homepage(
                   </InputAdornment>
                 ),
               }}
+              error={!!error}
+              helperText={error}
             />
             <button className="button" onClick={handleOpenLockupContract} aria-label="open" type="button">
               Search

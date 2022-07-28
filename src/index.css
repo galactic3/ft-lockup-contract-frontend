@@ -562,8 +562,17 @@ span.red {
   color: var(--red);
 }
 
+.MuiFormControl-root .MuiFormHelperText-root.Mui-error {
+  color: var(--red);
+}
+
 .MuiInputBase-root.MuiOutlinedInput-root {
   color: var(--primary);
+  background-color: var(--white);
+}
+
+.MuiInputBase-root.MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline {
+  border-color: var(--red);
 }
 
 .MuiInputBase-root.MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
@@ -581,7 +590,6 @@ span.red {
 
 .input {
   border: 1px solid var(--light-gray);
-  background: #fff;
   border-radius: 8px;
   color: var(--gray);
 }
@@ -650,7 +658,7 @@ svg {
   margin: 20px 0;
 }
 
-.home p {
+.home h5 {
   font-size: 24px;
   font-weight: 500;
   margin-bottom: 40px;
