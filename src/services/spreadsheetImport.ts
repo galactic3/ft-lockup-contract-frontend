@@ -365,7 +365,7 @@ export const parseLockup = (rawSpreadsheetRow: RawSpreadsheetRow, tokenDecimals:
 
 export const parseRawSpreadsheetInput = (spreadsheetInput: string, tokenDecimals: number): Lockup[] => {
   const rows = parseSpreadsheetColumns(spreadsheetInput);
-  return rows.map((x, index: number) => parseLockup(x, tokenDecimals, index));
+  return rows.map((x, index: number) => parseLockup(x, tokenDecimals, index + 1));
 };
 
 export type TLockupOrError = Lockup | Error;
@@ -374,7 +374,7 @@ export const parseRawSpreadsheetInputWithErrors = (spreadsheetInput: string, tok
   const rows = parseSpreadsheetColumns(spreadsheetInput);
   return rows.map((x, index: number) => {
     try {
-      return parseLockup(x, tokenDecimals, index);
+      return parseLockup(x, tokenDecimals, index + 1);
     } catch (e) {
       if (e instanceof Error) {
         return e;

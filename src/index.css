@@ -350,7 +350,7 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
 }
 
 td.MuiTableCell-root {
-  padding: 12px;
+  padding: 16px 12px;
 }
 
 .table-head .MuiTableCell-head {
