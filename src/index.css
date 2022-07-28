@@ -349,6 +349,10 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
   border-bottom-right-radius: 10px;
 }
 
+td.MuiTableCell-root {
+  padding: 12px;
+}
+
 .table-head .MuiTableCell-head {
   color: var(--primary);
   background: var(--bg);
