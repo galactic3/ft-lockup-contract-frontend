@@ -4,7 +4,6 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
-  Button,
 } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
@@ -40,9 +39,9 @@ export default function ConfirmDialog(props: { message: string, isOpen: boolean,
       <DialogContent sx={{ minWidth: '320px' }}>
         <div>{message}</div>
       </DialogContent>
-      <DialogActions>
-        <Button color="error" onClick={closeFn}>Cancel</Button>
-        <Button color="success" variant="contained" onClick={handleConfirm}>Confirm</Button>
+      <DialogActions sx={{ padding: '14px 24px 24px' }}>
+        <button className="button red" type="button" onClick={closeFn}>Cancel</button>
+        <button className="button" type="button" onClick={handleConfirm}>Confirm</button>
       </DialogActions>
     </Dialog>
   );

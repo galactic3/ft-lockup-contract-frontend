@@ -12,6 +12,8 @@ import useTitle from '../../services/useTitle';
 import Row from '../../components/table/row';
 import ClaimAllLockups from '../../components/Claim';
 import { TMetadata } from '../../services/tokenApi';
+import Chart from '../../components/Chart';
+import { chartData } from '../../services/chartHelpers';
 
 export default function UserLockups({ lockups: allLockups, token, adminControls }: { lockups: any[], token: TMetadata, adminControls: boolean }) {
   const { userId, id } = useParams();
@@ -32,6 +34,8 @@ export default function UserLockups({ lockups: allLockups, token, adminControls 
       <div className="container">
 
         {!adminControls && <ClaimAllLockups accountId={userId} token={token} lockups={lockups} />}
+
+        <Chart data={chartData(lockups, token.decimals)} />
 
         <TableContainer sx={{ boxShadow: 'unset' }}>
           <Table className="main-table" aria-label="collapsible table">

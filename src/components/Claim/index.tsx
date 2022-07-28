@@ -59,10 +59,14 @@ function ClaimAllLockups(params: { accountId: string | undefined, token: TMetada
 
   return (
     <div className="claim-wrapper">
-      <h5>Total available</h5>
-      <TokenAmountPreview token={token} amount={total} />
-      <button className="button fullWidth" type="button" onClick={handleClaimAllLockups}>Claim All</button>
-      <ConfirmDialog message={depositConfirmMessage} isOpen={isDialogOpen} closeFn={closeDialog} callback={dialogConfirmCallback} />
+      <div className="claim-preview-info">
+        <h5>Total available</h5>
+        <TokenAmountPreview token={token} amount={total} />
+      </div>
+      <div className="claim-button-wrapper">
+        <button className="button" type="button" onClick={handleClaimAllLockups}>Claim All</button>
+        <ConfirmDialog message={depositConfirmMessage} isOpen={isDialogOpen} closeFn={closeDialog} callback={dialogConfirmCallback} />
+      </div>
     </div>
   );
 }

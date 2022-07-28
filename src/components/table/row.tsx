@@ -156,29 +156,31 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
             placement="top"
             arrow
           >
-            <div className="progress-bar">
-              <div style={{ width: `${row.total_balance === '0' ? '100' : (parseFloat(row.claimed_balance) / parseFloat(row.total_balance)) * 100}%` }} className="claimed">
+            <div className="progress-bar-outer">
+              <div className="progress-bar">
+                <div style={{ width: `${row.total_balance === '0' ? '100' : (parseFloat(row.claimed_balance) / parseFloat(row.total_balance)) * 100}%` }} className="claimed">
                 &nbsp;
-              </div>
-              <div style={{ width: `${row.total_balance === '0' ? '0' : (parseFloat(row.unclaimed_balance) / parseFloat(row.total_balance)) * 100}%` }} className="available">
+                </div>
+                <div style={{ width: `${row.total_balance === '0' ? '0' : (parseFloat(row.unclaimed_balance) / parseFloat(row.total_balance)) * 100}%` }} className="available">
                 &nbsp;
-              </div>
-              <div
-                style={{
-                  width: `${row.total_balance === '0' ? '0' : (
-                    (
-                      parseFloat(row.total_balance)
+                </div>
+                <div
+                  style={{
+                    width: `${row.total_balance === '0' ? '0' : (
+                      (
+                        parseFloat(row.total_balance)
                       - parseFloat(row.claimed_balance)
                       - parseFloat(row.unclaimed_balance)
-                    )
+                      )
                     / parseFloat(row.total_balance)
-                  ) * 100}%`,
-                }}
-                className="vested"
-              >
+                    ) * 100}%`,
+                  }}
+                  className="vested"
+                >
                 &nbsp;
+                </div>
+                <div style={{ width: `${row.total_balance === '0' ? '0' : (0) * 100}%` }} className="unvested">&nbsp;</div>
               </div>
-              <div style={{ width: `${row.total_balance === '0' ? '0' : (0) * 100}%` }} className="unvested">&nbsp;</div>
             </div>
           </Tooltip>
         </TableCell>
@@ -197,11 +199,13 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
                   <Chart data={chartData([row], token.decimals)} />
                 </div>
 
+                {adminControls && (
                 <div className="terminate">
                   <span className="fine-print">{payerMessage}</span>
                   {terminatorId && terminateButton(terminatorId)}
 
                 </div>
+                )}
               </div>
             </div>
           </Collapse>

@@ -151,7 +151,7 @@ export default function App() {
           const totalBalance = txMsg.schedule[txMsg.schedule.length - 1].balance;
           if (totalBalance === unpacked) {
             const statusMessage = `Created lockup for ${txMsg.account_id} with amount ${amount} ${token.symbol}`;
-            enqueueSnackbar(statusMessage, { variant: 'success' });
+            enqueueSnackbar(statusMessage, { variant: 'success', autoHideDuration: 60_000 });
             return;
           }
 

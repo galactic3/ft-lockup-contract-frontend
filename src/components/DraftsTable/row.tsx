@@ -190,18 +190,20 @@ export default function DraftsTableRow(props: { pageIndex: number, row: ReturnTy
             placement="top"
             arrow
           >
-            <div className="progress-bar">
-              <div style={{ width: `${(parseFloat(balancesRaw.claimed) / parseFloat(balancesRaw.total)) * 100}%` }} className="claimed">
+            <div className="progress-bar-outer">
+              <div className="progress-bar">
+                <div style={{ width: `${(parseFloat(balancesRaw.claimed) / parseFloat(balancesRaw.total)) * 100}%` }} className="claimed">
                 &nbsp;
-              </div>
-              <div style={{ width: `${(parseFloat(balancesRaw.unclaimed) / parseFloat(balancesRaw.total)) * 100}%` }} className="available">
+                </div>
+                <div style={{ width: `${(parseFloat(balancesRaw.unclaimed) / parseFloat(balancesRaw.total)) * 100}%` }} className="available">
                 &nbsp;
-              </div>
-              <div style={{ width: `${(parseFloat(balancesRaw.vested) / parseFloat(balancesRaw.total)) * 100}%` }} className="vested">
+                </div>
+                <div style={{ width: `${(parseFloat(balancesRaw.vested) / parseFloat(balancesRaw.total)) * 100}%` }} className="vested">
                 &nbsp;
-              </div>
-              <div style={{ width: `${(parseFloat(balancesRaw.unvested) / parseFloat(balancesRaw.total)) * 100}%` }} className="unvested">
+                </div>
+                <div style={{ width: `${(parseFloat(balancesRaw.unvested) / parseFloat(balancesRaw.total)) * 100}%` }} className="unvested">
                 &nbsp;
+                </div>
               </div>
             </div>
           </Tooltip>

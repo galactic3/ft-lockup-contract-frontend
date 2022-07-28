@@ -19,7 +19,7 @@ export default function ScheduleTable(params: { token: TMetadata, title: String,
       <Table className="inner-table" size="small" aria-label="purchases">
         <TableHead>
           <TableRow>
-            <TableCell>DATE</TableCell>
+            <TableCell>DATE (UTC)</TableCell>
             <TableCell align="right">CUMULATIVE AMOUNT</TableCell>
           </TableRow>
         </TableHead>

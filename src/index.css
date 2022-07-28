@@ -227,7 +227,7 @@ div.process-log {
   margin-left: auto;
 }
 
-.draft-group-preview-inner button {
+.draft-group-preview-inner .button {
   height: 48px;
   width: 180px;
   font-weight: 700;
@@ -235,19 +235,37 @@ div.process-log {
 }
 
 .claim-wrapper {
+  display: flex;
+  align-items: flex-end;
   padding: 24px;
-  display: inline-block;
   border-radius: 16px;
-  border: 1px solid #EDF2F7;
   background: var(--white);
-  margin-bottom: 20px;
+  margin-bottom: 2em;
+}
+
+.claim-preview-info {
+  display: flex;
+  flex-direction: column;
 }
 
 .claim-wrapper h5 {
   font-size: 16px;
   font-weight: 400;
-  margin: 0 0 24px;
+  margin: 0 0 12px;
 }
+
+.claim-button-wrapper {
+  display: flex;
+  margin-left: auto;
+}
+
+.claim-wrapper .claim-button-wrapper .button {
+  height: 48px;
+  width: 180px;
+  font-weight: 700;
+  margin: 20px 0 0 24px;
+}
+
 
 .token-info {
   display: flex;
@@ -260,12 +278,6 @@ div.process-log {
   font-weight: 700;
   text-align: right;
   margin-right: 10px;
-}
-
-.claim-wrapper button {
-  height: 48px;
-  font-weight: 700;
-  margin: 20px 0 0;
 }
 
 .main-table {
@@ -421,10 +433,14 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
   font-size: 12px;
 }
 
-.progress-bar {
-  display: flex;
+.progress-bar-outer {
+  padding: 10px 0;
   width: 200px;
   margin: 0 auto;
+}
+
+.progress-bar {
+  display: flex;
   height: 8px;
   border-radius: 4px;
   overflow: hidden;
@@ -451,9 +467,9 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
 
 .progress-bar__tooltip span {
   display: block;
-  width: calc(50% - 10px);
+  width: calc(50% - 2px);
   font-size: 12px;
-  margin: 5px;
+  margin: 5px 1px;
 }
 
 .progress-bar__tooltip span i {
@@ -466,6 +482,10 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
 
 .progress-bar__tooltip span b {
   font-weight: 600;
+}
+
+.MuiTooltip-popper .MuiTooltip-tooltip {
+  border-radius: 8px;
 }
 
 .claimed {
@@ -517,6 +537,10 @@ table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2)
 
 .MuiLoadingButton-root.button.red:hover {
   background: var(--red);
+}
+
+.MuiDialog-container .MuiDialogActions-root>:not(:first-of-type) {
+  margin-left: 24px;
 }
 
 .submit {
@@ -721,12 +745,6 @@ svg {
   background-color: var(--light-gray);
   padding: 0 5px;
   border-radius: 4px;
-}
-
-span.timestamp-display {
-}
-
-span.timestamp-date-display {
 }
 
 .nowrap {

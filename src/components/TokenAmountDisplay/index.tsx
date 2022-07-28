@@ -13,9 +13,9 @@ export default function TokenAmountDisplay(params: { token: TMetadata, amount: T
   return (
     <span title={amount}>
       {formatTokenAmount(amount, token.decimals)}
-      &nbsp;
+      {' '}
       {token.symbol}
-      &nbsp;
+      {' '}
       <TokenIcon url={token.icon || ''} size={32} />
     </span>
   );
