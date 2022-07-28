@@ -26,6 +26,8 @@ import Homepage from '../../pages/Homepage';
 import NotFoundContract from '../../pages/NotFoundContract';
 import Footer from '../Footer';
 import PageDraft from '../../pages/PageDraft';
+import Terms from '../../pages/Terms';
+import Privacy from '../../pages/Privacy';
 
 function Customer({
   lockups, token, contractId, near,
@@ -233,6 +235,8 @@ export default function App() {
     <HashRouter>
       <Routes>
         <Route path="/" element={<Homepage lockups={lockups} />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route path="/new_lockup_contract/" element={<NewLockupContract />} />
         <Route path="/:cid/*" element={contractId && near && <Customer lockups={lockups} token={token} contractId={contractId} near={near} />} />
         <Route path="/:cid/admin/*" element={contractId && near && <Admin lockups={lockups} token={token} tokenContractId={contractId} near={near} />} />
