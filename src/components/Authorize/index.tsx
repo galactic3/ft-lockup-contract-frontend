@@ -4,7 +4,14 @@ import { Navigate } from 'react-router-dom';
 import { INearProps, NearContext } from '../../services/near';
 
 function Auth({ children }: { children: ReactNode }) {
-  return <div className="container login">{children}</div>;
+  return (
+    <div className="container">
+      <div className="login">
+        <h2>To start using app, please sign in</h2>
+        {children}
+      </div>
+    </div>
+  );
 }
 
 function Authorize() {
@@ -25,7 +32,7 @@ function Authorize() {
 
   return (
     <Auth>
-      { showAlertForUser && <Alert sx={{ margin: 2, width: '500px' }} severity="error">You are not admin</Alert>}
+      { showAlertForUser && <Alert severity="error">You are not admin</Alert>}
       { !signedIn && <button className="button" type="button" onClick={signIn}>Sign In</button> }
       { showLockups && <Navigate to="lockups" replace />}
     </Auth>

@@ -701,12 +701,6 @@ svg {
   margin-left: auto;
 }
 
-.login .button {
-  width: 150px;
-  height: 48px;
-  margin: 20px;
-}
-
 .main button.button.compact {
   margin: 0;
 }
@@ -749,6 +743,21 @@ svg {
 
 .nowrap {
   white-space: nowrap;
+}
+
+.login {
+  margin: 100px auto;
+  text-align: center;
+}
+
+.login .MuiAlert-root {
+  margin: 2em auto;
+  width: 380px;
+}
+
+.login .button {
+  width: 150px;
+  margin: 20px;
 }
 
 div.vested-amount-info {
