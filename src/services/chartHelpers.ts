@@ -1,8 +1,10 @@
+import { Big } from 'big.js';
+
 import {
   TSchedule, TNearTimestamp, TNearAmount, TCheckpoint,
 } from './api';
 import { formatTokenAmount } from '../utils';
-import { sumSchedules } from './scheduleHelpers';
+import { sumSchedules, terminateScheduleAtAmount } from './scheduleHelpers';
 
 const buildVestedSchedule = (from: TNearTimestamp, balance: TNearAmount) => [
   { timestamp: from - 1, balance: '0' },
@@ -33,15 +35,33 @@ export const chartData = (lockupsList: any[], tokenDecimals: number): any => {
   const sumVesting = sumSchedules(vestingSchedules);
   const sumLockup = sumSchedules(lockupSchedules);
 
-  if (sumVesting[sumVesting.length - 1]?.timestamp !== sumLockup[sumLockup.length - 1].timestamp) {
-    sumVesting.push(sumLockup[sumLockup.length - 1]);
+  if (sumVesting.length > 0) {
+    if (sumVesting[sumVesting.length - 1].timestamp < sumLockup[sumLockup.length - 1].timestamp) {
+      sumVesting.push(sumLockup[sumLockup.length - 1]);
+    }
+    if (sumVesting[sumVesting.length - 1].timestamp > sumLockup[sumLockup.length - 1].timestamp) {
+      sumLockup.push(sumVesting[sumVesting.length - 1]);
+    }
   }
 
   const convertSchedule = (schedule: TSchedule, decimals: number) => schedule.map((s: TCheckpoint) => [s.timestamp * 1000, formatTokenAmount(s.balance, decimals)]);
 
+  const totalClaimed = lockupsList.map((x) => x.claimed_balance || '0').reduce((acc, x) => new Big(acc).add(new Big(x)).toFixed(), '0');
+
+  // trim lockup schedule at claimed amount
+  const sumClaimed = terminateScheduleAtAmount(sumLockup, totalClaimed, 0);
+
+  if (sumClaimed[sumClaimed.length - 1]?.timestamp !== sumLockup[sumLockup.length - 1].timestamp) {
+    sumClaimed.push({
+      timestamp: sumLockup[sumLockup.length - 1].timestamp,
+      balance: sumClaimed[sumClaimed.length - 1].balance,
+    });
+  }
+
   return {
     unlocked: lockupsList.length ? convertSchedule(sumLockup, tokenDecimals) : [],
     vested: lockupsList.length ? convertSchedule(sumVesting, tokenDecimals) : [],
+    claimed: lockupsList.length ? convertSchedule(sumClaimed, tokenDecimals) : [],
   };
 };
 

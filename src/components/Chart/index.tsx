@@ -2,7 +2,7 @@ import ReactEcharts from 'echarts-for-react';
 
 import '../../styles/chart.scss';
 
-export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unlocked: any[] }, xMax?: number, yMax?: number }) {
+export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unlocked: any[], claimed: any[] }, xMax?: number, yMax?: number }) {
   const xMin = Math.min(...[data.unlocked[0][0], ...(data.vested[0][0] && [data.vested[0][0]] && [])]);
   console.log('xMin', xMin / 1000);
   console.log('xMax', xMax);
@@ -15,11 +15,16 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
     useUTC: true,
     title: [
       {
-        text: 'Schedule in UTC',
-        top: '10px',
+        text: 'Schedule timestamps are in UTC',
+        top: '13px',
         left: 'center',
+        // right: '30px',
         textStyle: {
           fontWeight: 'normal',
+          fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+          fontSize: '14px',
+          color: '#242F57',
+          opacity: 0.5,
         },
       },
     ],
@@ -36,8 +41,8 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
     },
     grid: {
       top: '15%',
-      left: '2%',
-      right: '3%',
+      left: '30px',
+      right: '30px',
       bottom: '15%',
       containLabel: true,
     },
@@ -87,6 +92,15 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
           opacity: 1,
         },
         data: data.unlocked,
+      },
+      {
+        name: 'Claimed',
+        type: 'line',
+        color: '#E9AF1C',
+        areaStyle: {
+          opacity: 1,
+        },
+        data: data.claimed,
       },
     ],
   };

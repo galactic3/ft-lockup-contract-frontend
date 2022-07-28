@@ -95,6 +95,7 @@ export function TerminateModal({
         Schedule: trimmedVestingSchedule,
       },
     },
+    claimed_balance: lockup.claimed_balance,
   };
 
   return (
