@@ -13,7 +13,7 @@ export default function TimestampDateDisplay(props: { unixSeconds: number }) {
   const minutes = pad(date.getUTCMinutes(), 2);
   const seconds = pad(date.getUTCSeconds(), 2);
 
-  const formatted = `${year}-${month}-${monthDay}`;
+  const formatted = `${year}-${month}-${monthDay} UTC`;
   const formattedWithTime = `${year}-${month}-${monthDay} ${hours}:${minutes}:${seconds} UTC`;
 
   return (
