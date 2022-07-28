@@ -18,6 +18,9 @@ export default function NewLockupContract() {
   const [lockupOperatorsRaw, setLockupOperatorsRaw] = useState<string>('');
   const lockupOperators = lockupOperatorsRaw.split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0);
 
+  const [draftOperatorsRaw, setDraftOperatorsRaw] = useState<string>('');
+  const draftOperators = draftOperatorsRaw.split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0);
+
   const PENDING = 'pending';
   const FOUND = 'found';
   const NOT_FOUND = 'not_found';
@@ -98,6 +101,13 @@ export default function NewLockupContract() {
     parsed.forEach((x) => enqueueAccountIdCheck(x));
   };
 
+  const handleChangeDraftOperatorsRaw = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setDraftOperatorsRaw(value);
+    const parsed = value.split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0);
+    parsed.forEach((x) => enqueueAccountIdCheck(x));
+  };
+
   const handleDeployLockupContract = (e: any) => {
     e.preventDefault();
 
@@ -106,10 +116,6 @@ export default function NewLockupContract() {
         if (!near?.currentUser?.signedAccountId) {
           throw new Error('expected signedAccountId to be present');
         }
-
-        // const lockupCreator: string = near.signedAccountId;
-        const draftOperators: string[] = e.target.elements.draft_operators.value
-          .split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0);
 
         const allUniqueAccountIds = Array.from(new Set(
           [...lockupOperators, ...draftOperators, tokenAccountId],
@@ -168,6 +174,9 @@ export default function NewLockupContract() {
 
   const lockupOperatorsMissing = lockupOperators.filter((x) => accountStatuses[x] === NOT_FOUND);
   const lockupOperatorsPending = lockupOperators.filter((x) => accountStatuses[x] === PENDING);
+
+  const draftOperatorsMissing = draftOperators.filter((x) => accountStatuses[x] === NOT_FOUND);
+  const draftOperatorsPending = draftOperators.filter((x) => accountStatuses[x] === PENDING);
   return (
     <div>
       <div className="header">
@@ -203,7 +212,7 @@ export default function NewLockupContract() {
               <span>Lockup operators: </span>
               <div style={{ display: 'inline-block' }}>
                 <input type="text" id="lockup_operators" value={lockupOperatorsRaw} onChange={handleChangeLockupOperatorsRaw} />
-                <div style={{ fontSize: 10, height: '0px' }}>
+                <div style={{ fontSize: 10, height: '0px', position: 'absolute' }}>
                   {lockupOperatorsMissing.length > 0 && <span style={{ lineHeight: '20px', color: '#FF594E' }}>{`Account "${lockupOperatorsMissing[0]}" does not exist`}</span>}
                   {lockupOperators.length === 0 && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Required</span>}
                   {lockupOperatorsMissing.length === 0 && lockupOperatorsPending.length > 0 && <span style={{ lineHeight: '20px', color: '#808689' }}>Checking...</span>}
@@ -212,7 +221,13 @@ export default function NewLockupContract() {
             </div>
             <div className="form-row">
               <span>Draft operators: </span>
-              <input type="text" id="draft_operators" />
+              <div style={{ display: 'inline-block' }}>
+                <input type="text" id="draft_operators" value={draftOperatorsRaw} onChange={handleChangeDraftOperatorsRaw} />
+                <div style={{ fontSize: 10, height: '0px', position: 'absolute' }}>
+                  {draftOperatorsMissing.length > 0 && <span style={{ lineHeight: '20px', color: '#FF594E' }}>{`Account "${draftOperatorsMissing[0]}" does not exist`}</span>}
+                  {draftOperatorsMissing.length === 0 && draftOperatorsPending.length > 0 && <span style={{ lineHeight: '20px', color: '#808689' }}>Checking...</span>}
+                </div>
+              </div>
             </div>
             <div className="form-row">
               <span>Fungible token contract address: </span>
@@ -223,16 +238,16 @@ export default function NewLockupContract() {
                   value={tokenAccountId}
                   onChange={handleChangeTokenAccountId}
                 />
-                <div style={{ fontSize: 10, height: '0px' }}>
-                  {accountStatuses[tokenAccountId] === NOT_FOUND && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Account does not exist</span>}
+                <div style={{ fontSize: 10, height: '0px', position: 'absolute' }}>
+                  {tokenAccountId && accountStatuses[tokenAccountId] === NOT_FOUND && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Account does not exist</span>}
+                  {!tokenAccountId && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Required</span>}
                   {accountStatuses[tokenAccountId] === PENDING && <span style={{ lineHeight: '20px', color: '#808689' }}>Checking...</span>}
-                  {accountStatuses[tokenAccountId] === FOUND && <span style={{ lineHeight: '20px', color: '#00B988' }}>Account found</span>}
                 </div>
               </div>
             </div>
             <div className="form-row">
               <span>New Lockup Contract Address: </span>
-              <div style={{ display: 'inline-block' }}>
+              <div style={{ display: 'inline-block', position: 'absolute' }}>
                 <input type="text" id="lockup_subaccount_id" value={name} onChange={handleChangeName} />
                 <div style={{ fontSize: 10, height: '0px' }}>
                   {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === FOUND && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Account already exists</span>}
