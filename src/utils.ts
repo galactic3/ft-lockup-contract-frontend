@@ -8,6 +8,38 @@ Big.DP = 40;
 Big.PE = 40;
 export const NEAR_ROUND_DIGITS = 2;
 
+export const pseudoUtcIsoDate = (unixSeconds: number) => {
+  const date = new Date(unixSeconds * 1_000);
+  const pad = (input: number | string, width: number) => input.toString().padStart(width, '0');
+
+  const year = pad(date.getUTCFullYear(), 4);
+  const month = pad(date.getUTCMonth() + 1, 2);
+  const monthDay = pad(date.getUTCDate(), 2);
+
+  const formatted = `${year}-${month}-${monthDay}`;
+
+  return formatted;
+};
+
+export const pseudoUtcIsoTime = (unixSeconds: number) => {
+  const date = new Date(unixSeconds * 1_000);
+  const pad = (input: number | string, width: number) => input.toString().padStart(width, '0');
+
+  const hours = pad(date.getUTCHours(), 2);
+  const minutes = pad(date.getUTCMinutes(), 2);
+  const seconds = pad(date.getUTCSeconds(), 2);
+
+  const formatted = `${hours}:${minutes}:${seconds}`;
+
+  return formatted;
+};
+
+export const pseudoUtcIsoDateTime = (unixSeconds: number) => {
+  const formatted = `${pseudoUtcIsoDate(unixSeconds)} ${pseudoUtcIsoTime(unixSeconds)}`;
+
+  return formatted;
+};
+
 export const toNear = (value: any) => Big(value).times(10 ** 24).round(0, Big.roundDown);
 export const nearTo = (value: any, digits = NEAR_ROUND_DIGITS, mode?: number | undefined) => {
   // default is 20, need at least 38 for proper rounding of any near balance

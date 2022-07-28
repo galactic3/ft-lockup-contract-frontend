@@ -1,5 +1,6 @@
 import { Big } from 'big.js';
 import { TCheckpoint, TNearTimestamp, TSchedule } from './api';
+import { pseudoUtcIsoDateTime } from '../utils';
 
 export const interpolateRaw = (x0: number, y0: string, x1: number, y1: string, xM: number) : string => {
   if (x1 <= x0) {
@@ -109,12 +110,14 @@ export const sumSchedules = (schedules: TSchedule[]) : TSchedule => {
 };
 
 export const assertValidTerminationSchedule = (lockupSchedule: TSchedule, vestingSchedule: TSchedule) => {
+  const f = (x: number) => `${pseudoUtcIsoDateTime(x)} UTC`;
+
   lockupSchedule.forEach((checkpoint) => {
     const { timestamp } = checkpoint;
     const lockupBalance = checkpoint.balance;
     const vestingBalance = interpolateSchedule(vestingSchedule, timestamp).balance;
     if (!(new Big(lockupBalance).lte(new Big(vestingBalance)))) {
-      throw new Error(`The lockup schedule is ahead of the termination schedule at timestamp ${timestamp}`);
+      throw new Error(`The lockup schedule is ahead of the termination schedule at ${f(timestamp)} (${timestamp})`);
     }
   });
   vestingSchedule.forEach((checkpoint) => {
@@ -122,7 +125,7 @@ export const assertValidTerminationSchedule = (lockupSchedule: TSchedule, vestin
     const lockupBalance = interpolateSchedule(lockupSchedule, timestamp).balance;
     const vestingBalance = checkpoint.balance;
     if (!(new Big(lockupBalance).lte(new Big(vestingBalance)))) {
-      throw new Error(`The lockup schedule is ahead of the termination schedule at timestamp ${timestamp}`);
+      throw new Error(`The lockup schedule is ahead of the termination schedule at ${f(timestamp)} (${timestamp})`);
     }
   });
 };
