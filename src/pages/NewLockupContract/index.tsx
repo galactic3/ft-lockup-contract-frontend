@@ -221,6 +221,12 @@ export default function NewLockupContract() {
               </div>
             </div>
             <div className="form-row">
+              <span>Lockup operators: </span>
+              <div style={{ display: 'inline-block' }}>
+                <AddRemoveInput />
+              </div>
+            </div>
+            <div className="form-row">
               <span>Draft operators: </span>
               <div style={{ display: 'inline-block' }}>
                 <input type="text" id="draft_operators" value={draftOperatorsRaw} onChange={handleChangeDraftOperatorsRaw} />
@@ -257,11 +263,6 @@ export default function NewLockupContract() {
                   {!name && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Required</span>}
                 </div>
               </div>
-            </div>
-            <div className="form-row">
-              <span>Lockup operators: </span>
-              <input type="text" id="lockup_operators" />
-              <AddRemoveInput />
             </div>
 
             <button
