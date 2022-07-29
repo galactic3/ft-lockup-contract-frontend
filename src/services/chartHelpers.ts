@@ -58,7 +58,17 @@ export const chartData = (lockupsList: any[], tokenDecimals: number): any => {
     });
   }
 
-  const allCheckpoints = [sumLockup, sumVesting, sumClaimed].flatMap((schedule) => schedule.map((x) => x.timestamp));
+  const existingCheckpoints = [sumLockup, sumVesting, sumClaimed]
+    .flatMap((schedule) => schedule.map((x) => x.timestamp));
+
+  const realMinTimestamp = Math.min(...existingCheckpoints);
+  const maxTimestamp = Math.max(...existingCheckpoints);
+
+  const dailyCheckpoints = [];
+  for (let i = ((realMinTimestamp - 1) / (60 * 60 * 24) + 1) * (60 * 60 * 24); i < maxTimestamp; i += (60 * 60 * 24)) {
+    dailyCheckpoints.push(i);
+  }
+  const allCheckpoints = [...existingCheckpoints, ...dailyCheckpoints];
 
   sumClaimed = shatterSchedule(sumClaimed, allCheckpoints);
   sumLockup = shatterSchedule(sumLockup, allCheckpoints);
