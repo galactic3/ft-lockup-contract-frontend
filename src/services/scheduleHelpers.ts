@@ -239,3 +239,10 @@ export const calcBalancesRaw = (row: any, now: number): TBalancesRaw => {
     total: totalBalanceRaw,
   };
 };
+
+export const shatterSchedule = (schedule: TSchedule, extraTimestamps: TNearTimestamp[]) => {
+  const presentTimestamps = schedule.map((x) => x.timestamp);
+  const timestamps: number[] = Array.from(new Set([...presentTimestamps, ...extraTimestamps])).sort();
+  const result = timestamps.map((timestamp) => interpolateSchedule(schedule, timestamp));
+  return result;
+};

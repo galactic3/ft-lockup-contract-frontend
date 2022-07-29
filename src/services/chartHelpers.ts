@@ -4,7 +4,7 @@ import {
   TSchedule, TNearTimestamp, TNearAmount, TCheckpoint,
 } from './api';
 import { formatTokenAmount } from '../utils';
-import { sumSchedules, terminateScheduleAtAmount } from './scheduleHelpers';
+import { sumSchedules, terminateScheduleAtAmount, shatterSchedule } from './scheduleHelpers';
 
 const buildVestedSchedule = (from: TNearTimestamp, balance: TNearAmount) => [
   { timestamp: from - 1, balance: '0' },
@@ -32,8 +32,8 @@ export const chartData = (lockupsList: any[], tokenDecimals: number): any => {
     }),
   ) as TSchedule[];
 
-  const sumVesting = sumSchedules(vestingSchedules);
-  const sumLockup = sumSchedules(lockupSchedules);
+  let sumVesting = sumSchedules(vestingSchedules);
+  let sumLockup = sumSchedules(lockupSchedules);
 
   if (sumVesting.length > 0) {
     if (sumVesting[sumVesting.length - 1].timestamp < sumLockup[sumLockup.length - 1].timestamp) {
@@ -49,7 +49,7 @@ export const chartData = (lockupsList: any[], tokenDecimals: number): any => {
   const totalClaimed = lockupsList.map((x) => x.claimed_balance || '0').reduce((acc, x) => new Big(acc).add(new Big(x)).toFixed(), '0');
 
   // trim lockup schedule at claimed amount
-  const sumClaimed = terminateScheduleAtAmount(sumLockup, totalClaimed, 0);
+  let sumClaimed = terminateScheduleAtAmount(sumLockup, totalClaimed, 0);
 
   if (sumClaimed[sumClaimed.length - 1]?.timestamp !== sumLockup[sumLockup.length - 1].timestamp) {
     sumClaimed.push({
@@ -57,6 +57,22 @@ export const chartData = (lockupsList: any[], tokenDecimals: number): any => {
       balance: sumClaimed[sumClaimed.length - 1].balance,
     });
   }
+
+  const existingCheckpoints = [sumLockup, sumVesting, sumClaimed]
+    .flatMap((schedule) => schedule.map((x) => x.timestamp));
+
+  const realMinTimestamp = Math.min(...existingCheckpoints);
+  const maxTimestamp = Math.max(...existingCheckpoints);
+
+  const dailyCheckpoints = [];
+  for (let i = ((realMinTimestamp - 1) / (60 * 60 * 24) + 1) * (60 * 60 * 24); i < maxTimestamp; i += (60 * 60 * 24)) {
+    dailyCheckpoints.push(i);
+  }
+  const allCheckpoints = [...existingCheckpoints, ...dailyCheckpoints];
+
+  sumClaimed = shatterSchedule(sumClaimed, allCheckpoints);
+  sumLockup = shatterSchedule(sumLockup, allCheckpoints);
+  sumVesting = shatterSchedule(sumVesting, allCheckpoints);
 
   return {
     unlocked: lockupsList.length ? convertSchedule(sumLockup, tokenDecimals) : [],
