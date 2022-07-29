@@ -58,8 +58,8 @@ const createLockupSnack = (enqueueSnackbar: any, unpacked: any, txHash: string, 
 
       return enqueueCustomSnackbar(
         enqueueSnackbar,
-        success.body(`Created lockup for ${txMsg.account_id} with amount ${amount} ${token.symbol}`),
-        success.header('Create lockup succeed'),
+        success.body(`${txMsg.account_id} now has a lockup of ${amount} ${token.symbol}`),
+        success.header('Lockup created'),
         { autoHideDuration: 60_000 },
       );
     }
@@ -68,7 +68,7 @@ const createLockupSnack = (enqueueSnackbar: any, unpacked: any, txHash: string, 
   return enqueueCustomSnackbar(
     enqueueSnackbar,
     failure.body(`${txLinkInExplorer(txHash)}`),
-    failure.header('Create lockup failed'),
+    failure.header('Lockup creation failed'),
   );
 };
 
@@ -78,15 +78,15 @@ const fundDraftGroupSnack = (enqueueSnackbar: any, unpacked: any, txHash: string
 
     return enqueueCustomSnackbar(
       enqueueSnackbar,
-      success.body(`Funded draft group ${txMsg.draft_group_id} with amount ${amount} ${token.symbol}`),
-      success.header('Fund draft group succeed'),
+      success.body(`Draft group ${txMsg.draft_group_id} funded with amount ${amount} ${token.symbol}`),
+      success.header('Draft group funded'),
     );
   }
 
   return enqueueCustomSnackbar(
     enqueueSnackbar,
     failure.body(`${txLinkInExplorer(txHash)}`),
-    failure.header('Create lockup failed'),
+    failure.header('Draft group fund failed'),
   );
 };
 
@@ -96,15 +96,15 @@ const terminateLockupSnack = (enqueueSnackbar: any, unpacked: any, txHash: strin
 
     return enqueueCustomSnackbar(
       enqueueSnackbar,
-      success.body(`Terminated lockup #${lockup_index}, unvested amount: ${amount} ${token.symbol}`),
-      success.header('Terminate lockup succeed'),
+      success.body(`Lockup #${lockup_index} was terminated. Unvested amount: ${amount} ${token.symbol}`),
+      success.header('Lockup terminated'),
     );
   }
 
   return enqueueCustomSnackbar(
     enqueueSnackbar,
     failure.body(`${txLinkInExplorer(txHash)}`),
-    failure.header('Terminate lockup failed'),
+    failure.header('Lockup termination failed'),
   );
 };
 
@@ -121,7 +121,7 @@ const createDraftGroupSnack = (enqueueSnackbar: any, variant: TVariant) => {
     return enqueueCustomSnackbar(
       enqueueSnackbar,
       failure.body(`${txLinkInExplorer(txHash)}`),
-      failure.header('Create draft group failed'),
+      failure.header('Draft group creation failed'),
     );
   }
 
@@ -130,7 +130,7 @@ const createDraftGroupSnack = (enqueueSnackbar: any, variant: TVariant) => {
   return enqueueCustomSnackbar(
     enqueueSnackbar,
     success.body(`Created draft group id: ${draftGroupId}`),
-    success.header('Create draft group succeed'),
+    success.header('Draft group created'),
   );
 };
 
