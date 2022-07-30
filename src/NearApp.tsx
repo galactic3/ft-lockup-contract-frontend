@@ -83,6 +83,7 @@ export default function NearApp() {
             autoHideDuration={null}
             action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}
             onClose={handleClose}
+            maxSnack={5}
           >
             <App />
           </SnackbarProvider>
