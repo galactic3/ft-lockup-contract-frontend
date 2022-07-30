@@ -165,7 +165,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
     <>
       <button className="button" type="button" onClick={handleOpen}>Create Lockup</button>
       <Dialog open={open} sx={{ padding: 2 }} maxWidth="md" onClose={handleClose}>
-        <form className="form-submit" onSubmit={handleCreateLockup}>
+        <form className="form-submit">
           <DialogTitle>
             Create Lockup
             <IconButton
@@ -190,25 +190,31 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
               variant="standard"
               value={accountId}
               onChange={handleChangeAccountIdEvent}
+              sx={{ margin: 0 }}
             />
             <div style={{ fontSize: 10 }}>
               {accountStatuses[accountId] === 'error' && <span style={{ color: '#FF594E' }}>Account does not exist</span>}
               {accountStatuses[accountId] === 'pending' && <span style={{ color: '#808689' }}>Checking...</span>}
               {accountStatuses[accountId] === 'success' && <span style={{ color: '#00B988' }}>Account found</span>}
             </div>
-            <TextField
-              margin="normal"
-              id="amount"
-              label="Amount"
-              type="number"
-              variant="standard"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">{token.symbol}</InputAdornment>,
-              }}
+            <FormControl
               fullWidth
-              onChange={handleChangeAmount}
-            />
-            <br />
+              sx={{ margin: 0 }}
+            >
+              <TextField
+                margin="normal"
+                id="amount"
+                label="Amount"
+                type="number"
+                variant="standard"
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">{token.symbol}</InputAdornment>,
+                }}
+                fullWidth
+                onChange={handleChangeAmount}
+                sx={{ margin: 0 }}
+              />
+            </FormControl>
             <FormControl
               fullWidth
               sx={{ marginTop: '20px' }}
@@ -225,21 +231,30 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
                 <MenuItem value="4_year_vested">4 year lockup with 25% cliff in 1 year (VESTED)</MenuItem>
               </Select>
             </FormControl>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <UTCDateTimePicker
-                value={startDate}
-                setValue={(newValue) => {
-                  console.log('setStartDate', newValue?.getTime());
-                  setStartDate(newValue);
-                }}
-                label="Start date and time"
-                minTime={null}
-                disabled={false}
-              />
-            </LocalizationProvider>
+            <FormControl fullWidth sx={{ marginTop: '10px', marginBottom: 0 }}>
+              <LocalizationProvider dateAdapter={AdapterDateFns} sx={{ marginBottom: 0 }}>
+                <UTCDateTimePicker
+                  value={startDate}
+                  setValue={(newValue) => {
+                    console.log('setStartDate', newValue?.getTime());
+                    setStartDate(newValue);
+                  }}
+                  label="Start date and time"
+                  minTime={null}
+                  disabled={false}
+                />
+              </LocalizationProvider>
+            </FormControl>
           </DialogContent>
           <DialogActions sx={{ padding: '14px 24px 24px' }}>
-            <button disabled={!startDate || accountStatuses[accountId] === 'error' || !validAmount} className="button fullWidth noMargin" type="submit">Create</button>
+            <button
+              disabled={!startDate || accountStatuses[accountId] === 'error' || !validAmount}
+              className="button fullWidth noMargin"
+              type="button"
+              onClick={handleCreateLockup}
+            >
+              Create
+            </button>
           </DialogActions>
         </form>
       </Dialog>
