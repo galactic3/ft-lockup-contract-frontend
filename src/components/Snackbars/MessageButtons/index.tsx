@@ -3,7 +3,7 @@ import Paper from '@mui/material/Paper';
 import { useSnackbar } from 'notistack';
 import { enqueueCustomSnackbar } from '../Snackbar';
 import success from '../SuccessPartials';
-import failure from '../FailurePartials';
+import warning from '../WarningPartials';
 
 const styles = {
   root: {
@@ -29,7 +29,7 @@ const MessageButtons = function () {
   let partial: any;
 
   if (1 * 2 === 2) {
-    partial = failure;
+    partial = warning;
   } else {
     partial = success;
   }

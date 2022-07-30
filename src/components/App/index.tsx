@@ -34,6 +34,8 @@ import {
   fundDraftGroupSnack,
   terminateLockupSnack,
 } from '../Snackbars';
+import { enqueueCustomSnackbar } from '../Snackbars/Snackbar';
+import warning from '../Snackbars/WarningPartials';
 
 import { parseTxResultUrl, fetchTxStatus } from '../../services/transactionResultParser';
 
@@ -176,13 +178,21 @@ export default function App() {
             break;
           }
 
-          enqueueSnackbar(`Transaction performed, TODO ${txHash}!`, { variant: 'warning' });
+          enqueueCustomSnackbar(
+            enqueueSnackbar,
+            warning.body(`Transaction performed, TODO ${txHash}!`),
+            warning.header('Warning'),
+          );
           break;
         case 'terminate':
           terminateLockupSnack(enqueueSnackbar, unpacked, txHash, token, args.lockup_index);
           break;
         default:
-          enqueueSnackbar(`UNHANDLED Transaction "${methodName}" : ${txLinkInExplorer(txHash)}`, { variant: 'warning' });
+          enqueueCustomSnackbar(
+            enqueueSnackbar,
+            warning.body(`UNHANDLED Transaction "${methodName}" : ${txLinkInExplorer(txHash)}`),
+            warning.header('Warning'),
+          );
           break;
       }
     };
