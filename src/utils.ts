@@ -60,8 +60,7 @@ export const tsNear2JS = (time: number) => Math.floor(time / 1000000);
 // formats token amount, always two digits after comma, fixed, no group separators
 export const formatTokenAmount = (value: string, tokenDecimals: number) => new Big(value).div(10 ** tokenDecimals).toFixed(NEAR_ROUND_DIGITS, Big.roundDown);
 
-// @ts-ignore
-export const addYear = (date: Date, year: number) => new Date(new Date(date).setFullYear((date.getFullYear()) + year)).getTime() / 1000;
+export const addYear = (date: Date, year: number) => new Date(new Date(date).setUTCFullYear((date.getUTCFullYear()) + year)).getTime() / 1000;
 export const startOfDay = (date: Date) => {
   const msInDay = 1_000 * 60 * 60 * 24;
   const result = new Date(Math.floor(date.getTime() / msInDay) * msInDay);
