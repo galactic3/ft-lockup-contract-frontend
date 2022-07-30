@@ -41,7 +41,6 @@ function Customer({
       <Header adminControls={false} />
       <Routes>
         <Route path="/" element={<Navigate replace to="lockups" />} />
-        <Route path="/about" element={<About lockups={lockups} token_account_id={contractId} />} />
         <Route path="/lockups" element={contractId && near && <Lockups lockups={lockups} token={{ ...token, contractId }} adminControls={false} />} />
         <Route path="/lockups/:userId" element={<UserLockups lockups={lockups} token={token} adminControls={false} />} />
         <Route path="/lockups/:userId/:id" element={<UserLockups lockups={lockups} token={token} adminControls={false} />} />
@@ -67,7 +66,6 @@ function Admin({
       <Header adminControls />
       <Routes>
         <Route path="/" element={<Authorize />} />
-        <Route path="/about" element={<About lockups={lockups} token_account_id={tokenContractId} />} />
         <Route path="/lockups" element={showLockups && <RequireAuth><Lockups lockups={lockups} token={{ ...token, contractId: tokenContractId }} adminControls /></RequireAuth>} />
         <Route path="/lockups/:userId" element={<RequireAuth><UserLockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
         <Route path="/lockups/:userId/:id" element={<RequireAuth><UserLockups lockups={lockups} token={token} adminControls /></RequireAuth>} />
@@ -237,6 +235,7 @@ export default function App() {
         <Route path="/" element={<Homepage lockups={lockups} />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/about" element={<About />} />
         <Route path="/new_lockup_contract/" element={<NewLockupContract />} />
         <Route path="/:cid/*" element={contractId && near && <Customer lockups={lockups} token={token} contractId={contractId} near={near} />} />
         <Route path="/:cid/admin/*" element={contractId && near && <Admin lockups={lockups} token={token} tokenContractId={contractId} near={near} />} />
