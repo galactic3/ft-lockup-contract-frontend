@@ -289,16 +289,16 @@ export const toLockupSchedule = (schedule: HumanFriendlySchedule, inputTotalAmou
   const tms = [];
   {
     // otherwise: use steps
-    let tm = timestampCliff;
+    let tm = null;
     const maxSteps = 500;
-    for (;;) {
+    for (let i = 0; i < maxSteps; i += 1) {
+      tm = datePlusDurationMul(timestampCliff, releaseEvery, i);
       if (tm >= timestampFinish) {
         tm = timestampFinish;
         tms.push(tm);
         break;
       }
       tms.push(tm);
-      tm = datePlusDurationMul(tm, releaseEvery, 1);
       if (tms.length >= maxSteps) {
         throw new Error('too many checkpoints for schedule');
       }
