@@ -164,9 +164,9 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
   return (
     <div className="main">
       <div className="container">
-        <h2>
+        <h1>
           Import Draft Group
-        </h2>
+        </h1>
 
         <div className="import-draft-group-wrapper">
           <div className="draft-group-preview-inner">
@@ -182,7 +182,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
             </div>
           </div>
 
-          <p>
+          <p className="standard-text-style">
             Copy lockups from a spreadsheet editor and paste into the area below.
             See
             {' '}
@@ -195,6 +195,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
             className="import-draft-group-textarea"
             id="spreadsheet-input"
             placeholder="Excel input"
+            minRows={3}
             maxRows={5}
             onChange={handleChangeInput}
           />

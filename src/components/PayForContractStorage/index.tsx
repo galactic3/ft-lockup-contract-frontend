@@ -24,7 +24,12 @@ export default function PayForContractStorage() {
 
   return (
     <div>
-      <div style={{ maxWidth: 640, margin: 'auto', paddingTop: 20 }}>
+      <div
+        style={{
+          maxWidth: 480, margin: 'auto', paddingTop: 20, textAlign: 'center',
+        }}
+      >
+        <h2>Please pay for fungible token storage</h2>
         <p>
           Please pay for the account storage in fungible token contract.
           This is necessary to allow lockup contract to hold locked fungible token funds.
@@ -33,7 +38,7 @@ export default function PayForContractStorage() {
           storage for their account too.
         </p>
 
-        <button className="button fullWidth" type="button" onClick={handlePay}>
+        <button className="button" type="button" onClick={handlePay}>
           Pay
         </button>
       </div>
