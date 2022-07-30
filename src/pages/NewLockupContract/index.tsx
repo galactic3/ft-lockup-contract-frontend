@@ -200,7 +200,12 @@ export default function NewLockupContract() {
         <form className="form-submit" onSubmit={handleDeployLockupContract}>
           <div className="form-wrapper">
 
-            <p>On this page you can deploy your own copy of lockup contract. Some more elaborative description follows here.</p>
+            <p>
+              On this page you can deploy your own copy of lockup contract. Read more
+              {' '}
+              <Link to="/about">here</Link>
+              .
+            </p>
             <div className="form-row">
               <span>Contract creator: </span>
               <div className="form-cell">
