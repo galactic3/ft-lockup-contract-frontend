@@ -148,19 +148,21 @@ export function TerminateModal({
               <FormControlLabel value="with_timestamp" control={<Radio />} label="at specific timestamp" />
             </RadioGroup>
           </FormControl>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            {dialog.dateTimePicker && (
-              <UTCDateTimePicker
-                value={dialog.dateTimePicker.currentState.value}
-                setValue={(newValue) => {
-                  dialog.dateTimePicker.currentState.setValue(newValue);
-                }}
-                label="Custom termination date and time"
-                minTime={new Date()}
-                disabled={!(terminationMode === 'with_timestamp')}
-              />
-            )}
-          </LocalizationProvider>
+          <FormControl fullWidth sx={{ marginTop: '10px' }}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              {dialog.dateTimePicker && (
+                <UTCDateTimePicker
+                  value={dialog.dateTimePicker.currentState.value}
+                  setValue={(newValue) => {
+                    dialog.dateTimePicker.currentState.setValue(newValue);
+                  }}
+                  label="Custom termination date and time"
+                  minTime={new Date()}
+                  disabled={!(terminationMode === 'with_timestamp')}
+                />
+              )}
+            </LocalizationProvider>
+          </FormControl>
           { dialog?.daoSelector && (
             <DaoSelector
               selectedAddress={dialog.daoSelector.currentState.value}
@@ -176,7 +178,7 @@ export function TerminateModal({
           <span style={{ minHeight: '40px' }} />
           <button
             className="button red fullWidth"
-            style={{ marginTop: '40px' }}
+            style={{ marginTop: '20px' }}
             type="button"
             onClick={handlers.onSubmit}
             disabled={

@@ -32,7 +32,8 @@ export default function UTCDateTimePicker(props: TProps) {
             sx={{ margin: '0' }}
             margin="normal"
             fullWidth
-            variant="standard"
+            variant="outlined"
+            size="small"
             {...params}
             inputProps={{
               ...params.inputProps,

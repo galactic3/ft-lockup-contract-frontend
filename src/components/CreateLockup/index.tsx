@@ -10,6 +10,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  InputLabel,
 } from '@mui/material';
 import BN from 'bn.js';
 import Big from 'big.js';
@@ -181,32 +182,35 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
             </IconButton>
           </DialogTitle>
           <DialogContent sx={{ maxWidth: '320px' }}>
-            <TextField
-              margin="normal"
-              id="account"
-              label="Account Id"
-              type="text"
-              fullWidth
-              variant="standard"
-              value={accountId}
-              onChange={handleChangeAccountIdEvent}
-              sx={{ margin: 0 }}
-            />
-            <div style={{ fontSize: 10 }}>
-              {accountStatuses[accountId] === 'error' && <span style={{ color: '#FF594E' }}>Account does not exist</span>}
-              {accountStatuses[accountId] === 'pending' && <span style={{ color: '#808689' }}>Checking...</span>}
-              {accountStatuses[accountId] === 'success' && <span style={{ color: '#00B988' }}>Account found</span>}
-            </div>
             <FormControl
               fullWidth
-              sx={{ margin: 0 }}
+              sx={{ height: '70px' }}
+            >
+              <TextField
+                margin="normal"
+                id="account"
+                label="Account Id"
+                type="text"
+                fullWidth
+                variant="outlined"
+                size="small"
+                value={accountId}
+                onChange={handleChangeAccountIdEvent}
+                error={accountStatuses[accountId] === 'error'}
+                helperText={accountStatuses[accountId] === 'error' && 'Account does not exist'}
+              />
+            </FormControl>
+            <FormControl
+              fullWidth
+              sx={{ marginTop: '20px' }}
             >
               <TextField
                 margin="normal"
                 id="amount"
                 label="Amount"
                 type="number"
-                variant="standard"
+                variant="outlined"
+                size="small"
                 InputProps={{
                   endAdornment: <InputAdornment position="end">{token.symbol}</InputAdornment>,
                 }}
@@ -217,21 +221,23 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
             </FormControl>
             <FormControl
               fullWidth
-              sx={{ marginTop: '20px' }}
+              sx={{ marginTop: '30px' }}
             >
+              <InputLabel id="test-select-label">Schedule</InputLabel>
               <Select
                 id="schedule-select"
                 value={schedule}
                 label="Schedule"
                 onChange={onScheduleSelect}
-                variant="standard"
                 fullWidth
+                variant="outlined"
+                size="small"
               >
                 <MenuItem value="4_year">4 year lockup with 25% cliff in 1 year</MenuItem>
                 <MenuItem value="4_year_vested">4 year lockup with 25% cliff in 1 year (VESTED)</MenuItem>
               </Select>
             </FormControl>
-            <FormControl fullWidth sx={{ marginTop: '10px', marginBottom: 0 }}>
+            <FormControl fullWidth sx={{ marginTop: '30px', marginBottom: 0 }}>
               <LocalizationProvider dateAdapter={AdapterDateFns} sx={{ marginBottom: 0 }}>
                 <UTCDateTimePicker
                   value={startDate}
