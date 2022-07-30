@@ -115,27 +115,6 @@ export default function App() {
 
     const perform = async () => {
       const txHash = parseTxResultUrl(window.location.search);
-      // console.log(parseTxResultUrl);
-      // const txHash = 'HWCdsHvGMDfhxwcco5moBtuNUyAu8KKteU7DqYPkdBHv';
-
-      // ---------------
-      // const succTxHash = 'HWCdsHvGMDfhxwcco5moBtuNUyAu8KKteU7DqYPkdBHv';
-      // const succTxStatus = await fetchTxStatus(
-      //   near.rpcProvider,
-      //   near.api.getContract().contractId,
-      //   succTxHash,
-      // );
-      // console.log('SUCC TX STATUS', succTxStatus);
-      // const failedTxHash = '6FmN2Kw46bqtJdCcmPDkacZD9HRJwSvhr7L1U8FuTgLm'; //token
-      // const failedTxHash = 'G8HbVgv6L4Pupa8aNPV67YbKsXounGNc1u3EnN1hrZ63'; // ft-lockup
-      // const failedTxHash = 'csfxKXDx5u2XaxRSA1ggg9tW6vDuJaSP77Wm9WvLRbV'; // ft-lockup
-      // const failedTxStatus = await fetchTxStatus(
-      //   near.rpcProvider,
-      //   near.api.getContract().contractId,
-      //   failedTxHash,
-      // );
-      // console.log('FAILED TX STATUS', failedTxStatus);
-      // ---------------
 
       if (!txHash) {
         return;
