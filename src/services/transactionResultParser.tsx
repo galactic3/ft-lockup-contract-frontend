@@ -22,7 +22,7 @@ export const parseTxResultUrl = (resultUrl: string): string | null => {
   return txHash;
 };
 
-export const fetchTxStatus = async function (rpcProvider: any, contractAddress: string, txHash: string): Promise<TTxStatus | null> {
+export const fetchTxStatus = async (rpcProvider: any, contractAddress: string, txHash: string): Promise<TTxStatus | null> => {
   const fetch = async (): Promise<any | null> => {
     try {
       const response = await rpcProvider.txStatus(txHash, contractAddress);

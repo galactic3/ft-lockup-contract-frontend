@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import { MouseEvent } from 'react';
 
 const body = (transactionLink: string) => {
-  const Body = function (makeStyles: Function) {
+  const Body = function Body(makeStyles: Function) {
     const classes = makeStyles(() => ({
       button: {
         padding: '0px 4px',
@@ -28,7 +28,7 @@ const body = (transactionLink: string) => {
 };
 
 const header = (text: string) => {
-  const Header = function (makeStyles: Function) {
+  const Header = function Header(makeStyles: Function) {
     const classes = makeStyles(() => ({
       typography: {
         color: 'rgba(255, 89, 78, 1)',

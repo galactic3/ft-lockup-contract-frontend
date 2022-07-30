@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography';
 
 const body = (text: string) => {
-  const Body = function (makeStyles: Function) {
+  const Body = function Body(makeStyles: Function) {
     const classes = makeStyles(() => ({
       typography: {
         fontSize: '12px',
@@ -15,7 +15,7 @@ const body = (text: string) => {
 };
 
 const header = (text: string) => {
-  const Header = function (makeStyles: Function) {
+  const Header = function Header(makeStyles: Function) {
     const classes = makeStyles(() => ({
       typography: {
         color: '#E9AF1C',
