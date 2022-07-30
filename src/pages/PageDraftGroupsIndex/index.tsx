@@ -75,7 +75,7 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
         </h1>
 
         <SuggestconvertDialog
-          open={suggestContext.open}
+          open={adminControls && suggestContext.open}
           setOpen={suggestContext.setOpen}
           draftGroup={candidateForConvert}
         />

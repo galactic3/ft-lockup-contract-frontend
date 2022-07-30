@@ -85,9 +85,13 @@ export default function SuggestConvertDialog(params: { open: boolean, setOpen: a
   //   </Button>
   // );
 
+  if (!near) {
+    return null;
+  }
+
   const dialogPart = () => (
     <Dialog
-      open={open && draftGroup}
+      open={near.currentUser.signedIn && open && draftGroup}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"

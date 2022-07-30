@@ -15,8 +15,6 @@ export default function Footer() {
   const showSwitch = !['', '/terms', '/privacy', '/about', '/new_lockup_contract'].some((x) => pathname === x);
 
   const index = currentPathname.indexOf('/', 1);
-  const updatedPathname = `${currentPathname.substring(0, index)}/admin${currentPathname.substring(index, currentPathname.length)}`;
-
   const {
     near,
   }: {
@@ -24,6 +22,16 @@ export default function Footer() {
   } = useContext(NearContext);
 
   if (!near) return null;
+
+  let updatedPathname = `${currentPathname.substring(0, index)}/admin${currentPathname.substring(index, currentPathname.length)}`;
+  if (
+    currentPathname.substring(index, currentPathname.length).includes('/draft_groups')
+    && !(
+      near.currentUser.isAdmin || near.currentUser.isCouncilMember || near.currentUser.isDraftOperator
+    )
+  ) {
+    updatedPathname = `${currentPathname.substring(0, index)}/admin`;
+  }
 
   const viewSwitchLink = isAdminView
     ? <Link className="nav-link" to={currentPathname.replace(/\/admin/, '')}>User view</Link>
