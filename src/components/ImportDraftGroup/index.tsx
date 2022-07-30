@@ -14,6 +14,10 @@ import TokenAmountPreview from '../TokenAmountPreview';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 
+import success from '../Snackbars/SuccessPartials';
+import failure from '../Snackbars/FailurePartials';
+import { enqueueCustomSnackbar } from '../Snackbars/Snackbar';
+
 function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   useTitle('Import draft group | FT Lockup', { restoreOnUnmount: true });
 
@@ -56,7 +60,12 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
       if (!(e instanceof Error)) {
         throw new Error('unreachable');
       }
-      enqueueSnackbar(`${name} failed: ${e.message}`, { variant: 'error' });
+
+      enqueueCustomSnackbar(
+        enqueueSnackbar,
+        success.body(`${name} failed: ${e.message}`),
+        failure.header('Drafts creation failed'),
+      );
       throw e;
     }
   };
@@ -89,7 +98,11 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
           }
 
           console.log('all accounts exist');
-          enqueueSnackbar('Checked account existence.', { variant: 'success' });
+          enqueueCustomSnackbar(
+            enqueueSnackbar,
+            success.body('Checked account existence: all accounts exist'),
+            success.header('Success'),
+          );
         },
       );
 
@@ -100,8 +113,11 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
           return result;
         },
       );
-      const msg = `Created draft group id: ${draftGroupId}`;
-      enqueueSnackbar(msg, { variant: 'success' });
+      enqueueCustomSnackbar(
+        enqueueSnackbar,
+        success.body(`Created draft group id: ${draftGroupId}`),
+        success.header('Draft group created'),
+      );
 
       const chunkSize = 20;
       for (let i = 0; i < data.length; i += chunkSize) {
@@ -119,8 +135,11 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
         );
       }
 
-      const message = `Created ${data.length} draft${data.length > 1 ? 's' : ''}.`;
-      enqueueSnackbar(message, { variant: 'success' });
+      enqueueCustomSnackbar(
+        enqueueSnackbar,
+        success.body(`Created ${data.length} draft${data.length > 1 ? 's' : ''}.`),
+        success.header('Success'),
+      );
 
       const currentContractName = location.pathname.split('/')[1];
       const path = `/${currentContractName}/admin/draft_groups/${draftGroupId}`;
