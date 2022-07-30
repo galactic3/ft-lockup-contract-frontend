@@ -94,6 +94,8 @@ export default function NewLockupContract() {
     enqueueAccountIdCheck(`${value}.${FACTORY_CONTRACT_NAME}`);
   };
 
+  const subAccountPattern = /^[a-z0-9_-]*$/;
+
   const handleChangeLockupOperatorsRaw = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setLockupOperatorsRaw(value);
@@ -246,14 +248,29 @@ export default function NewLockupContract() {
               </div>
             </div>
             <div className="form-row">
-              <span>New Lockup Contract Address: </span>
+              <span>New Lockup Subaccount Name: </span>
               <div style={{ display: 'inline-block', position: 'absolute' }}>
                 <input type="text" id="lockup_subaccount_id" value={name} onChange={handleChangeName} />
                 <div style={{ fontSize: 10, height: '0px' }}>
-                  {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === FOUND && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Account already exists</span>}
-                  {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === PENDING && <span style={{ lineHeight: '20px', color: '#808689' }}>Checking...</span>}
-                  {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === NOT_FOUND && name && <span style={{ lineHeight: '20px', color: '#00B988' }}>Account is available</span>}
-                  {!name && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Required</span>}
+                  {name.match(subAccountPattern) === null && (
+                    <span style={{ lineHeight: '20px', color: '#FF594E' }}>Invalid characters, allowed a-z 0-9, _, -.</span>
+                  )}
+                  {name.match(subAccountPattern) !== null && (
+                    <span>
+                      {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === FOUND && (
+                        <span style={{ lineHeight: '20px', color: '#FF594E' }}>Account already exists</span>
+                      )}
+                      {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === PENDING && (
+                        <span style={{ lineHeight: '20px', color: '#808689' }}>Checking...</span>
+                      )}
+                      {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === NOT_FOUND && name && (
+                        <span style={{ lineHeight: '20px', color: '#00B988' }}>Account is available</span>
+                      )}
+                      {!name && (
+                        <span style={{ lineHeight: '20px', color: '#FF594E' }}>Required</span>
+                      )}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -262,7 +279,10 @@ export default function NewLockupContract() {
               className="button submit"
               type="submit"
               disabled={!(
-                near.currentUser.signedAccountId && accountStatuses[tokenAccountId] === FOUND && lockupOperators.length > 0
+                near.currentUser.signedAccountId
+                  && accountStatuses[tokenAccountId] === FOUND
+                  && lockupOperators.length > 0
+                  && name.match(subAccountPattern)
               )}
             >
               Deploy Contract
