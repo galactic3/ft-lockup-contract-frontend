@@ -25,7 +25,10 @@ export default function Footer() {
 
   let updatedPathname = `${currentPathname.substring(0, index)}/admin${currentPathname.substring(index, currentPathname.length)}`;
   if (
-    currentPathname.substring(index, currentPathname.length).includes('/draft_groups')
+    (
+      currentPathname.substring(index, currentPathname.length).startsWith('/draft_groups')
+      || currentPathname.substring(index, currentPathname.length).startsWith('/drafts')
+    )
     && !(
       near.currentUser.isAdmin || near.currentUser.isCouncilMember || near.currentUser.isDraftOperator
     )

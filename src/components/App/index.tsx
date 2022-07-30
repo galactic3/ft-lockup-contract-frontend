@@ -150,7 +150,7 @@ export default function App() {
             break;
           }
 
-          if (txMsg.draft_group_id) {
+          if (Number.isInteger(txMsg.draft_group_id)) {
             fundDraftGroupSnack(enqueueSnackbar, unpacked, txHash, token, txMsg);
             break;
           }

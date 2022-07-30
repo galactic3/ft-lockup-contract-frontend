@@ -173,7 +173,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
             <div className="draft-group-preview-info" style={{ display: 'flex' }}>
               <h5>
                 <span className="new-draft-count-text">
-                  {`New draft group with ${data.length} lockup${data.length > 1 ? 's' : ''}`}
+                  {`New draft group with ${data.length} lockup${data.length !== 1 ? 's' : ''}`}
                 </span>
                 {' '}
                 {parseErrors.length > 0 && (<span className="parse-error-label">{`${parseErrors.length} parse error${parseErrors.length > 1 ? 's' : ''}`}</span>)}

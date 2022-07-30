@@ -60,6 +60,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
             .
           </div>
         )}
+        { signedIn && adminControls && isAdmin && <CreateLockup token={token} /> }
       </div>
     );
   };
