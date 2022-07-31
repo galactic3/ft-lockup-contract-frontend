@@ -108,10 +108,48 @@ const terminateLockupSnack = (enqueueSnackbar: any, unpacked: any, txHash: strin
   );
 };
 
+const deleteDraftGroupSnack = (enqueueSnackbar: any, message: { positive?: string, negative?: string }) => {
+  if (message.positive) {
+    enqueueCustomSnackbar(
+      enqueueSnackbar,
+      success.body(message.positive),
+      success.header('Success'),
+    );
+  }
+
+  if (message.negative) {
+    enqueueCustomSnackbar(
+      enqueueSnackbar,
+      success.body(message.negative),
+      failure.header('Failure'),
+    );
+  }
+};
+
+const discardDraftGroupSnack = (enqueueSnackbar: any, message: { positive?: string, negative?: string }) => {
+  if (message.positive) {
+    enqueueCustomSnackbar(
+      enqueueSnackbar,
+      success.body(message.positive),
+      success.header('Success'),
+    );
+  }
+
+  if (message.negative) {
+    enqueueCustomSnackbar(
+      enqueueSnackbar,
+      success.body(message.negative),
+      failure.header('Failure'),
+    );
+  }
+};
+
 export {
   claimSnack,
   storageDepositSnack,
   createLockupSnack,
   fundDraftGroupSnack,
   terminateLockupSnack,
+  deleteDraftGroupSnack,
+  discardDraftGroupSnack,
 };
