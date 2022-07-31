@@ -15,7 +15,12 @@ export default function NewLockupContract() {
   useTitle('Create Lockup Contract | FT Lockup', { restoreOnUnmount: true });
 
   const { enqueueSnackbar } = useSnackbar();
-  const { near, signIn }: { near: INearProps | null, signIn: () => void } = useContext(NearContext);
+  const { near, signIn, signOut }: { near: INearProps | null, signIn: () => void, signOut: () => void } = useContext(NearContext);
+
+  const reSignIn = () => {
+    signOut();
+    signIn();
+  };
 
   const [tokenAccountId, setTokenAccountId] = useLocalStorage('new_lockup_contract:tokenAccountId', '');
   const [name, setName] = useLocalStorage('new_lockup_contract:name', '');
@@ -199,10 +204,18 @@ export default function NewLockupContract() {
             <div className="form-row">
               <div className="form-row_title">Contract creator: </div>
               <div className="form-row_group">
-                {near.currentUser.signedAccountId && <strong>{near.currentUser.signedAccountId}</strong>}
-                <button className="button" type="button" onClick={signIn}>
-                  {near.currentUser.signedAccountId && 'Login as someone else' || 'Login'}
-                </button>
+                {near.currentUser.signedAccountId ? (
+                  <>
+                    <strong>{near.currentUser.signedAccountId}</strong>
+                    <button className="button" type="button" onClick={reSignIn}>
+                      Login as someone else
+                    </button>
+                  </>
+                ) : (
+                  <button className="button" type="button" onClick={signIn}>
+                    Login
+                  </button>
+                )}
               </div>
             </div>
             <div className="form-row">
