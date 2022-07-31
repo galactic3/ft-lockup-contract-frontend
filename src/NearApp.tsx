@@ -9,8 +9,6 @@ import App from './components/App';
 import { NearContext, connectNear, INearProps } from './services/near';
 import { TSuggestContext, SuggestContext } from './services/SuggestContext';
 
-import MessageButtons from './components/Snackbars/MessageButtons';
-
 import './index.css';
 
 function SnackbarCloseButton(props: { snackbarKey: any }) {
@@ -88,7 +86,6 @@ export default function NearApp() {
             maxSnack={5}
           >
             <App />
-            <MessageButtons />
           </SnackbarProvider>
         </NearContext.Provider>
       </SuggestContext.Provider>
