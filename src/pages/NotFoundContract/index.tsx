@@ -5,7 +5,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useTitle from '../../services/useTitle';
 
 export default function NotFoundContract() {
-  debugger;
   useTitle('Not Found | FT Lockup', { restoreOnUnmount: true });
   const location = useLocation();
   const navigate = useNavigate();
