@@ -4,6 +4,11 @@ import { useSnackbar } from 'notistack';
 
 import { LoadingButton } from '@mui/lab';
 import { INearProps, NearContext } from '../../services/near';
+import { discardDraftGroupSnack, deleteDraftGroupSnack } from '../Snackbars';
+
+import success from '../Snackbars/SuccessPartials';
+import failure from '../Snackbars/FailurePartials';
+import { enqueueCustomSnackbar } from '../Snackbars/Snackbar';
 
 function DeleteDraftGroupButton(props: { draftGroupId: number, draftIds: [number], disabled: boolean }) {
   const { draftGroupId, draftIds, disabled } = props;
@@ -19,7 +24,11 @@ function DeleteDraftGroupButton(props: { draftGroupId: number, draftIds: [number
       const result = await func();
       return result;
     } catch (e) {
-      enqueueSnackbar(`${name} failed with error: '${e}'`, { variant: 'error' });
+      enqueueCustomSnackbar(
+        enqueueSnackbar,
+        success.body(`${name} failed with error: '${e}'`),
+        failure.header('Error'),
+      );
       throw e;
     }
   };
@@ -36,23 +45,34 @@ function DeleteDraftGroupButton(props: { draftGroupId: number, draftIds: [number
 
       setInProgress(true);
 
+      type TNotificationMessage = {
+        positive?: string,
+        negative?: string
+      };
+
+      const discardNotificationMessage: TNotificationMessage = {};
+
       // discard draft group
       try {
         await near.api.discardDraftGroup(draftGroupId);
-        enqueueSnackbar(`Discarded draft group ${draftGroupId}`, { variant: 'success' });
+        discardNotificationMessage.positive = `Discarded draft group ${draftGroupId}`;
       } catch (e) {
         if (e instanceof Error) {
           console.log(`ERROR: ${e}`);
           const { message } = e;
           if (!message.includes('cannot discard, draft group already discarded')) {
-            enqueueSnackbar(`Failed to discard draft group ${draftGroupId}: ${message}`, { variant: 'error' });
+            discardNotificationMessage.negative = `Failed to discard draft group ${draftGroupId}: ${message}`;
             setInProgress(false);
             return;
           }
         } else {
           throw new Error('unreachable');
         }
+      } finally {
+        discardDraftGroupSnack(enqueueSnackbar, discardNotificationMessage);
       }
+
+      const deleteNotificationMessage: TNotificationMessage = {};
 
       // delete all drafts
       try {
@@ -68,7 +88,7 @@ function DeleteDraftGroupButton(props: { draftGroupId: number, draftIds: [number
             },
           );
         }
-        enqueueSnackbar(`Deleted draft group ${draftGroupId}`, { variant: 'success' });
+        deleteNotificationMessage.positive = `Deleted draft group ${draftGroupId}`;
         const currentContractName = location.pathname.split('/')[1];
         navigate(`/${currentContractName}/admin/draft_groups`);
         window.location.reload();
@@ -76,11 +96,13 @@ function DeleteDraftGroupButton(props: { draftGroupId: number, draftIds: [number
         if (e instanceof Error) {
           console.log(`ERROR: ${e}`);
           const { message } = e;
-          enqueueSnackbar(`Failed to discard draft group ${draftGroupId}: ${message}`, { variant: 'error' });
+          deleteNotificationMessage.negative = `Failed to discard draft group ${draftGroupId}: ${message}`;
           setInProgress(false);
         } else {
           throw new Error('unreachable');
         }
+      } finally {
+        deleteDraftGroupSnack(enqueueSnackbar, deleteNotificationMessage);
       }
     };
 

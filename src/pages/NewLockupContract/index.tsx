@@ -11,6 +11,10 @@ import { INearProps, NearContext } from '../../services/near';
 import AddRemoveInput, { TInputField } from '../../components/AddRemoveInput';
 import useLocalStorage from '../../hooks/useLocalStorage';
 
+import { enqueueCustomSnackbar } from '../../components/Snackbars/Snackbar';
+import success from '../../components/Snackbars/SuccessPartials';
+import failure from '../../components/Snackbars/FailurePartials';
+
 export default function NewLockupContract() {
   useTitle('Create Lockup Contract | FT Lockup', { restoreOnUnmount: true });
 
@@ -161,7 +165,11 @@ export default function NewLockupContract() {
         return result;
       } catch (error) {
         console.log(error);
-        enqueueSnackbar((error as any).toString(), { variant: 'error' });
+        enqueueCustomSnackbar(
+          enqueueSnackbar,
+          success.body((error as any).toString()),
+          failure.header('Error'),
+        );
         return null;
       }
     };

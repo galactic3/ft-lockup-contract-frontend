@@ -14,6 +14,11 @@ import FundButton from '../../components/FundButton';
 import FundWithDaoButton from '../../components/FundWithDaoButton';
 import DeleteDraftGroupButton from '../../components/DeleteDraftGroupButton';
 
+import success from '../../components/Snackbars/SuccessPartials';
+import failure from '../../components/Snackbars/FailurePartials';
+import { enqueueCustomSnackbar } from '../../components/Snackbars/Snackbar';
+import { SUCCESS_DEFAULT_OPTIONS } from '../../components/Snackbars';
+
 export default function PageDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
@@ -108,7 +113,11 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
       const result = await func();
       return result;
     } catch (e) {
-      enqueueSnackbar(`${name} failed with error: '${e}'`, { variant: 'error' });
+      enqueueCustomSnackbar(
+        enqueueSnackbar,
+        success.body(`${name} failed with error: '${e}'`),
+        failure.header('Error'),
+      );
       throw e;
     }
   };
@@ -133,7 +142,13 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
             },
           );
         }
-        enqueueSnackbar(`Converted drafts for draft group ${draftGroupId}`, { variant: 'success' });
+
+        enqueueCustomSnackbar(
+          enqueueSnackbar,
+          success.body(`Converted drafts for draft group ${draftGroupId}`),
+          success.header('Success'),
+          SUCCESS_DEFAULT_OPTIONS,
+        );
         const currentContractName = location.pathname.split('/')[1];
         navigate(`/${currentContractName}/admin/lockups`);
         window.location.reload();

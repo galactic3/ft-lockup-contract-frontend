@@ -9,6 +9,11 @@ import { useSnackbar } from 'notistack';
 
 import { INearProps, NearContext } from '../../services/near';
 
+import success from '../Snackbars/SuccessPartials';
+import failure from '../Snackbars/FailurePartials';
+import { enqueueCustomSnackbar } from '../Snackbars/Snackbar';
+import { SUCCESS_DEFAULT_OPTIONS } from '../Snackbars';
+
 export default function SuggestConvertDialog(params: { open: boolean, setOpen: any, draftGroup: any | null }) {
   const { open, setOpen, draftGroup } = params;
   const { near }: { near: INearProps | null } = useContext(NearContext);
@@ -25,7 +30,11 @@ export default function SuggestConvertDialog(params: { open: boolean, setOpen: a
       const result = await func();
       return result;
     } catch (e) {
-      enqueueSnackbar(`${name} failed with error: '${e}'`, { variant: 'error' });
+      enqueueCustomSnackbar(
+        enqueueSnackbar,
+        success.body(`${name} failed with error: '${e}'`),
+        failure.header('Error'),
+      );
       throw e;
     }
   };
@@ -49,7 +58,12 @@ export default function SuggestConvertDialog(params: { open: boolean, setOpen: a
           },
         );
       }
-      enqueueSnackbar(`Converted drafts for draft group ${draftGroup.id}`, { variant: 'success' });
+      enqueueCustomSnackbar(
+        enqueueSnackbar,
+        success.body(`Converted drafts for draft group ${draftGroup.id}`),
+        success.header('Success'),
+        SUCCESS_DEFAULT_OPTIONS,
+      );
       const currentContractName = location.pathname.split('/')[1];
       navigate(`/${currentContractName}/admin/lockups`);
       window.location.reload();
