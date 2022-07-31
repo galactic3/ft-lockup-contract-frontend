@@ -75,7 +75,7 @@ export default function NotFoundContract() {
             {' '}
             <span className="red">{currentContractName}</span>
             {' '}
-            not found.
+            not found or is not correctly configured.
           </p>
 
           <div className="left_part">

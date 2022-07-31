@@ -21,24 +21,25 @@ export default function Footer() {
     near: INearProps | null,
   } = useContext(NearContext);
 
-  if (!near) return null;
+  const viewSwitchLink = () => {
+    if (!near) return null;
+    let updatedPathname = `${currentPathname.substring(0, index)}/admin${currentPathname.substring(index, currentPathname.length)}`;
+    if (
+      (
+        currentPathname.substring(index, currentPathname.length).startsWith('/draft_groups')
+        || currentPathname.substring(index, currentPathname.length).startsWith('/drafts')
+      )
+      && !(
+        near.currentUser.isAdmin || near.currentUser.isCouncilMember || near.currentUser.isDraftOperator
+      )
+    ) {
+      updatedPathname = `${currentPathname.substring(0, index)}/admin`;
+    }
 
-  let updatedPathname = `${currentPathname.substring(0, index)}/admin${currentPathname.substring(index, currentPathname.length)}`;
-  if (
-    (
-      currentPathname.substring(index, currentPathname.length).startsWith('/draft_groups')
-      || currentPathname.substring(index, currentPathname.length).startsWith('/drafts')
-    )
-    && !(
-      near.currentUser.isAdmin || near.currentUser.isCouncilMember || near.currentUser.isDraftOperator
-    )
-  ) {
-    updatedPathname = `${currentPathname.substring(0, index)}/admin`;
-  }
-
-  const viewSwitchLink = isAdminView
-    ? <Link className="nav-link" to={currentPathname.replace(/\/admin/, '')}>User view</Link>
-    : <Link className="nav-link" to={updatedPathname}>Admin view</Link>;
+    return isAdminView
+      ? <Link className="nav-link" to={currentPathname.replace(/\/admin/, '')}>User view</Link>
+      : <Link className="nav-link" to={updatedPathname}>Admin view</Link>;
+  };
 
   return (
     <div className="footer">
@@ -48,7 +49,7 @@ export default function Footer() {
             <Link className="nav-link" to="/about">About</Link>
             <Link className="nav-link" to="/terms">Terms</Link>
             <Link className="nav-link" to="/privacy">Privacy</Link>
-            {showSwitch && viewSwitchLink}
+            {showSwitch && viewSwitchLink()}
           </div>
         </Box>
       </div>

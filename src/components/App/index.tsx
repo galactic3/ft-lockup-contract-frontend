@@ -57,6 +57,7 @@ function Customer({
         <Route path="/draft_groups" element={<PageDraftGroupsIndex token={token} adminControls={false} />} />
         <Route path="/draft_groups/:draftGroupId" element={<PageDraftGroup token={token} adminControls={false} />} />
         <Route path="/drafts/:draftId" element={<PageDraft token={token} adminControls={false} />} />
+        <Route path="*" element={<NotFoundContract />} />
       </Routes>
     </>
   );
@@ -180,7 +181,7 @@ export default function App() {
   useEffect(() => {
     let active = true;
 
-    if (near) {
+    if (near && near.lockupContractFound) {
       const load = async () => {
         const lockups = await near.api.loadAllLockups();
         const metadata = await near.tokenApi.ftMetadata();
@@ -197,7 +198,7 @@ export default function App() {
     }
 
     return () => { active = false; };
-  }, [near]);
+  }, [near, near?.lockupContractFound]);
 
   useEffect(() => {
     if (near && near.tokenApi) {
@@ -217,9 +218,22 @@ export default function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/about" element={<About />} />
         <Route path="/new_lockup_contract/" element={<NewLockupContract />} />
-        <Route path="/:cid/*" element={contractId && near && <Customer lockups={lockups} token={token} contractId={contractId} near={near} />} />
-        <Route path="/:cid/admin/*" element={contractId && near && <Admin lockups={lockups} token={token} tokenContractId={contractId} near={near} />} />
-        <Route path="/:cid/not_found_contract/" element={<NotFoundContract />} />
+        <Route
+          path="/:cid/*"
+          element={contractId && near && (
+            near.lockupContractFound
+              ? <Customer lockups={lockups} token={token} contractId={contractId} near={near} />
+              : <NotFoundContract />
+          )}
+        />
+        <Route
+          path="/:cid/admin/*"
+          element={contractId && near && (
+            near.lockupContractFound
+              ? <Admin lockups={lockups} token={token} tokenContractId={contractId} near={near} />
+              : <NotFoundContract />
+          )}
+        />
         <Route path="*" element={<NotFoundContract />} />
       </Routes>
       <Footer />

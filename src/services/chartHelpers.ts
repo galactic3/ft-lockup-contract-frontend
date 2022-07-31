@@ -12,6 +12,9 @@ const buildVestedSchedule = (from: TNearTimestamp, balance: TNearAmount) => [
 ];
 
 export const chartData = (lockupsList: any[], tokenDecimals: number): any => {
+  const startTime = new Date();
+  console.log(`chartData([${lockupsList.length}]): start ${startTime}`);
+
   const lockupSchedules = Array.from(
     lockupsList.map((x) => x.schedule),
   ) as TSchedule[];
@@ -73,6 +76,9 @@ export const chartData = (lockupsList: any[], tokenDecimals: number): any => {
   sumClaimed = shatterSchedule(sumClaimed, allCheckpoints);
   sumLockup = shatterSchedule(sumLockup, allCheckpoints);
   sumVesting = shatterSchedule(sumVesting, allCheckpoints);
+
+  const finishTime = new Date();
+  console.log(`chartData([${lockupsList.length}]): finish ${startTime} duration ${(finishTime.getTime() - startTime.getTime()) / 1000}`);
 
   return {
     unlocked: lockupsList.length ? convertSchedule(sumLockup, tokenDecimals) : [],

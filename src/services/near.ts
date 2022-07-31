@@ -23,6 +23,7 @@ export interface INearProps {
   }
   tokenContractId: string;
   lockupContractId: string;
+  lockupContractFound: boolean;
   tokenApi: TokenApi;
   noLoginTokenApi: NoLoginTokenApi;
   factoryApi: FactoryApi;
@@ -53,12 +54,13 @@ export const connectNear = async (): Promise<INearProps> => {
 
   const walletConnection = new nearAPI.WalletConnection(near, config.contractName);
   const signedAccountId = walletConnection.getAccountId();
-  let tokenContractId: string = '';
+  let tokenContractId: string = 'lockup_contract_not_found';
   let isAdmin: boolean = false;
   let isDraftOperator: boolean = false;
   let depositWhitelist: string[] = [];
   let draftOperatorsWhitelist: string[] = [];
   let daos: string[] = [];
+  let lockupContractFound = false;
   try {
     tokenContractId = await api.getTokenAccountId();
     depositWhitelist = await api.getDepositWhitelist();
@@ -82,12 +84,10 @@ export const connectNear = async (): Promise<INearProps> => {
   } catch (e) {
     console.log(e);
     const nearConnectionError: any = e;
-    const currentContractName = window.location.hash.split('/')[1];
-    const notFoundPage = window.location.href.includes('not_found_contract');
-    if (nearConnectionError.type === 'AccountDoesNotExist' && !notFoundPage) {
-      const notFoundUrl = `${window.location.origin + window.location.pathname}#/${currentContractName}/not_found_contract`;
-      window.location.assign(notFoundUrl);
-      window.location.reload();
+    if (nearConnectionError.type === 'AccountDoesNotExist') {
+      console.log('contract not found');
+    } else {
+      console.log(`UNKNOWN ERROR: ${e}`);
     }
   }
   const tokenApi = new TokenApi(walletConnection, tokenContractId);
@@ -97,6 +97,8 @@ export const connectNear = async (): Promise<INearProps> => {
 
   try {
     const storageBalance = await tokenApi.storageBalanceOf(lockupContractId);
+    // successful read of data from token contract AND lockup contract
+    lockupContractFound = true;
     isContractFtStoragePaid = (storageBalance !== null) && true;
     console.log(isContractFtStoragePaid);
   } catch (e) {
@@ -131,6 +133,7 @@ export const connectNear = async (): Promise<INearProps> => {
     rpcProvider,
     isContractFtStoragePaid,
     lockupContractId,
+    lockupContractFound,
     near,
     suggestConvertDialog: {
       open: false,
