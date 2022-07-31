@@ -1,4 +1,6 @@
-import { ChangeEvent, useContext, useState } from 'react';
+import {
+  ChangeEvent, useCallback, useContext,
+} from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { useSnackbar } from 'notistack';
@@ -7,6 +9,7 @@ import useTitle from '../../services/useTitle';
 import { FACTORY_CONTRACT_NAME } from '../../config';
 import { INearProps, NearContext } from '../../services/near';
 import AddRemoveInput, { TInputField } from '../../components/AddRemoveInput';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 export default function NewLockupContract() {
   useTitle('Create Lockup Contract | FT Lockup', { restoreOnUnmount: true });
@@ -14,19 +17,21 @@ export default function NewLockupContract() {
   const { enqueueSnackbar } = useSnackbar();
   const { near, signIn }: { near: INearProps | null, signIn: () => void } = useContext(NearContext);
 
-  const [tokenAccountId, setTokenAccountId] = useState<string>('');
-  const [name, setName] = useState<string>('');
+  const [tokenAccountId, setTokenAccountId] = useLocalStorage('new_lockup_contract:tokenAccountId', '');
+  const [name, setName] = useLocalStorage('new_lockup_contract:name', '');
 
-  const [lockupOperators, setLockupOperators] = useState<string[]>([]);
-  const [draftOperators, setDraftOperators] = useState<string[]>([]);
+  const [lockupOperators, setLockupOperators] = useLocalStorage('new_lockup_contract:lockupOperators', []);
+  const [draftOperators, setDraftOperators] = useLocalStorage('new_lockup_contract:draftOperators', []);
 
   const PENDING = 'pending';
   const FOUND = 'found';
   const NOT_FOUND = 'not_found';
 
-  const [accountStatuses, setAccountStatuses] = useState<any>({ '': NOT_FOUND }); // pending success error
+  const nameWithFactoryContractName = `${name}.${FACTORY_CONTRACT_NAME}`;
 
-  const enqueueAccountIdCheck = async (accountId: string) => {
+  const [accountStatuses, setAccountStatuses] = useLocalStorage('new_lockup_contract:accountStatuses', { '': NOT_FOUND }); // pending success error
+
+  const enqueueAccountIdCheck = useCallback(async (accountId: string) => {
     if (!near) return;
     console.log('accountStatuses', accountStatuses);
 
@@ -64,7 +69,7 @@ export default function NewLockupContract() {
     }
 
     console.log('accountStatuses', accountStatuses);
-  };
+  }, [accountStatuses, setAccountStatuses, near]);
 
   const validateAccountExists = async (accountId: string) => {
     if (!near) throw new Error('unreachable');
@@ -89,7 +94,7 @@ export default function NewLockupContract() {
   const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setName(value);
-    enqueueAccountIdCheck(`${value}.${FACTORY_CONTRACT_NAME}`);
+    enqueueAccountIdCheck(nameWithFactoryContractName);
   };
 
   const handleChangeLockupOperators = (inputFields: TInputField[]) => {
@@ -166,6 +171,9 @@ export default function NewLockupContract() {
     return null;
   }
 
+  const lockupOperatorsMissing = lockupOperators.filter((x: string) => accountStatuses[x] === NOT_FOUND);
+  const draftOperatorsMissing = draftOperators.filter((x: string) => accountStatuses[x] === NOT_FOUND);
+
   return (
     <div>
       <div className="header">
@@ -201,6 +209,7 @@ export default function NewLockupContract() {
               <div className="form-row_title">Lockup operators: </div>
               <div className="form-row_group">
                 <AddRemoveInput
+                  data={lockupOperators}
                   onChange={handleChangeLockupOperators}
                   accountIdCheck={enqueueAccountIdCheck}
                   accountStatuses={accountStatuses}
@@ -214,6 +223,7 @@ export default function NewLockupContract() {
               <div className="form-row_title">Draft operators: </div>
               <div className="form-row_group">
                 <AddRemoveInput
+                  data={draftOperators}
                   onChange={handleChangeDraftOperators}
                   accountIdCheck={enqueueAccountIdCheck}
                   accountStatuses={accountStatuses}
@@ -241,9 +251,9 @@ export default function NewLockupContract() {
               <div className="form-row_group">
                 <input type="text" id="lockup_subaccount_id" value={name} onChange={handleChangeName} />
                 <div className="form-row_error">
-                  {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === FOUND && <span className="red">Account already exists</span>}
-                  {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === PENDING && <span className="gray">Checking...</span>}
-                  {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === NOT_FOUND && name && <span className="green">Account is available</span>}
+                  {name && accountStatuses[nameWithFactoryContractName] === FOUND && <span className="red">Account already exists</span>}
+                  {name && accountStatuses[nameWithFactoryContractName] === PENDING && <span className="gray">Checking...</span>}
+                  {name && accountStatuses[nameWithFactoryContractName] === NOT_FOUND && name && <span className="green">Account is available</span>}
                   {!name && <span className="red">Required</span>}
                 </div>
               </div>
@@ -253,7 +263,13 @@ export default function NewLockupContract() {
               className="button submit"
               type="submit"
               disabled={!(
-                near.currentUser.signedAccountId && accountStatuses[tokenAccountId] === FOUND && lockupOperators.length > 0 && name
+                near.currentUser.signedAccountId
+                && accountStatuses[tokenAccountId] === FOUND
+                && lockupOperators.length > 0
+                && lockupOperatorsMissing.length === 0
+                && draftOperatorsMissing.length === 0
+                && name
+                && accountStatuses[nameWithFactoryContractName] === NOT_FOUND
               )}
             >
               Deploy Contract

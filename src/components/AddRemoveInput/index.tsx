@@ -1,6 +1,6 @@
 import { IconButton } from '@mui/material';
 import {
-  ChangeEvent, useEffect, useState,
+  ChangeEvent, useState,
 } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -9,17 +9,26 @@ export type TInputField = {
   accountName: string
 };
 
-export default function AddRemoveInput(props: { onChange: any, accountIdCheck: any, accountStatuses: any }) {
-  const [inputFields, setInputFields] = useState<TInputField[]>([{
+export default function AddRemoveInput(props: { data: any, onChange: any, accountIdCheck: any, accountStatuses: any }) {
+  const {
+    data, onChange, accountIdCheck, accountStatuses,
+  } = props;
+
+  const initState = [{
     accountName: '',
-  }]);
+  }];
+
+  const defaultState = () => {
+    if (data.length > 0) {
+      return data.map((x: string) => ({ accountName: x }));
+    }
+    return initState;
+  };
+
+  const [inputFields, setInputFields] = useState<TInputField[]>(defaultState);
 
   const PENDING = 'pending';
   const NOT_FOUND = 'not_found';
-
-  const {
-    onChange, accountIdCheck, accountStatuses,
-  } = props;
 
   const addInputField = () => {
     const rows = [...inputFields, {
@@ -48,8 +57,8 @@ export default function AddRemoveInput(props: { onChange: any, accountIdCheck: a
   return (
     <div className="add-remove-input">
       {
-        inputFields.map((data: TInputField, index: number) => {
-          const { accountName } = data;
+        inputFields.map((inputField: TInputField, index: number) => {
+          const { accountName } = inputField;
           const number = index;
           return (
             <div className="form-group" key={number}>
