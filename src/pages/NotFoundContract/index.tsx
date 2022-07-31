@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useTitle from '../../services/useTitle';
 
 export default function NotFoundContract() {
+  debugger;
   useTitle('Not Found | FT Lockup', { restoreOnUnmount: true });
   const location = useLocation();
   const navigate = useNavigate();
@@ -75,7 +76,7 @@ export default function NotFoundContract() {
             {' '}
             <span className="red">{currentContractName}</span>
             {' '}
-            not found.
+            not found or is not correctly configured.
           </p>
 
           <div className="left_part">
