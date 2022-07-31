@@ -18,6 +18,8 @@ import success from '../Snackbars/SuccessPartials';
 import failure from '../Snackbars/FailurePartials';
 import { enqueueCustomSnackbar } from '../Snackbars/Snackbar';
 
+import { SUCCESS_DEFAULT_OPTIONS } from '../Snackbars';
+
 function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   useTitle('Import draft group | FT Lockup', { restoreOnUnmount: true });
 
@@ -102,6 +104,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
             enqueueSnackbar,
             success.body('Checked account existence: all accounts exist'),
             success.header('Success'),
+            SUCCESS_DEFAULT_OPTIONS,
           );
         },
       );
@@ -117,6 +120,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
         enqueueSnackbar,
         success.body(`Created draft group id: ${draftGroupId}`),
         success.header('Draft group created'),
+        SUCCESS_DEFAULT_OPTIONS,
       );
 
       const chunkSize = 20;
@@ -139,6 +143,7 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
         enqueueSnackbar,
         success.body(`Created ${data.length} draft${data.length > 1 ? 's' : ''}.`),
         success.header('Success'),
+        SUCCESS_DEFAULT_OPTIONS,
       );
 
       const currentContractName = location.pathname.split('/')[1];

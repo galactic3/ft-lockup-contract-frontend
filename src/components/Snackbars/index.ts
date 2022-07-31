@@ -5,6 +5,8 @@ import failure from './FailurePartials';
 import { enqueueCustomSnackbar } from './Snackbar';
 import { txLinkInExplorer, nearTo } from '../../utils';
 
+export const SUCCESS_DEFAULT_OPTIONS = { autoHideDuration: 60_000 };
+
 const parseAmount = (unpacked: string, decimals: any): any => new Big(unpacked).div(new Big(10).pow(decimals)).round(2, Big.roundDown);
 
 const claimSnack = (enqueueSnackbar: any, unpacked: any, txHash: string, token: any) => {
@@ -15,6 +17,7 @@ const claimSnack = (enqueueSnackbar: any, unpacked: any, txHash: string, token: 
       enqueueSnackbar,
       success.body(`Claimed ${amount} ${token.symbol}`),
       success.header('Claim succeed'),
+      SUCCESS_DEFAULT_OPTIONS,
     );
   }
 
@@ -33,6 +36,7 @@ const storageDepositSnack = (enqueueSnackbar: any, unpacked: any, txHash: string
       enqueueSnackbar,
       success.body(`Successfully paid ${amount}NEAR for ${accountId}'s storage of ${token.symbol}`),
       success.header('Deposit storage succeed'),
+      SUCCESS_DEFAULT_OPTIONS,
     );
   }
 
@@ -54,7 +58,7 @@ const createLockupSnack = (enqueueSnackbar: any, unpacked: any, txHash: string, 
         enqueueSnackbar,
         success.body(`${txMsg.account_id} now has a lockup of ${amount} ${token.symbol}`),
         success.header('Lockup created'),
-        { autoHideDuration: 60_000 },
+        SUCCESS_DEFAULT_OPTIONS,
       );
     }
   }
@@ -74,6 +78,7 @@ const fundDraftGroupSnack = (enqueueSnackbar: any, unpacked: any, txHash: string
       enqueueSnackbar,
       success.body(`Draft group ${txMsg.draft_group_id} funded with amount ${amount} ${token.symbol}`),
       success.header('Draft group funded'),
+      SUCCESS_DEFAULT_OPTIONS,
     );
   }
 
@@ -92,6 +97,7 @@ const terminateLockupSnack = (enqueueSnackbar: any, unpacked: any, txHash: strin
       enqueueSnackbar,
       success.body(`Lockup #${lockup_index} was terminated. Unvested amount: ${amount} ${token.symbol}`),
       success.header('Lockup terminated'),
+      SUCCESS_DEFAULT_OPTIONS,
     );
   }
 
