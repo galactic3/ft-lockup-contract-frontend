@@ -219,7 +219,10 @@ class NearApi {
 
   signIn(): void {
     const successUrl = `${window.location.href}`;
-    this.walletConnection.requestSignIn(this.near.config.contractName, undefined, successUrl);
+    const contractName = this.near.config.contractName !== 'lockup_contract_none'
+      ? this.near.config.contractName
+      : this.near.config.factoryContractName;
+    this.walletConnection.requestSignIn(contractName, undefined, successUrl);
   }
 
   signOut(): void {
