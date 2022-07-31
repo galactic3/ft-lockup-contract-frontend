@@ -23,6 +23,9 @@ import ScheduleTable from '../ScheduleTable';
 import { chartData } from '../../services/chartHelpers';
 import { calcBalancesRaw } from '../../services/scheduleHelpers';
 
+import { enqueueCustomSnackbar } from '../Snackbars/Snackbar';
+import success from '../Snackbars/SuccessPartials';
+
 export default function DraftsTableRow(props: { pageIndex: number, row: ReturnType<any>, token: TMetadata, adminControls: boolean, progressShow: boolean }) {
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -92,7 +95,7 @@ export default function DraftsTableRow(props: { pageIndex: number, row: ReturnTy
           {!importDraftPage && (
           <CopyToClipboard
             text={`${window.location.origin}/#/${currentContractName}/drafts/${row.id}`}
-            onCopy={() => enqueueSnackbar('Copied', { variant: 'success', autoHideDuration: 1000 })}
+            onCopy={() => enqueueCustomSnackbar(enqueueSnackbar, null, success.header('Copied'), { autoHideDuration: 1000 })}
           >
             <IconButton aria-label="copy link">
               <LinkIcon />
