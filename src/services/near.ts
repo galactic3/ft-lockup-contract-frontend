@@ -29,6 +29,10 @@ export interface INearProps {
   rpcProvider: nearAPI.providers.JsonRpcProvider;
   isContractFtStoragePaid: boolean;
   near: nearAPI.Near;
+  suggestConvertDialog: {
+    open: boolean,
+    setOpen: (newValue: boolean) => any,
+  }
 }
 
 export const NearContext = createContext<any>(null);
@@ -128,5 +132,9 @@ export const connectNear = async (): Promise<INearProps> => {
     isContractFtStoragePaid,
     lockupContractId,
     near,
+    suggestConvertDialog: {
+      open: false,
+      setOpen: () => null,
+    },
   };
 };

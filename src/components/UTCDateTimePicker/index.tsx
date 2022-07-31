@@ -29,10 +29,11 @@ export default function UTCDateTimePicker(props: TProps) {
       renderInput={
         (params) => (
           <TextField
-            sx={{ margin: '0px 0 24px' }}
+            sx={{ margin: '0' }}
             margin="normal"
             fullWidth
-            variant="standard"
+            variant="outlined"
+            size="small"
             {...params}
             inputProps={{
               ...params.inputProps,

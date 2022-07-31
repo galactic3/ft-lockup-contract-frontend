@@ -187,6 +187,32 @@ describe('.datePlusDurationMul', () => {
 
     expect(m(tm, d('P1Y2M3DT4H5M6S'), 1)).toStrictEqual(new Date('2001-03-07T04:05:05Z'));
   });
+
+  it('considers all dates in utc', () => {
+    let m = datePlusDurationMul;
+    let d = parseDuration;
+
+    expect(m(new Date('2022-01-28T00:00:00Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-02-28T00:00:00Z'));
+    expect(m(new Date('2022-01-28T23:59:59Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-02-28T23:59:59Z'));
+
+    expect(m(new Date('2022-01-29T00:00:00Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-03-01T00:00:00Z'));
+    expect(m(new Date('2022-01-29T23:59:59Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-03-01T23:59:59Z'));
+
+    expect(m(new Date('2022-01-30T00:00:00Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-03-02T00:00:00Z'));
+    expect(m(new Date('2022-01-30T23:59:59Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-03-02T23:59:59Z'));
+
+    expect(m(new Date('2022-01-31T00:00:00Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-03-03T00:00:00Z'));
+    expect(m(new Date('2022-01-31T23:59:59Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-03-03T23:59:59Z'));
+
+    expect(m(new Date('2022-02-01T00:00:00Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-03-01T00:00:00Z'));
+    expect(m(new Date('2022-02-01T23:59:59Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-03-01T23:59:59Z'));
+
+    expect(m(new Date('2022-02-02T00:00:00Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-03-02T00:00:00Z'));
+    expect(m(new Date('2022-02-02T23:59:59Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-03-02T23:59:59Z'));
+
+    expect(m(new Date('2022-02-03T00:00:00Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-03-03T00:00:00Z'));
+    expect(m(new Date('2022-02-03T23:59:59Z'), d('P1M'), 1)).toStrictEqual(new Date('2022-03-03T23:59:59Z'));
+  });
 })
 
 describe('.toLockupSchedule', () => {
@@ -330,6 +356,93 @@ describe('.toLockupSchedule', () => {
         12,
       )
     ).toThrow('error: timestampCliff > timestampFinish');
+  });
+
+  it('builds steps correctly', () => {
+    // basic
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('2022-01-15T12:00:30Z|P5M|P0Y:0|P1M'),
+        '5000',
+        0,
+      )
+    ).toStrictEqual([
+      // pre cliff artifact
+      { timestamp: toUnix('2022-01-15T12:00:29Z'), balance: '0' },
+
+      { timestamp: toUnix('2022-01-15T12:00:30Z'), balance: '0' },
+      { timestamp: toUnix('2022-02-15T12:00:29Z'), balance: '0' },
+      { timestamp: toUnix('2022-02-15T12:00:30Z'), balance: '1000' },
+      { timestamp: toUnix('2022-03-15T12:00:29Z'), balance: '1000' },
+      { timestamp: toUnix('2022-03-15T12:00:30Z'), balance: '2000' },
+      { timestamp: toUnix('2022-04-15T12:00:29Z'), balance: '2000' },
+      { timestamp: toUnix('2022-04-15T12:00:30Z'), balance: '3000' },
+      { timestamp: toUnix('2022-05-15T12:00:29Z'), balance: '3000' },
+      { timestamp: toUnix('2022-05-15T12:00:30Z'), balance: '4000' },
+      { timestamp: toUnix('2022-06-15T12:00:29Z'), balance: '4000' },
+      { timestamp: toUnix('2022-06-15T12:00:30Z'), balance: '5000' },
+    ]);
+  });
+
+  it('steps correctly in utc beginning', () => {
+    // basic
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('2022-01-01T00:00:30Z|P5M|P0Y:0|P1M'),
+        '5000',
+        0,
+      )
+    ).toStrictEqual([
+      // pre cliff artifact
+      { timestamp: toUnix('2022-01-01T00:00:29Z'), balance: '0' },
+
+      { timestamp: toUnix('2022-01-01T00:00:30Z'), balance: '0' },
+      { timestamp: toUnix('2022-02-01T00:00:29Z'), balance: '0' },
+      { timestamp: toUnix('2022-02-01T00:00:30Z'), balance: '1000' },
+      { timestamp: toUnix('2022-03-01T00:00:29Z'), balance: '1000' },
+      { timestamp: toUnix('2022-03-01T00:00:30Z'), balance: '2000' },
+      { timestamp: toUnix('2022-04-01T00:00:29Z'), balance: '2000' },
+      { timestamp: toUnix('2022-04-01T00:00:30Z'), balance: '3000' },
+      { timestamp: toUnix('2022-05-01T00:00:29Z'), balance: '3000' },
+      { timestamp: toUnix('2022-05-01T00:00:30Z'), balance: '4000' },
+      { timestamp: toUnix('2022-06-01T00:00:29Z'), balance: '4000' },
+      { timestamp: toUnix('2022-06-01T00:00:30Z'), balance: '5000' },
+    ]);
+  });
+
+  it('steps correctly for month at end', () => {
+    // basic
+    expect(
+      toLockupSchedule(
+        parseHumanFriendlySchedule('2022-01-31T23:59:30Z|P5M|P0Y:0|P1M'),
+        '5000',
+        0,
+      ),
+    ).toStrictEqual([
+      // pre cliff artifact
+      { timestamp: toUnix('2022-01-31T23:59:29Z'), balance: '0' },
+      { timestamp: toUnix('2022-01-31T23:59:30Z'), balance: '0' },
+
+      // 02-31 transfs into 02-03
+      { timestamp: toUnix('2022-03-03T23:59:29Z'), balance: '0' },
+      { timestamp: toUnix('2022-03-03T23:59:30Z'), balance: '1000' },
+
+      // 03-31 exists, keep going
+      { timestamp: toUnix('2022-03-31T23:59:29Z'), balance: '1000' },
+      { timestamp: toUnix('2022-03-31T23:59:30Z'), balance: '2000' },
+
+      // 04-31 transforms into 05-01
+      { timestamp: toUnix('2022-05-01T23:59:29Z'), balance: '2000' },
+      { timestamp: toUnix('2022-05-01T23:59:30Z'), balance: '3000' },
+
+      // 05-31 exists, keep going
+      { timestamp: toUnix('2022-05-31T23:59:29Z'), balance: '3000' },
+      { timestamp: toUnix('2022-05-31T23:59:30Z'), balance: '4000' },
+
+      // 06-31 transforms into 07-01
+      { timestamp: toUnix('2022-07-01T23:59:29Z'), balance: '4000' },
+      { timestamp: toUnix('2022-07-01T23:59:30Z'), balance: '5000' },
+    ]);
   });
 })
 
@@ -511,7 +624,7 @@ describe('.parseRawSpreadsheetInput', () => {
     ).toStrictEqual([
       {
         account_id: "alice.near",
-        id: 0,
+        id: 1,
         schedule: [
           { balance: '0', timestamp: 1262303999 },
           { balance: '0', timestamp: 1325375998 },
@@ -522,7 +635,7 @@ describe('.parseRawSpreadsheetInput', () => {
       },
       {
         account_id: 'bob.near',
-        id: 1,
+        id: 2,
         schedule: [
           {balance: '0', timestamp: 946684799},
           {balance: '0', timestamp: 1009843198},

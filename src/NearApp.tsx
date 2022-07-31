@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import App from './components/App';
 import { NearContext, connectNear, INearProps } from './services/near';
+import { TSuggestContext, SuggestContext } from './services/SuggestContext';
 
 import './index.css';
 
@@ -68,17 +69,26 @@ export default function NearApp() {
     window.history.pushState({}, null as any, url.toString());
   };
 
+  const [suggestOpen, setSuggestOpen] = useState(true);
+  const suggestValue: TSuggestContext = useMemo(() => ({
+    open: suggestOpen,
+    setOpen: setSuggestOpen,
+  }), [suggestOpen, setSuggestOpen]);
+
   return (
     <StrictMode>
-      <NearContext.Provider value={value}>
-        <SnackbarProvider
-          autoHideDuration={null}
-          action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}
-          onClose={handleClose}
-        >
-          <App />
-        </SnackbarProvider>
-      </NearContext.Provider>
+      <SuggestContext.Provider value={suggestValue}>
+        <NearContext.Provider value={value}>
+          <SnackbarProvider
+            autoHideDuration={null}
+            action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}
+            onClose={handleClose}
+            maxSnack={5}
+          >
+            <App />
+          </SnackbarProvider>
+        </NearContext.Provider>
+      </SuggestContext.Provider>
     </StrictMode>
   );
 }

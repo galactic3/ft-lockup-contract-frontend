@@ -1,6 +1,7 @@
 import {
   Contract, WalletConnection,
 } from 'near-api-js';
+import { TRY_CONVERT } from '../config';
 import { TSchedule } from './api';
 
 const MAX_GAS = 300_000_000_000_000;
@@ -92,7 +93,7 @@ class TokenApi {
       amount,
       msg: {
         draft_group_id: draftGroupId,
-        try_convert: true,
+        try_convert: TRY_CONVERT,
       },
     });
 

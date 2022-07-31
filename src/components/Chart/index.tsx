@@ -11,6 +11,9 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
   const computedMax = xMax && (xMax + (xMax - xMin / 1000) * 0.03) * 1000;
   console.log('computedMin', computedMin);
   console.log('computedMax', computedMax);
+
+  const formatNumber = (x: string) => new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseFloat(x));
+
   const option = {
     useUTC: true,
     title: [
@@ -64,6 +67,10 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
     ],
     series: [
       {
+        tooltip: {
+          valueFormatter: formatNumber,
+        },
+        showSymbol: false,
         name: 'Vested',
         type: 'line',
         color: '#0069D1',
@@ -86,6 +93,10 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
         data: data.vested,
       },
       {
+        tooltip: {
+          valueFormatter: formatNumber,
+        },
+        showSymbol: false,
         name: 'Unlocked',
         type: 'line',
         color: '#00B988',
@@ -95,6 +106,10 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
         data: data.unlocked,
       },
       {
+        tooltip: {
+          valueFormatter: formatNumber,
+        },
+        showSymbol: false,
         name: 'Claimed',
         type: 'line',
         color: '#E9AF1C',

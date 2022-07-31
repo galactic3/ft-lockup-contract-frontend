@@ -14,6 +14,8 @@ import { TMetadata } from '../../services/tokenApi';
 import { formatTokenAmount } from '../../utils';
 import TokenIcon from '../../components/TokenIcon';
 import DeleteDraftGroupButton from '../../components/DeleteDraftGroupButton';
+import SuggestconvertDialog from '../../components/SuggestConvertDialog';
+import { SuggestContext } from '../../services/SuggestContext';
 
 export default function PageDraftGroupsIndex({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   useTitle('Draft Groups | FT Lockup', { restoreOnUnmount: true });
@@ -61,12 +63,22 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
   const currentContractName = location.pathname.split('/')[1];
   const importDraftGroupPath = `/${currentContractName}/admin/import_draft_group`;
 
+  const candidateForConvert = draftGroups.sort((x, y) => x.id - y.id).reverse().find((x) => x.funded);
+
+  const suggestContext = useContext(SuggestContext);
+
   return (
     <div className="main">
       <div className="container">
         <h1>
           All draft groups
         </h1>
+
+        <SuggestconvertDialog
+          open={adminControls && suggestContext.open}
+          setOpen={suggestContext.setOpen}
+          draftGroup={candidateForConvert}
+        />
 
         {draftGroups.length === 0 && (
           <div>

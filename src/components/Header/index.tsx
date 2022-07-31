@@ -39,7 +39,6 @@ export default function Header({ adminControls }: { adminControls: boolean }) {
           <div className="nav">
             <NavLink className="nav-link" to={lockupsPageViewPolicy ? `/${currentContractName}/admin/lockups` : `/${currentContractName}/lockups`}>Lockups</NavLink>
             <NavLink className="nav-link" to={lockupsPageViewPolicy ? `/${currentContractName}/admin/draft_groups` : `/${currentContractName}/draft_groups`}>Lockup Drafts</NavLink>
-            <NavLink className="nav-link" to={lockupsPageViewPolicy ? `/${currentContractName}/admin/about` : `/${currentContractName}/about`}>About</NavLink>
           </div>
           {adminControls && signedIn && (
             <Box sx={{ marginTop: '23px' }}>

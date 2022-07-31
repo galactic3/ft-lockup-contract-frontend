@@ -64,7 +64,10 @@ function ClaimAllLockups(params: { accountId: string | undefined, token: TMetada
         <TokenAmountPreview token={token} amount={total} />
       </div>
       <div className="claim-button-wrapper">
-        <button className="button" type="button" onClick={handleClaimAllLockups}>Claim All</button>
+        <button className="button" type="button" onClick={handleClaimAllLockups}>
+          Claim
+          {lockups.length > 1 ? ' all' : ''}
+        </button>
         <ConfirmDialog message={depositConfirmMessage} isOpen={isDialogOpen} closeFn={closeDialog} callback={dialogConfirmCallback} />
       </div>
     </div>

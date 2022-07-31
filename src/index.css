@@ -750,6 +750,12 @@ svg {
 
 .new-draft-count-text {
   line-height: 30px;
+  font-size: 16px;
+}
+
+p.standard-text-style {
+  font-size: 16px;
+  font-weight: 300;
 }
 
 .parse-error-label {
@@ -803,5 +809,4 @@ span.gray {
   display: flex;
   justify-content: space-between;
   vertical-align: middle;
-  margin-bottom: 20px;
 }

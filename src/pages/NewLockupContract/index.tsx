@@ -32,6 +32,8 @@ export default function NewLockupContract() {
   const FOUND = 'found';
   const NOT_FOUND = 'not_found';
 
+  const subAccountPattern = /^[a-z0-9_-]*$/;
+
   const nameWithFactoryContractName = `${name}.${FACTORY_CONTRACT_NAME}`;
 
   const [accountStatuses, setAccountStatuses] = useLocalStorage('new_lockup_contract:accountStatuses', { '': NOT_FOUND }); // pending success error
@@ -200,7 +202,12 @@ export default function NewLockupContract() {
         <form className="form-submit" onSubmit={handleDeployLockupContract}>
           <div className="form-wrapper">
 
-            <p>On this page you can deploy your own copy of lockup contract. Some more elaborative description follows here.</p>
+            <p>
+              On this page you can deploy your own copy of lockup contract. Read more
+              {' '}
+              <Link to="/about">here</Link>
+              .
+            </p>
             <div className="form-row">
               <div className="form-row_title">Contract creator: </div>
               <div className="form-row_group">
@@ -260,14 +267,21 @@ export default function NewLockupContract() {
               </div>
             </div>
             <div className="form-row">
-              <div className="form-row_title">New Lockup Contract Address: </div>
+              <div className="form-row_title">New Lockup Subaccount Name: </div>
               <div className="form-row_group">
                 <input type="text" id="lockup_subaccount_id" value={name} onChange={handleChangeName} />
                 <div className="form-row_error">
-                  {name && accountStatuses[nameWithFactoryContractName] === FOUND && <span className="red">Account already exists</span>}
-                  {name && accountStatuses[nameWithFactoryContractName] === PENDING && <span className="gray">Checking...</span>}
-                  {name && accountStatuses[nameWithFactoryContractName] === NOT_FOUND && name && <span className="green">Account is available</span>}
-                  {!name && <span className="red">Required</span>}
+                  {name.match(subAccountPattern) === null && (
+                    <span className="red">Invalid characters, allowed a-z 0-9, _, -.</span>
+                  )}
+                  {name.match(subAccountPattern) !== null && (
+                    <>
+                      {name && accountStatuses[nameWithFactoryContractName] === FOUND && (<span className="red">Account already exists</span>)}
+                      {name && accountStatuses[nameWithFactoryContractName] === PENDING && (<span className="gray">Checking...</span>)}
+                      {name && accountStatuses[nameWithFactoryContractName] === NOT_FOUND && name && (<span className="green">Account is available</span>)}
+                      {!name && (<span className="red">Required</span>)}
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -283,6 +297,7 @@ export default function NewLockupContract() {
                 && draftOperatorsMissing.length === 0
                 && name
                 && accountStatuses[nameWithFactoryContractName] === NOT_FOUND
+                && name.match(subAccountPattern)
               )}
             >
               Deploy Contract
