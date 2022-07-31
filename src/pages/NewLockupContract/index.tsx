@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { ChangeEvent, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { useSnackbar } from 'notistack';
@@ -6,7 +6,7 @@ import { useSnackbar } from 'notistack';
 import useTitle from '../../services/useTitle';
 import { FACTORY_CONTRACT_NAME } from '../../config';
 import { INearProps, NearContext } from '../../services/near';
-import AddRemoveInput from '../../components/AddRemoveInput';
+import AddRemoveInput, { TInputField } from '../../components/AddRemoveInput';
 
 export default function NewLockupContract() {
   useTitle('Create Lockup Contract | FT Lockup', { restoreOnUnmount: true });
@@ -16,11 +16,9 @@ export default function NewLockupContract() {
 
   const [tokenAccountId, setTokenAccountId] = useState<string>('');
   const [name, setName] = useState<string>('');
-  const [lockupOperatorsRaw, setLockupOperatorsRaw] = useState<string>('');
-  const lockupOperators = lockupOperatorsRaw.split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0);
 
-  const [draftOperatorsRaw, setDraftOperatorsRaw] = useState<string>('');
-  const draftOperators = draftOperatorsRaw.split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0);
+  const [lockupOperators, setLockupOperators] = useState<string[]>([]);
+  const [draftOperators, setDraftOperators] = useState<string[]>([]);
 
   const PENDING = 'pending';
   const FOUND = 'found';
@@ -67,7 +65,6 @@ export default function NewLockupContract() {
 
     console.log('accountStatuses', accountStatuses);
   };
-  console.log(enqueueAccountIdCheck);
 
   const validateAccountExists = async (accountId: string) => {
     if (!near) throw new Error('unreachable');
@@ -83,30 +80,26 @@ export default function NewLockupContract() {
     }
   };
 
-  const handleChangeTokenAccountId = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeTokenAccountId = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setTokenAccountId(value);
     enqueueAccountIdCheck(value);
   };
 
-  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setName(value);
     enqueueAccountIdCheck(`${value}.${FACTORY_CONTRACT_NAME}`);
   };
 
-  const handleChangeLockupOperatorsRaw = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setLockupOperatorsRaw(value);
-    const parsed = value.split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0);
-    parsed.forEach((x) => enqueueAccountIdCheck(x));
+  const handleChangeLockupOperators = (inputFields: TInputField[]) => {
+    const array = inputFields.filter((x) => x.accountName.length > 0).map((x) => x.accountName);
+    setLockupOperators(array);
   };
 
-  const handleChangeDraftOperatorsRaw = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setDraftOperatorsRaw(value);
-    const parsed = value.split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0);
-    parsed.forEach((x) => enqueueAccountIdCheck(x));
+  const handleChangeDraftOperators = (inputFields: TInputField[]) => {
+    const array = inputFields.filter((x) => x.accountName.length > 0).map((x) => x.accountName);
+    setDraftOperators(array);
   };
 
   const handleDeployLockupContract = (e: any) => {
@@ -173,11 +166,6 @@ export default function NewLockupContract() {
     return null;
   }
 
-  const lockupOperatorsMissing = lockupOperators.filter((x) => accountStatuses[x] === NOT_FOUND);
-  const lockupOperatorsPending = lockupOperators.filter((x) => accountStatuses[x] === PENDING);
-
-  const draftOperatorsMissing = draftOperators.filter((x) => accountStatuses[x] === NOT_FOUND);
-  const draftOperatorsPending = draftOperators.filter((x) => accountStatuses[x] === PENDING);
   return (
     <div>
       <div className="header">
@@ -201,8 +189,8 @@ export default function NewLockupContract() {
 
             <p>On this page you can deploy your own copy of lockup contract. Some more elaborative description follows here.</p>
             <div className="form-row">
-              <span>Contract creator: </span>
-              <div className="form-cell">
+              <div className="form-row_title">Contract creator: </div>
+              <div className="form-row_group">
                 {near.currentUser.signedAccountId && <strong>{near.currentUser.signedAccountId}</strong>}
                 <button className="button" type="button" onClick={signIn}>
                   {near.currentUser.signedAccountId && 'Login as someone else' || 'Login'}
@@ -210,57 +198,53 @@ export default function NewLockupContract() {
               </div>
             </div>
             <div className="form-row">
-              <span>Lockup operators: </span>
-              <div style={{ display: 'inline-block' }}>
-                <input type="text" id="lockup_operators" value={lockupOperatorsRaw} onChange={handleChangeLockupOperatorsRaw} />
-                <div style={{ fontSize: 10, height: '0px', position: 'absolute' }}>
-                  {lockupOperatorsMissing.length > 0 && <span style={{ lineHeight: '20px', color: '#FF594E' }}>{`Account "${lockupOperatorsMissing[0]}" does not exist`}</span>}
-                  {lockupOperators.length === 0 && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Required</span>}
-                  {lockupOperatorsMissing.length === 0 && lockupOperatorsPending.length > 0 && <span style={{ lineHeight: '20px', color: '#808689' }}>Checking...</span>}
+              <div className="form-row_title">Lockup operators: </div>
+              <div className="form-row_group">
+                <AddRemoveInput
+                  onChange={handleChangeLockupOperators}
+                  accountIdCheck={enqueueAccountIdCheck}
+                  accountStatuses={accountStatuses}
+                />
+                <div className="form-row_error">
+                  {lockupOperators.length === 0 && <span className="red">Required</span>}
                 </div>
               </div>
             </div>
             <div className="form-row">
-              <span>Lockup operators: </span>
-              <div style={{ display: 'inline-block' }}>
-                <AddRemoveInput />
+              <div className="form-row_title">Draft operators: </div>
+              <div className="form-row_group">
+                <AddRemoveInput
+                  onChange={handleChangeDraftOperators}
+                  accountIdCheck={enqueueAccountIdCheck}
+                  accountStatuses={accountStatuses}
+                />
               </div>
             </div>
             <div className="form-row">
-              <span>Draft operators: </span>
-              <div style={{ display: 'inline-block' }}>
-                <input type="text" id="draft_operators" value={draftOperatorsRaw} onChange={handleChangeDraftOperatorsRaw} />
-                <div style={{ fontSize: 10, height: '0px', position: 'absolute' }}>
-                  {draftOperatorsMissing.length > 0 && <span style={{ lineHeight: '20px', color: '#FF594E' }}>{`Account "${draftOperatorsMissing[0]}" does not exist`}</span>}
-                  {draftOperatorsMissing.length === 0 && draftOperatorsPending.length > 0 && <span style={{ lineHeight: '20px', color: '#808689' }}>Checking...</span>}
-                </div>
-              </div>
-            </div>
-            <div className="form-row">
-              <span>Fungible token contract address: </span>
-              <div style={{ display: 'inline-block' }}>
+              <div className="form-row_title">Fungible token contract address: </div>
+              <div className="form-row_group">
                 <input
                   type="text"
                   id="token_account_id"
                   value={tokenAccountId}
                   onChange={handleChangeTokenAccountId}
                 />
-                <div style={{ fontSize: 10, height: '0px', position: 'absolute' }}>
-                  {tokenAccountId && accountStatuses[tokenAccountId] === NOT_FOUND && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Account does not exist</span>}
-                  {!tokenAccountId && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Required</span>}
-                  {accountStatuses[tokenAccountId] === PENDING && <span style={{ lineHeight: '20px', color: '#808689' }}>Checking...</span>}
+                <div className="form-row_error">
+                  {tokenAccountId && accountStatuses[tokenAccountId] === NOT_FOUND && <span className="red">Account does not exist</span>}
+                  {!tokenAccountId && <span className="red">Required</span>}
+                  {accountStatuses[tokenAccountId] === PENDING && <span className="gray">Checking...</span>}
                 </div>
               </div>
             </div>
             <div className="form-row">
-              <span>New Lockup Contract Address: </span>
-              <div style={{ display: 'inline-block', position: 'absolute' }}>
+              <div className="form-row_title">New Lockup Contract Address: </div>
+              <div className="form-row_group">
                 <input type="text" id="lockup_subaccount_id" value={name} onChange={handleChangeName} />
-                <div style={{ fontSize: 10, height: '0px' }}>
-                  {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === FOUND && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Account already exists</span>}
-                  {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === PENDING && <span style={{ lineHeight: '20px', color: '#808689' }}>Checking...</span>}
-                  {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === NOT_FOUND && name && <span style={{ lineHeight: '20px', color: '#00B988' }}>Account is available</span>}
-                  {!name && <span style={{ lineHeight: '20px', color: '#FF594E' }}>Required</span>}
+                <div className="form-row_error">
+                  {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === FOUND && <span className="red">Account already exists</span>}
+                  {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === PENDING && <span className="gray">Checking...</span>}
+                  {accountStatuses[`${name}.${FACTORY_CONTRACT_NAME}`] === NOT_FOUND && name && <span className="green">Account is available</span>}
+                  {!name && <span className="red">Required</span>}
                 </div>
               </div>
             </div>
@@ -269,7 +253,7 @@ export default function NewLockupContract() {
               className="button submit"
               type="submit"
               disabled={!(
-                near.currentUser.signedAccountId && accountStatuses[tokenAccountId] === FOUND && lockupOperators.length > 0
+                near.currentUser.signedAccountId && accountStatuses[tokenAccountId] === FOUND && lockupOperators.length > 0 && name
               )}
             >
               Deploy Contract

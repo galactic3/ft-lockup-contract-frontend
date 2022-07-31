@@ -140,16 +140,25 @@ code {
   margin: 24px 0;
 }
 
-.new-lockup-contract .form-cell {
+.new-lockup-contract .form-row_group {
+  position: relative;
   display: inline-block;
 }
 
-.form-row button {
+.new-lockup-contract .form-row_error {
+  position: absolute;
+  font-size: 10px;
+  line-height: 20px;
+  left: 0;
+  top: 100%;
+}
+
+.form-row .button {
   display: block;
   padding: 8px 32px;
 }
 
-.form-row span {
+.form-row .form-row_title {
   display: inline-block;
   vertical-align: top;
   font-weight: 500;
@@ -174,7 +183,19 @@ code {
   padding: 0 12px;
 }
 
-div.process-log {
+.add-remove-input .form-group {
+  position: relative;
+}
+
+.add-remove-input .form-group:not(:first-child) {
+  margin-top: 24px;
+}
+
+.add-remove-input .form-group input {
+  margin-right: 8px;
+}
+
+.process-log {
   border-radius: 10px;
   border: 1px solid var(--gray);
   padding: 10px 20px;
@@ -592,10 +613,6 @@ th.MuiTableCell-root {
   background: var(--red);
 }
 
-span.red {
-  color: var(--red);
-}
-
 .MuiFormControl-root .MuiFormHelperText-root.Mui-error {
   color: var(--red);
 }
@@ -770,7 +787,19 @@ svg {
   margin: 20px;
 }
 
-div.vested-amount-info {
+span.red {
+  color: var(--red);
+}
+
+span.green {
+  color: var(--green);
+}
+
+span.gray {
+  color: var(--gray);
+}
+
+.vested-amount-info {
   display: flex;
   justify-content: space-between;
   vertical-align: middle;
