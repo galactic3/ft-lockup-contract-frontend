@@ -58,7 +58,6 @@ export const connectNear = async (): Promise<INearProps> => {
   if (['', 'terms', 'privacy', 'about', 'new_lockup_contract'].some((x) => lockupContractId === x)) {
     lockupContractId = 'lockup_contract_none';
   }
-  debugger;
   const config: INearConfig = { ...configTemplate, contractName: lockupContractId };
 
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();

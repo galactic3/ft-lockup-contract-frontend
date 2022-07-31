@@ -1,5 +1,5 @@
 import {
-  ChangeEvent, useCallback, useContext,
+  ChangeEvent, useCallback, useContext, useEffect, useState,
 } from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '@mui/material';
@@ -36,7 +36,7 @@ export default function NewLockupContract() {
 
   const nameWithFactoryContractName = `${name}.${FACTORY_CONTRACT_NAME}`;
 
-  const [accountStatuses, setAccountStatuses] = useLocalStorage('new_lockup_contract:accountStatuses', { '': NOT_FOUND }); // pending success error
+  const [accountStatuses, setAccountStatuses] = useState<any>({ '': NOT_FOUND }); // pending success error
 
   const enqueueAccountIdCheck = useCallback(async (accountId: string) => {
     if (!near) return;
@@ -173,6 +173,16 @@ export default function NewLockupContract() {
 
     perform();
   };
+
+  useEffect(() => {
+    const allUniqueAccountIds = Array.from(new Set(
+      [...lockupOperators, ...draftOperators, tokenAccountId, nameWithFactoryContractName],
+    ));
+    for (let i = 0; i < allUniqueAccountIds.length; i += 1) {
+      const accountId = allUniqueAccountIds[i];
+      enqueueAccountIdCheck(accountId);
+    }
+  }, [near]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!(near)) {
     return null;
