@@ -15,12 +15,7 @@ export default function NewLockupContract() {
   useTitle('Create Lockup Contract | FT Lockup', { restoreOnUnmount: true });
 
   const { enqueueSnackbar } = useSnackbar();
-  const { near, signIn, signOut }: { near: INearProps | null, signIn: () => void, signOut: () => void } = useContext(NearContext);
-
-  const reSignIn = () => {
-    signOut();
-    signIn();
-  };
+  const { near, signIn, reSignIn }: { near: INearProps | null, signIn: () => void, reSignIn: () => void } = useContext(NearContext);
 
   const [tokenAccountId, setTokenAccountId] = useLocalStorage('new_lockup_contract:tokenAccountId', '');
   const [name, setName] = useLocalStorage('new_lockup_contract:name', '');

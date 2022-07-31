@@ -43,6 +43,12 @@ export default function NearApp() {
   const value = useMemo(() => ({
     near,
     signIn: () => { near?.api?.signIn(); },
+    reSignIn: () => {
+      if (!near) return;
+
+      near.api.signOut();
+      near.api.signIn();
+    },
     signOut: () => {
       if (!near) return;
 
