@@ -223,7 +223,7 @@ export default function App() {
           element={contractId && near && (
             near.lockupContractFound
               ? <Customer lockups={lockups} token={token} contractId={contractId} near={near} />
-              : <NotFoundContract />
+              : (near.lockupContractNone ? null : <NotFoundContract />)
           )}
         />
         <Route
@@ -231,7 +231,7 @@ export default function App() {
           element={contractId && near && (
             near.lockupContractFound
               ? <Admin lockups={lockups} token={token} tokenContractId={contractId} near={near} />
-              : <NotFoundContract />
+              : (near.lockupContractNone ? null : <NotFoundContract />)
           )}
         />
         <Route path="*" element={<NotFoundContract />} />

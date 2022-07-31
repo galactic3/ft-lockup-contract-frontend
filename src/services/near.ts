@@ -1,6 +1,6 @@
 import * as nearAPI from 'near-api-js';
 import { createContext } from 'react';
-import { config, INearConfig } from '../config';
+import { config as configTemplate } from '../config';
 import { restoreLocalStorage } from '../utils';
 import NearApi from './api';
 import NoLoginApi from './noLoginApi';
@@ -8,6 +8,16 @@ import NoLoginTokenApi from './NoLoginTokenApi';
 import TokenApi from './tokenApi';
 import FactoryApi from './factoryApi';
 import { daoCouncilMembers } from './DAOs/astroDAO/utils';
+
+export interface INearConfig {
+  contractName: string,
+  networkId: string,
+  nodeUrl: string,
+  walletUrl: string,
+  helperUrl: string,
+  explorerUrl: string,
+  factoryContractName: string,
+}
 
 export interface INearProps {
   config: INearConfig;
@@ -24,6 +34,7 @@ export interface INearProps {
   tokenContractId: string;
   lockupContractId: string;
   lockupContractFound: boolean;
+  lockupContractNone: boolean;
   tokenApi: TokenApi;
   noLoginTokenApi: NoLoginTokenApi;
   factoryApi: FactoryApi;
@@ -42,6 +53,13 @@ export const connectNear = async (): Promise<INearProps> => {
   if (localStorage.getItem('dump')) {
     restoreLocalStorage();
   }
+
+  let lockupContractId = window.location.hash.split('/')[1] || '';
+  if (['', 'terms', 'privacy', 'about', 'new_lockup_contract'].some((x) => lockupContractId === x)) {
+    lockupContractId = 'lockup_contract_none';
+  }
+  debugger;
+  const config: INearConfig = { ...configTemplate, contractName: lockupContractId };
 
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
   const near = await nearAPI.connect({ headers: {}, keyStore, ...config });
@@ -93,7 +111,6 @@ export const connectNear = async (): Promise<INearProps> => {
   const tokenApi = new TokenApi(walletConnection, tokenContractId);
 
   let isContractFtStoragePaid = false;
-  const lockupContractId = window.location.hash.split('/')[1];
 
   try {
     const storageBalance = await tokenApi.storageBalanceOf(lockupContractId);
@@ -134,6 +151,7 @@ export const connectNear = async (): Promise<INearProps> => {
     isContractFtStoragePaid,
     lockupContractId,
     lockupContractFound,
+    lockupContractNone: lockupContractId === 'lockup_contract_none',
     near,
     suggestConvertDialog: {
       open: false,
