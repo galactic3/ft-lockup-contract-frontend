@@ -12,6 +12,7 @@ import { INearProps, NearContext } from '../../services/near';
 import success from '../Snackbars/SuccessPartials';
 import failure from '../Snackbars/FailurePartials';
 import { enqueueCustomSnackbar } from '../Snackbars/Snackbar';
+import { SUCCESS_DEFAULT_OPTIONS } from '../Snackbars';
 
 export default function SuggestConvertDialog(params: { open: boolean, setOpen: any, draftGroup: any | null }) {
   const { open, setOpen, draftGroup } = params;
@@ -61,6 +62,7 @@ export default function SuggestConvertDialog(params: { open: boolean, setOpen: a
         enqueueSnackbar,
         success.body(`Converted drafts for draft group ${draftGroup.id}`),
         success.header('Success'),
+        SUCCESS_DEFAULT_OPTIONS,
       );
       const currentContractName = location.pathname.split('/')[1];
       navigate(`/${currentContractName}/admin/lockups`);

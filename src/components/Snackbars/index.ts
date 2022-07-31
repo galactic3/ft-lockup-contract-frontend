@@ -114,6 +114,7 @@ const deleteDraftGroupSnack = (enqueueSnackbar: any, message: { positive?: strin
       enqueueSnackbar,
       success.body(message.positive),
       success.header('Success'),
+      SUCCESS_DEFAULT_OPTIONS,
     );
   }
 
@@ -132,6 +133,7 @@ const discardDraftGroupSnack = (enqueueSnackbar: any, message: { positive?: stri
       enqueueSnackbar,
       success.body(message.positive),
       success.header('Success'),
+      SUCCESS_DEFAULT_OPTIONS,
     );
   }
 

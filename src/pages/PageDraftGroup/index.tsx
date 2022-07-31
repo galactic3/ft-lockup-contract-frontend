@@ -17,6 +17,7 @@ import DeleteDraftGroupButton from '../../components/DeleteDraftGroupButton';
 import success from '../../components/Snackbars/SuccessPartials';
 import failure from '../../components/Snackbars/FailurePartials';
 import { enqueueCustomSnackbar } from '../../components/Snackbars/Snackbar';
+import { SUCCESS_DEFAULT_OPTIONS } from '../../components/Snackbars';
 
 export default function PageDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
   const location = useLocation();
@@ -146,6 +147,7 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
           enqueueSnackbar,
           success.body(`Converted drafts for draft group ${draftGroupId}`),
           success.header('Success'),
+          SUCCESS_DEFAULT_OPTIONS,
         );
         const currentContractName = location.pathname.split('/')[1];
         navigate(`/${currentContractName}/admin/lockups`);
