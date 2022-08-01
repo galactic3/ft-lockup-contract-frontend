@@ -21,6 +21,8 @@ export default function NewLockupContract() {
   const { enqueueSnackbar } = useSnackbar();
   const { near, signIn, reSignIn }: { near: INearProps | null, signIn: () => void, reSignIn: () => void } = useContext(NearContext);
 
+  const [shouldClearState, setShouldClearState] = useLocalStorage('new_lockup_contract:shouldClearState', false);
+
   const [tokenAccountId, setTokenAccountId] = useLocalStorage('new_lockup_contract:tokenAccountId', '');
   const [name, setName] = useLocalStorage('new_lockup_contract:name', '');
 
@@ -176,6 +178,17 @@ export default function NewLockupContract() {
 
     perform();
   };
+
+  useEffect(() => {
+    if (!shouldClearState) {
+      return;
+    }
+    setShouldClearState(false);
+    setTokenAccountId('');
+    setName('');
+    setLockupOperators([]);
+    setDraftOperators([]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const allUniqueAccountIds = Array.from(new Set(

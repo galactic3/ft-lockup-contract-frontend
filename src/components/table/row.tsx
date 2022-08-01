@@ -43,6 +43,8 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
 
   const [now, _setNow] = useState<number>(Math.floor(new Date().getTime() / 1000));
 
+  const [hasBeenOpen, setHasBeenOpen] = useState<boolean>(false);
+
   if (!near) return null;
 
   const { isAdmin } = near.currentUser;
@@ -109,7 +111,7 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setOpen(!open)}
+            onClick={() => { setOpen(!open); setHasBeenOpen(true); }}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
@@ -209,10 +211,10 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
           </Tooltip>
         </TableCell>
       </TableRow>
-      { open && (
-        <TableRow className="expanded">
-          <TableCell style={{ padding: 0 }} colSpan={8}>
-            <Collapse in={open} timeout="auto" unmountOnExit>
+      <TableRow className="expanded">
+        <TableCell style={{ padding: 0 }} colSpan={8}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            { hasBeenOpen && (
               <div className="lockup-row">
                 <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
                 {vestingSchedule && (
@@ -233,10 +235,10 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
                   )}
                 </div>
               </div>
-            </Collapse>
-          </TableCell>
-        </TableRow>
-      )}
+            )}
+          </Collapse>
+        </TableCell>
+      </TableRow>
     </>
   );
 }

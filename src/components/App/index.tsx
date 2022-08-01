@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
+import useLocalStorage from '../../hooks/useLocalStorage';
 import { txLinkInExplorer } from '../../utils';
 import { INearProps, NearContext } from '../../services/near';
 import About from '../../pages/About';
@@ -44,6 +45,12 @@ function Customer({
 }: {
   lockups: any, token: TMetadata, contractId: string | null, near: INearProps | null,
 }) {
+  const [_, setShouldClearState] = useLocalStorage('new_lockup_contract:shouldClearState', true);
+
+  useEffect(() => {
+    setShouldClearState(true);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (!lockups) return null;
 
   return (
@@ -68,6 +75,11 @@ function Admin({
 }: {
   lockups: any, token: TMetadata, tokenContractId: string | null, near: INearProps | null,
 }) {
+  const [_, setShouldClearState] = useLocalStorage('new_lockup_contract:shouldClearState', true);
+
+  useEffect(() => {
+    setShouldClearState(true);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (!lockups) return null;
 
   const showLockups = tokenContractId && near;
