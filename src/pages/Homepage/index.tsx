@@ -6,9 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import useTitle from '../../services/useTitle';
 import { DEFAULT_CONTRACT_NAME } from '../../config';
 
-export default function Homepage(
-  { lockups }: { lockups: any[] },
-) {
+export default function Homepage() {
   useTitle('Welcome | FT Lockup', { restoreOnUnmount: true });
 
   const [address, setAddress] = useState(DEFAULT_CONTRACT_NAME);
@@ -45,27 +43,6 @@ export default function Homepage(
       </div>
       <div className="main">
         <div className="container home">
-
-          <ul className="home-list">
-            <li>
-              <div>
-                <span>Total contracts</span>
-                <b>256</b>
-              </div>
-            </li>
-            <li>
-              <div>
-                <span>Total locked</span>
-                <b>$5,336,000</b>
-              </div>
-            </li>
-            <li>
-              <div>
-                <span>Total lockups</span>
-                <b>{lockups?.length || 42}</b>
-              </div>
-            </li>
-          </ul>
 
           <h2>Manage token vesting on NEAR</h2>
           <h5>Create new lockup contract to be used by startup</h5>

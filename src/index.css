@@ -690,6 +690,7 @@ svg {
 .home {
   text-align: center;
   width: 980px;
+  padding: 100px 0 0;
 }
 
 .line {
