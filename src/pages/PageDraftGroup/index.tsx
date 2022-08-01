@@ -18,8 +18,11 @@ import success from '../../components/Snackbars/SuccessPartials';
 import failure from '../../components/Snackbars/FailurePartials';
 import { enqueueCustomSnackbar } from '../../components/Snackbars/Snackbar';
 import { SUCCESS_DEFAULT_OPTIONS } from '../../components/Snackbars';
+import useTitle from '../../services/useTitle';
 
 export default function PageDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
+  useTitle('Draft Groups | FT Lockup', { restoreOnUnmount: true });
+
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const draftGroupId: number = parseInt(useParams().draftGroupId || '', 10);
