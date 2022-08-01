@@ -89,15 +89,16 @@ export default function About() {
         <h2>Lockup and vesting logic</h2>
 
         <div>
-          <img src="https://bafkreidqdq6wefcvr436cunap4y5c77nodlgxu6c4qchxkd232g7377cw4.ipfs.nftstorage.link/" alt="Lockup and vesting schedule" />
+
+          <img src="https://bafkreiaghj56tpqi5qzivzzue7kudpp5amyhbxqzgjakydp6anprtbxxu4.ipfs.nftstorage.link/" alt="Lockup and vesting schedule" />
           <p>Consider the following lockup with a four year duration.</p>
-          <p>The vesting schedule is red. One year cliff, then 1 / 4 is vested, then vesting is linear till the end (4 years mark).</p>
-          <p>The lockup schedule is blue. Two years cliff with zero amount. Then two years of linear lockup till 3 / 4 of the amount, then another cliff up to full amount.</p>
-          <p>Consider the termination happening at the 2.5 years mark.</p>
-          <p>First, we find the vested amount for this timestamp. It is 5 / 8.</p>
+          <p>The vesting schedule is blue. One year cliff, then 1 / 4 is vested, then vesting is linear till the end (4 years mark).</p>
+          <p>The lockup schedule is green. Two years cliff with zero amount. Then two years of linear lockup till full amount</p>
+          <p>Consider the termination happening at the 2.6 years mark.</p>
+          <p>First, we find the vested amount for this timestamp. It is 0.65.</p>
           <p>After that we trim the lockup schedule at that amount.</p>
-          <p>In this case, the intersection is at 3y + 1 / 3y.</p>
-          <p>The trimmed lockup schedule is the yellow thin line. Note that it perfectly matches the initial lockup schedule up to the new total ( 5 / 8 ).</p>
+          <p>In this case, the intersection is at 3.3 year mark.</p>
+          <p>The trimmed lockup schedule capped by the horizontal red line at 0.65 of the amount.</p>
         </div>
       </div>
     </div>
