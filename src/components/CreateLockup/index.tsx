@@ -196,8 +196,8 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
                 size="small"
                 value={accountId}
                 onChange={handleChangeAccountIdEvent}
-                error={accountStatuses[accountId] === 'error'}
-                helperText={accountStatuses[accountId] === 'error' && 'Account does not exist'}
+                error={!!accountId && accountStatuses[accountId] === 'error'}
+                helperText={!!accountId && accountStatuses[accountId] === 'error' && 'Account does not exist'}
               />
             </FormControl>
             <FormControl
