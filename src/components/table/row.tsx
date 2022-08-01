@@ -98,7 +98,7 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
 
   return (
     <>
-      <TableRow className={open ? 'expanded exp-row' : 'exp-row'} sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow className={open ? 'expanded exp-row' : 'exp-row'}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -182,32 +182,34 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
           </Tooltip>
         </TableCell>
       </TableRow>
-      <TableRow className="expanded">
-        <TableCell style={{ padding: 0 }} colSpan={8}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <div className="lockup-row">
-              <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
-              {vestingSchedule && (
-              <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
-              )}
-
-              <div className="lockup-row-column chart">
-                <div style={{ height: 300 }}>
-                  <Chart data={chartData([row], token.decimals)} />
-                </div>
-
-                {adminControls && (
-                <div className="terminate">
-                  <span className="fine-print">{payerMessage}</span>
-                  {terminatorId && terminateButton(terminatorId)}
-
-                </div>
+      { open && (
+        <TableRow className="expanded">
+          <TableCell style={{ padding: 0 }} colSpan={8}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <div className="lockup-row">
+                <ScheduleTable schedule={row.schedule} title="Lockup schedule" token={token} />
+                {vestingSchedule && (
+                <ScheduleTable schedule={vestingSchedule} title="Vesting schedule" token={token} />
                 )}
+
+                <div className="lockup-row-column chart">
+                  <div style={{ height: 300 }}>
+                    <Chart data={chartData([row], token.decimals)} />
+                  </div>
+
+                  {adminControls && (
+                  <div className="terminate">
+                    <span className="fine-print">{payerMessage}</span>
+                    {terminatorId && terminateButton(terminatorId)}
+
+                  </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </Collapse>
-        </TableCell>
-      </TableRow>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      )}
     </>
   );
 }
