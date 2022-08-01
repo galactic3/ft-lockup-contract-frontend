@@ -54,7 +54,7 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
       {
         type: 'time',
         boundaryGap: ['3%', '3%'],
-        splitNumber: 15,
+        splitNumber: 10,
         min: computedMin,
         max: computedMax,
       },
