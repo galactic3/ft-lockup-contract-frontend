@@ -73,6 +73,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
     return (
       <div className="main">
         <div className="container">
+          <h1>Lockups</h1>
           {lockupsPage(lockups)}
         </div>
       </div>
@@ -82,6 +83,7 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
   return (
     <div className="main">
       <div className="container">
+        <h1>Lockups</h1>
         <FavouriteAccounts
           tokenContractId={token.contractId}
           favouriteAccounts={favouriteAccounts}

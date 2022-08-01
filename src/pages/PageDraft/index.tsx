@@ -10,6 +10,7 @@ import { useContext, useEffect, useState } from 'react';
 import DraftsTableRow from '../../components/DraftsTable/row';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
+import useTitle from '../../services/useTitle';
 
 export default function PageDraft({
   token, adminControls,
@@ -17,6 +18,8 @@ export default function PageDraft({
   const draftId = parseInt(useParams().draftId || '', 10);
   const { near }: { near: INearProps | null } = useContext(NearContext);
   const [draft, setDraft] = useState<any>();
+
+  useTitle(`Draft ${draftId} | FT Lockup`, { restoreOnUnmount: true });
 
   useEffect(() => {
     const fetchDraft = async () => {
@@ -38,6 +41,11 @@ export default function PageDraft({
 
   return (
     <div className="container">
+      <h1>
+        Draft
+        {' '}
+        {draftId}
+      </h1>
       {draft && (
       <Table className="main-table" aria-label="collapsible table">
         <TableHead className="table-head">

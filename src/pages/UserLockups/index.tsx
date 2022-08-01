@@ -14,6 +14,7 @@ import ClaimAllLockups from '../../components/Claim';
 import { TMetadata } from '../../services/tokenApi';
 import Chart from '../../components/Chart';
 import { chartData } from '../../services/chartHelpers';
+import { toCompactString } from '../../utils';
 
 export default function UserLockups({ lockups: allLockups, token, adminControls }: { lockups: any[], token: TMetadata, adminControls: boolean }) {
   const { userId, id } = useParams();
@@ -32,6 +33,17 @@ export default function UserLockups({ lockups: allLockups, token, adminControls 
   return (
     <div className="main">
       <div className="container">
+
+        <h1>
+          {!id && 'All'}
+          {' '}
+          Lockup
+          {id ? ` ${id}` : 's'}
+          {' '}
+          for
+          {' '}
+          {userId && toCompactString(userId, 12, 12)}
+        </h1>
 
         {!adminControls && <ClaimAllLockups accountId={userId} token={token} lockups={lockups} />}
 

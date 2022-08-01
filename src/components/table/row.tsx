@@ -10,6 +10,9 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link, useLocation } from 'react-router-dom';
 
+import LinkIcon from '@mui/icons-material/Link';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useSnackbar } from 'notistack';
 import TimestampDateDisplay from '../TimestampDateDisplay';
 import TokenAmountDisplay from '../TokenAmountDisplay';
 import Chart from '../Chart';
@@ -22,6 +25,8 @@ import TerminateWithDaoButton from '../TerminateWithDaoButton';
 import ScheduleTable from '../ScheduleTable';
 import { chartData } from '../../services/chartHelpers';
 import { calcBalancesRaw } from '../../services/scheduleHelpers';
+import { enqueueCustomSnackbar } from '../Snackbars/Snackbar';
+import success from '../Snackbars/SuccessPartials';
 
 export default function Row(props: { adminControls: boolean, row: TLockup, token: TMetadata }) {
   const location = useLocation();
@@ -29,6 +34,7 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
 
   const [open, setOpen] = useState(false);
   const { adminControls, row, token } = props;
+  const { enqueueSnackbar } = useSnackbar();
   const {
     near,
   }: {
@@ -112,11 +118,32 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
           {!selectedLockupId
             ? <Link to={`/${currentContractName}${adminControls ? '/admin' : ''}/lockups/${row.account_id}/${row.id}`}>{row.id}</Link>
             : row.id}
+          {!selectedLockupId && (
+          <CopyToClipboard
+            text={`${window.location.origin}/#/${currentContractName}/lockups/${row.account_id}/${row.id}`}
+            onCopy={() => enqueueCustomSnackbar(enqueueSnackbar, null, success.header('Copied'), { autoHideDuration: 1000 })}
+          >
+            <IconButton aria-label="copy link">
+              <LinkIcon />
+            </IconButton>
+          </CopyToClipboard>
+          )}
         </TableCell>
         <TableCell align="left">
           {!selectedAccountPage
             ? <Link to={`/${currentContractName}${adminControls ? '/admin' : ''}/lockups/${row.account_id}`}>{toCompactString(row.account_id)}</Link>
             : toCompactString(row.account_id)}
+          {!selectedAccountPage
+          && (
+          <CopyToClipboard
+            text={`${window.location.origin}/#/${currentContractName}/lockups/${row.account_id}`}
+            onCopy={() => enqueueCustomSnackbar(enqueueSnackbar, null, success.header('Copied'), { autoHideDuration: 1000 })}
+          >
+            <IconButton aria-label="copy link">
+              <LinkIcon />
+            </IconButton>
+          </CopyToClipboard>
+          )}
         </TableCell>
         <TableCell align="right">
           <TimestampDateDisplay unixSeconds={row.schedule[0].timestamp} />

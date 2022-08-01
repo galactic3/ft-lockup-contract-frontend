@@ -21,8 +21,6 @@ import { SUCCESS_DEFAULT_OPTIONS } from '../../components/Snackbars';
 import useTitle from '../../services/useTitle';
 
 export default function PageDraftGroup({ token, adminControls }: { token: TMetadata, adminControls: boolean }) {
-  useTitle('Draft Groups | FT Lockup', { restoreOnUnmount: true });
-
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const draftGroupId: number = parseInt(useParams().draftGroupId || '', 10);
@@ -31,6 +29,8 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
   const [drafts, setDrafts] = useState<any[]>([]);
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [isConverted, setIsConverted] = useState<string>('pending');
+
+  useTitle(`Draft Group ${draftGroupId} | FT Lockup`, { restoreOnUnmount: true });
 
   useEffect(() => {
     const perform = async () => {
@@ -195,6 +195,11 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
 
   return (
     <div className="container">
+      <h1>
+        Draft Group
+        {' '}
+        {draftGroupId}
+      </h1>
       <div className="draft-group-preview-wrapper draft-group-preview-inner">
         <div className="draft-group-preview-info" style={{ display: 'flex' }}>
           <h5>

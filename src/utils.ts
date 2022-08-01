@@ -94,9 +94,9 @@ export const restoreLocalStorage = (dumpKey: string = 'dump') => {
   dumpValue.forEach((record:string[]) => localStorage.setItem(record[0], record[1]));
 };
 
-export const toCompactString = (string: string) => {
+export const toCompactString = (string: string, leftPad: number = 10, rightPad: number = 10) => {
   if (string.length > 24) {
-    return `${string.slice(0, 12)}...${string.slice(-12)}`;
+    return `${string.slice(0, leftPad)}...${string.slice(-rightPad)}`;
   }
   return string;
 };
