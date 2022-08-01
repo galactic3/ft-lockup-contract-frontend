@@ -16,7 +16,7 @@ const claimSnack = (enqueueSnackbar: any, unpacked: any, txHash: string, token: 
     return enqueueCustomSnackbar(
       enqueueSnackbar,
       success.body(`Claimed ${amount} ${token.symbol}`),
-      success.header('Claim succeed'),
+      success.header('Success'),
       SUCCESS_DEFAULT_OPTIONS,
     );
   }
@@ -35,7 +35,7 @@ const storageDepositSnack = (enqueueSnackbar: any, unpacked: any, txHash: string
     return enqueueCustomSnackbar(
       enqueueSnackbar,
       success.body(`Successfully paid ${amount}NEAR for ${accountId}'s storage of ${token.symbol}`),
-      success.header('Deposit storage succeed'),
+      success.header('Success'),
       SUCCESS_DEFAULT_OPTIONS,
     );
   }
@@ -43,7 +43,7 @@ const storageDepositSnack = (enqueueSnackbar: any, unpacked: any, txHash: string
   return enqueueCustomSnackbar(
     enqueueSnackbar,
     failure.body(`${txLinkInExplorer(txHash)}`),
-    failure.header('Deposit storage failed'),
+    failure.header('Payment for deposit storage failed'),
   );
 };
 
