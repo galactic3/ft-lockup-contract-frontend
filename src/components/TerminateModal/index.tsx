@@ -148,7 +148,7 @@ export function TerminateModal({
               <FormControlLabel value="with_timestamp" control={<Radio />} label="at specific timestamp" />
             </RadioGroup>
           </FormControl>
-          <FormControl fullWidth sx={{ marginTop: '10px' }}>
+          <FormControl fullWidth sx={{ marginTop: '24px' }}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               {dialog.dateTimePicker && (
                 <UTCDateTimePicker
