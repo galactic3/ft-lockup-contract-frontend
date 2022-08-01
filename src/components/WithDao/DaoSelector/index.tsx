@@ -51,7 +51,9 @@ function DaoSelector({ selectedAddress, setSelectedAddress }: TProps): any {
   return (
     <TextField
       required
-      sx={{ marginBottom: 3, width: 1 }}
+      variant="outlined"
+      size="small"
+      sx={{ margin: '24px 0', width: '100%' }}
       id="outlined-helperText"
       label="DAO contract address"
       onChange={handleSelectedDaoAddressChange}
