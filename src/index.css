@@ -340,6 +340,10 @@ table.MuiTable-root.main-table tbody tr:first-child td {
   /* border-bottom: 1px solid var(--light-gray); */
 }
 
+table.MuiTable-root.main-table tbody tr td {
+  border-bottom: 1px solid #EAEDF7 !important;
+}
+
 table.MuiTable-root.main-table tbody tr:first-child td:first-child {
   /* border: 1px solid red; */
   border-top-left-radius: 10px;
@@ -356,16 +360,6 @@ table.MuiTable-root.main-table tbody tr:last-child td:first-child {
 }
 
 table.MuiTable-root.main-table tbody tr:last-child td:last-child {
-  /* border: 1px solid red; */
-  border-bottom-right-radius: 10px;
-}
-
-table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2) td:first-child {
-  /* border: 1px solid red; */
-  border-bottom-left-radius: 10px;
-}
-
-table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2) td:last-child {
   /* border: 1px solid red; */
   border-bottom-right-radius: 10px;
 }
