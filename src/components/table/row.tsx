@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   Collapse,
   IconButton,
@@ -34,7 +34,7 @@ export default function Row({
   const location = useLocation();
   const currentContractName = location.pathname.split('/')[1];
 
-  const [open, setOpen] = useState<boolean>(opened);
+  const [open, setOpen] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
   const {
     near,
@@ -44,7 +44,12 @@ export default function Row({
 
   const [now, _setNow] = useState<number>(Math.floor(new Date().getTime() / 1000));
 
-  const [hasBeenOpen, setHasBeenOpen] = useState<boolean>(opened);
+  const [hasBeenOpen, setHasBeenOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    setOpen(opened);
+    setHasBeenOpen(opened);
+  }, [opened]);
 
   if (!near) return null;
 
@@ -107,9 +112,8 @@ export default function Row({
 
   return (
     <>
-      <TableRow className={open && !opened ? 'expanded exp-row' : 'exp-row'}>
+      <TableRow className={open ? `expanded exp-row ${(opened ? 'opened' : '')}` : 'exp-row'}>
         <TableCell>
-          {!opened && (
           <IconButton
             aria-label="expand row"
             size="small"
@@ -117,7 +121,6 @@ export default function Row({
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
-          )}
         </TableCell>
         <TableCell align="left">
           {!selectedLockupId
@@ -214,7 +217,7 @@ export default function Row({
           </Tooltip>
         </TableCell>
       </TableRow>
-      <TableRow className={!opened ? 'expanded' : ''}>
+      <TableRow className={opened ? 'expanded opened' : 'expanded'}>
         <TableCell style={{ padding: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             { hasBeenOpen && (

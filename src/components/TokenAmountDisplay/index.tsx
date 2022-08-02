@@ -8,8 +8,6 @@ import TokenIcon from '../TokenIcon';
 export default function TokenAmountDisplay(params: { token: TMetadata, amount: TNearAmount }) {
   const { token, amount } = params;
 
-  console.log(token, amount);
-
   return (
     <span className="nowrap" title={amount}>
       {formatTokenAmount(amount, token.decimals)}

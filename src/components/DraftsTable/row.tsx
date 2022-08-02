@@ -70,9 +70,8 @@ export default function DraftsTableRow(props: { opened: boolean, pageIndex: numb
 
   return (
     <>
-      <TableRow className={open && !opened ? 'expanded exp-row' : 'exp-row'} sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow className={open ? `expanded exp-row ${(opened ? 'opened' : '')}` : 'exp-row'}>
         <TableCell>
-          {!opened && (
           <IconButton
             aria-label="expand row"
             size="small"
@@ -80,7 +79,6 @@ export default function DraftsTableRow(props: { opened: boolean, pageIndex: numb
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
-          )}
         </TableCell>
         <TableCell align="left">
           {selectedDraftId && draftPage || importDraftPage
@@ -171,7 +169,7 @@ export default function DraftsTableRow(props: { opened: boolean, pageIndex: numb
         </TableCell>
         )}
       </TableRow>
-      <TableRow className={!opened ? 'expanded' : ''}>
+      <TableRow className={opened ? 'expanded opened' : 'expanded'}>
         <TableCell style={{ padding: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">

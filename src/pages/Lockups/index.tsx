@@ -66,8 +66,6 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
     );
   };
 
-  console.log('favouriteAccountsLockups', favouriteAccountsLockups);
-
   if (adminControls) {
     return (
       <div className="main">

@@ -344,27 +344,39 @@ table.MuiTable-root.main-table tbody tr:first-child td {
   /* border-bottom: 1px solid var(--light-gray); */
 }
 
-table.MuiTable-root.main-table tbody tr td {
-  border-bottom: 1px solid #EAEDF7 !important;
-}
-
 table.MuiTable-root.main-table tbody tr:first-child td:first-child {
-  /* border: 1px solid red; */
   border-top-left-radius: 10px;
 }
 
 table.MuiTable-root.main-table tbody tr:first-child td:last-child {
-  /* border: 1px solid red; */
   border-top-right-radius: 10px;
 }
 
 table.MuiTable-root.main-table tbody tr:last-child td:first-child {
-  /* border: 1px solid red; */
   border-bottom-left-radius: 10px;
 }
 
 table.MuiTable-root.main-table tbody tr:last-child td:last-child {
-  /* border: 1px solid red; */
+  border-bottom-right-radius: 10px;
+}
+
+table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded) td {
+  border-bottom: 1px solid #EAEDF7;
+}
+
+table.MuiTable-root.main-table tbody tr.exp-row + tr.expanded td {
+  border-bottom: 0;
+}
+
+table.MuiTable-root.main-table tbody tr.exp-row.expanded + tr.expanded td {
+  border-bottom: 1px solid #EAEDF7;
+}
+
+table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2) td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+table.MuiTable-root.main-table tbody tr.exp-row:not(.expanded):nth-last-child(2) td:last-child {
   border-bottom-right-radius: 10px;
 }
 
@@ -428,6 +440,11 @@ th.MuiTableCell-root {
 }
 .main-table .expanded .MuiTableCell-body {
   background: var(--bg);
+  transition: background-color .2s;
+}
+
+.main-table .expanded.opened .MuiTableCell-body {
+  background: var(--white);
   transition: background-color .2s;
 }
 
