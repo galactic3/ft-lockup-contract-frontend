@@ -27,7 +27,7 @@ export default function LockupsTable(
       </TableHead>
       <TableBody>
         {lockups.map((lockup) => (
-          <Row key={lockup.id} row={lockup} token={token} adminControls={adminControls} />
+          <Row key={lockup.id} row={lockup} token={token} adminControls={adminControls} opened={false} />
         ))}
       </TableBody>
     </Table>

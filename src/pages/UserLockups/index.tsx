@@ -47,7 +47,7 @@ export default function UserLockups({ lockups: allLockups, token, adminControls 
 
         {!adminControls && <ClaimAllLockups accountId={userId} token={token} lockups={lockups} />}
 
-        <Chart data={chartData(lockups, token.decimals)} />
+        {!id && <Chart data={chartData(lockups, token.decimals)} />}
 
         <TableContainer sx={{ boxShadow: 'unset' }}>
           <Table className="main-table" aria-label="collapsible table">
@@ -65,7 +65,7 @@ export default function UserLockups({ lockups: allLockups, token, adminControls 
             </TableHead>
             <TableBody>
               {lockups.map((lockup) => (
-                <Row key={lockup.id} row={lockup} token={token} adminControls={adminControls} />
+                <Row key={lockup.id} row={lockup} token={token} adminControls={adminControls} opened={!!id} />
               ))}
             </TableBody>
           </Table>

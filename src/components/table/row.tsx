@@ -28,12 +28,13 @@ import { calcBalancesRaw } from '../../services/scheduleHelpers';
 import { enqueueCustomSnackbar } from '../Snackbars/Snackbar';
 import success from '../Snackbars/SuccessPartials';
 
-export default function Row(props: { adminControls: boolean, row: TLockup, token: TMetadata }) {
+export default function Row({
+  opened, adminControls, row, token,
+}: { opened: boolean, adminControls: boolean, row: TLockup, token: TMetadata }) {
   const location = useLocation();
   const currentContractName = location.pathname.split('/')[1];
 
-  const [open, setOpen] = useState(false);
-  const { adminControls, row, token } = props;
+  const [open, setOpen] = useState<boolean>(opened);
   const { enqueueSnackbar } = useSnackbar();
   const {
     near,
@@ -43,7 +44,7 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
 
   const [now, _setNow] = useState<number>(Math.floor(new Date().getTime() / 1000));
 
-  const [hasBeenOpen, setHasBeenOpen] = useState<boolean>(false);
+  const [hasBeenOpen, setHasBeenOpen] = useState<boolean>(opened);
 
   if (!near) return null;
 
@@ -106,8 +107,9 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
 
   return (
     <>
-      <TableRow className={open ? 'expanded exp-row' : 'exp-row'}>
+      <TableRow className={open && !opened ? 'expanded exp-row' : 'exp-row'}>
         <TableCell>
+          {!opened && (
           <IconButton
             aria-label="expand row"
             size="small"
@@ -115,6 +117,7 @@ export default function Row(props: { adminControls: boolean, row: TLockup, token
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
+          )}
         </TableCell>
         <TableCell align="left">
           {!selectedLockupId
