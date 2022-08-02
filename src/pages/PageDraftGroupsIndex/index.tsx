@@ -5,6 +5,7 @@ import {
   TableHead,
   TableBody,
   TableRow,
+  Button,
 } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -131,7 +132,7 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
 
         {adminControls && (
         <Link to={importDraftGroupPath}>
-          <button className="button" type="button">Import Draft Group</button>
+          <Button variant="outlined" className="button" type="button">Import Draft Group</Button>
         </Link>
         )}
       </div>

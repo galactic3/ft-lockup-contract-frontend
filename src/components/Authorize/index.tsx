@@ -1,4 +1,4 @@
-import { Alert } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import { ReactNode, useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { INearProps, NearContext } from '../../services/near';
@@ -33,7 +33,7 @@ function Authorize() {
   return (
     <Auth>
       { showAlertForUser && <Alert severity="error">You are not admin</Alert>}
-      { !signedIn && <button className="button" type="button" onClick={signIn}>Sign In</button> }
+      { !signedIn && <Button variant="contained" className="button" type="button" onClick={signIn}>Sign In</Button> }
       { showLockups && <Navigate to="lockups" replace />}
     </Auth>
   );

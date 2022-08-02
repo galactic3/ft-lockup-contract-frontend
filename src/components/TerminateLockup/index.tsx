@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 
+import { Button } from '@mui/material';
 import { TTerminationConfig, TLockup, TSchedule } from '../../services/api';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
@@ -86,13 +87,14 @@ function TerminateLockup(
   return (
     <>
       {canTerminate && (
-        <button
+        <Button
+          variant="outlined"
           className="button"
           type="button"
           onClick={handleOpen}
         >
           {buttonText}
-        </button>
+        </Button>
       )}
       { open && <TerminateModal {...modalProps} /> }
     </>

@@ -2,7 +2,7 @@ import {
   ChangeEvent, useCallback, useContext, useEffect, useState,
 } from 'react';
 import { Link } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useSnackbar } from 'notistack';
 
 import useTitle from '../../services/useTitle';
@@ -240,14 +240,14 @@ export default function NewLockupContract() {
                 {near.currentUser.signedAccountId ? (
                   <>
                     <strong>{near.currentUser.signedAccountId}</strong>
-                    <button className="button" type="button" onClick={reSignIn}>
+                    <Button variant="outlined" className="button" type="button" onClick={reSignIn}>
                       Login as someone else
-                    </button>
+                    </Button>
                   </>
                 ) : (
-                  <button className="button" type="button" onClick={signIn}>
+                  <Button variant="outlined" className="button" type="button" onClick={signIn}>
                     Login
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>
@@ -312,7 +312,8 @@ export default function NewLockupContract() {
               </div>
             </div>
 
-            <button
+            <Button
+              variant="outlined"
               className="button submit"
               type="submit"
               disabled={!(
@@ -327,7 +328,7 @@ export default function NewLockupContract() {
               )}
             >
               Deploy Contract
-            </button>
+            </Button>
           </div>
         </form>
       </div>

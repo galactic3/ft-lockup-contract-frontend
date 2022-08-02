@@ -1,4 +1,6 @@
-import { Box, InputAdornment, TextField } from '@mui/material';
+import {
+  Box, Button, InputAdornment, TextField,
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { ChangeEvent, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -64,9 +66,9 @@ export default function NotFoundContract() {
             error={!!error}
             helperText={error}
           />
-          <button className="button large" onClick={handleOpenLockupContract} aria-label="open" type="button">
+          <Button variant="outlined" className="button large" onClick={handleOpenLockupContract} aria-label="open" type="button">
             Search
-          </button>
+          </Button>
         </div>
 
         <div className="block">

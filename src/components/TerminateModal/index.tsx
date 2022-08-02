@@ -9,6 +9,7 @@ import {
   Radio,
   FormControl,
   FormControlLabel,
+  Button,
 } from '@mui/material';
 
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
@@ -176,7 +177,8 @@ export function TerminateModal({
             />
           ) }
           <span style={{ minHeight: '40px' }} />
-          <button
+          <Button
+            variant="outlined"
             className="button red fullWidth"
             style={{ marginTop: '20px' }}
             type="button"
@@ -195,7 +197,7 @@ export function TerminateModal({
             }
           >
             Terminate
-          </button>
+          </Button>
         </DialogContent>
       </form>
     </Dialog>

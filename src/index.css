@@ -533,7 +533,7 @@ th.MuiTableCell-root {
   background: #F45800;
 }
 
-.button, .MuiLoadingButton-root.button {
+.button, .MuiButtonBase-root.button, .MuiLoadingButton-root.button {
   background: var(--green);
   font-size: 16px;
   line-height: 24px;
@@ -560,7 +560,7 @@ th.MuiTableCell-root {
   color: transparent;
 }
 
-.MuiLoadingButton-root.button:hover {
+.MuiButtonBase-root.button:hover, .MuiLoadingButton-root.button:hover {
   background: var(--green);
 }
 

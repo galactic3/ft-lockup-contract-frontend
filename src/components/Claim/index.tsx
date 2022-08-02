@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import { Big } from 'big.js';
 
+import { Button } from '@mui/material';
 import ConfirmDialog from '../ConfirmDialog';
 import { INearProps, NearContext } from '../../services/near';
 import { TMetadata } from '../../services/tokenApi';
@@ -64,10 +65,10 @@ function ClaimAllLockups(params: { accountId: string | undefined, token: TMetada
         <TokenAmountPreview token={token} amount={total} />
       </div>
       <div className="claim-button-wrapper">
-        <button className="button" type="button" onClick={handleClaimAllLockups}>
+        <Button variant="outlined" className="button" type="button" onClick={handleClaimAllLockups}>
           Claim
           {lockups.length > 1 ? ' all' : ''}
-        </button>
+        </Button>
         <ConfirmDialog message={depositConfirmMessage} isOpen={isDialogOpen} closeFn={closeDialog} callback={dialogConfirmCallback} />
       </div>
     </div>

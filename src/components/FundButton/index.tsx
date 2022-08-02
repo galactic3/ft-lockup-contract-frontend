@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { Button } from '@mui/material';
 import { INearProps, NearContext } from '../../services/near';
 
 function FundButton(props: { draftGroupIndex: number, amount: string }) {
@@ -18,7 +19,7 @@ function FundButton(props: { draftGroupIndex: number, amount: string }) {
   };
 
   return (
-    <button className="button" type="button" onClick={handleFund}>Fund</button>
+    <Button variant="outlined" className="button" type="button" onClick={handleFund}>Fund</Button>
   );
 }
 

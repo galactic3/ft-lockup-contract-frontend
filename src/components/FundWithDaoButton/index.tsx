@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import {
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -50,7 +51,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number, amount: string, tok
 
   return (
     <>
-      <button className="button" type="button" onClick={handleOpen}>Fund with DAO</button>
+      <Button variant="outlined" className="button" type="button" onClick={handleOpen}>Fund with DAO</Button>
       <Dialog open={open} sx={{ padding: 1, minWidth: 1 }} onClose={handleClose}>
         <form className="form-submit" onSubmit={handleFund}>
           <DialogTitle>
@@ -72,7 +73,7 @@ function FundWithDaoButton(props: { draftGroupIndex: number, amount: string, tok
             <DaoProposalDescription proposalDescription={description} setProposalDescription={setDescription} />
           </DialogContent>
           <DialogActions sx={{ padding: '14px 24px 24px' }}>
-            <button className="button fullWidth noMargin" type="submit">Fund</button>
+            <Button variant="outlined" className="button fullWidth noMargin" type="submit">Fund</Button>
           </DialogActions>
         </form>
       </Dialog>

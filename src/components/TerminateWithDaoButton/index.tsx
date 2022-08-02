@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { Button } from '@mui/material';
 import { TMetadata } from '../../services/tokenApi';
 import { INearProps, NearContext } from '../../services/near';
 import { TerminateModal } from '../TerminateModal';
@@ -108,7 +109,8 @@ function TerminateWithDaoButton(
 
   return (
     <div>
-      <button
+      <Button
+        variant="outlined"
         className="button"
         disabled={!canTerminate}
         type="button"
@@ -116,7 +118,7 @@ function TerminateWithDaoButton(
         style={{ marginTop: 0 }}
       >
         {buttonText}
-      </button>
+      </Button>
       { open && <TerminateModal {...modalProps} /> }
     </div>
   );

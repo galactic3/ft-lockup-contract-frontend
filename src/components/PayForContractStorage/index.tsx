@@ -1,3 +1,4 @@
+import { Button } from '@mui/material';
 import { useContext } from 'react';
 import { INearProps, NearContext } from '../../services/near';
 
@@ -38,9 +39,9 @@ export default function PayForContractStorage() {
           storage for their account too.
         </p>
 
-        <button className="button" type="button" onClick={handlePay}>
+        <Button variant="outlined" className="button" type="button" onClick={handlePay}>
           Pay
-        </button>
+        </Button>
       </div>
     </div>
   );

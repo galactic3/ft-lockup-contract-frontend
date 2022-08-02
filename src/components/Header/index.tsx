@@ -1,6 +1,6 @@
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { INearProps, NearContext } from '../../services/near';
 
 export default function Header({ adminControls }: { adminControls: boolean }) {
@@ -45,7 +45,7 @@ export default function Header({ adminControls }: { adminControls: boolean }) {
               <span className="account-name">
                 {signedAccountId}
               </span>
-              <button className="button" type="button" onClick={signOut}>Log out</button>
+              <Button variant="contained" className="button" type="button" onClick={signOut}>Log out</Button>
             </Box>
           )}
         </Box>

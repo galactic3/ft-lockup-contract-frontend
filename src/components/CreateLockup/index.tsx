@@ -11,6 +11,7 @@ import {
   Select,
   TextField,
   InputLabel,
+  Button,
 } from '@mui/material';
 import BN from 'bn.js';
 import Big from 'big.js';
@@ -164,7 +165,7 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
 
   return (
     <>
-      <button className="button" type="button" onClick={handleOpen}>Create Lockup</button>
+      <Button variant="contained" className="button" type="button" onClick={handleOpen}>Create Lockup</Button>
       <Dialog open={open} sx={{ padding: 2 }} maxWidth="md" onClose={handleClose}>
         <form className="form-submit">
           <DialogTitle>
@@ -253,14 +254,15 @@ export default function CreateLockup({ token } : { token: TMetadata }) {
             </FormControl>
           </DialogContent>
           <DialogActions sx={{ padding: '14px 24px 24px' }}>
-            <button
+            <Button
+              variant="contained"
               disabled={!startDate || accountStatuses[accountId] === 'error' || !validAmount}
               className="button fullWidth noMargin"
               type="button"
               onClick={handleCreateLockup}
             >
               Create
-            </button>
+            </Button>
           </DialogActions>
         </form>
       </Dialog>

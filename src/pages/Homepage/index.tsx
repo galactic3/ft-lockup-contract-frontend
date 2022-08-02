@@ -1,4 +1,6 @@
-import { Box, InputAdornment, TextField } from '@mui/material';
+import {
+  Box, Button, InputAdornment, TextField,
+} from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChangeEvent, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
@@ -73,9 +75,9 @@ export default function Homepage() {
               error={!!error}
               helperText={error}
             />
-            <button className="button" onClick={handleOpenLockupContract} aria-label="open" type="button">
+            <Button variant="contained" className="button" onClick={handleOpenLockupContract} aria-label="open" type="button">
               Search
-            </button>
+            </Button>
           </div>
 
         </div>
