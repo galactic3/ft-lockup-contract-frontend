@@ -28,10 +28,10 @@ import success from '../Snackbars/SuccessPartials';
 
 export default function DraftsTableRow(props: { opened: boolean, pageIndex: number, row: ReturnType<any>, token: TMetadata, adminControls: boolean, progressShow: boolean }) {
   const location = useLocation();
-  const [open, setOpen] = useState(false);
   const {
     opened, pageIndex, row, token, adminControls, progressShow,
   } = props;
+  const [open, setOpen] = useState(opened);
   const { enqueueSnackbar } = useSnackbar();
   const {
     near,
