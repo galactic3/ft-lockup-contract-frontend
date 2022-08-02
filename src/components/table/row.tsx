@@ -214,7 +214,7 @@ export default function Row({
           </Tooltip>
         </TableCell>
       </TableRow>
-      <TableRow className="expanded">
+      <TableRow className={!opened ? 'expanded' : ''}>
         <TableCell style={{ padding: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             { hasBeenOpen && (

@@ -26,11 +26,11 @@ import { calcBalancesRaw } from '../../services/scheduleHelpers';
 import { enqueueCustomSnackbar } from '../Snackbars/Snackbar';
 import success from '../Snackbars/SuccessPartials';
 
-export default function DraftsTableRow(props: { pageIndex: number, row: ReturnType<any>, token: TMetadata, adminControls: boolean, progressShow: boolean }) {
+export default function DraftsTableRow(props: { opened: boolean, pageIndex: number, row: ReturnType<any>, token: TMetadata, adminControls: boolean, progressShow: boolean }) {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const {
-    pageIndex, row, token, adminControls, progressShow,
+    opened, pageIndex, row, token, adminControls, progressShow,
   } = props;
   const { enqueueSnackbar } = useSnackbar();
   const {
@@ -70,8 +70,9 @@ export default function DraftsTableRow(props: { pageIndex: number, row: ReturnTy
 
   return (
     <>
-      <TableRow className={open ? 'expanded exp-row' : 'exp-row'} sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow className={open && !opened ? 'expanded exp-row' : 'exp-row'} sx={{ '& > *': { borderBottom: 'unset' } }}>
         <TableCell>
+          {!opened && (
           <IconButton
             aria-label="expand row"
             size="small"
@@ -79,6 +80,7 @@ export default function DraftsTableRow(props: { pageIndex: number, row: ReturnTy
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
+          )}
         </TableCell>
         <TableCell align="left">
           {selectedDraftId && draftPage || importDraftPage
@@ -169,7 +171,7 @@ export default function DraftsTableRow(props: { pageIndex: number, row: ReturnTy
         </TableCell>
         )}
       </TableRow>
-      <TableRow className="expanded">
+      <TableRow className={!opened ? 'expanded' : ''}>
         <TableCell style={{ padding: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="lockup-row">

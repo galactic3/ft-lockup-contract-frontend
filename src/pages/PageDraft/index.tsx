@@ -60,7 +60,7 @@ export default function PageDraft({
           </TableRow>
         </TableHead>
         <TableBody>
-          <DraftsTableRow pageIndex={-1} row={draft} token={token} adminControls={adminControls} progressShow={progressShow} />
+          <DraftsTableRow pageIndex={-1} row={draft} token={token} adminControls={adminControls} progressShow={progressShow} opened={!!draftId} />
         </TableBody>
       </Table>
       )}

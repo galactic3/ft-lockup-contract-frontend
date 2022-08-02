@@ -28,7 +28,7 @@ export default function DraftsTable({
       </TableHead>
       <TableBody>
         {lockups.map((lockup, i) => (
-          <DraftsTableRow key={lockup.id} pageIndex={i + 1} row={lockup} token={token} adminControls={adminControls} progressShow={progressShow} />
+          <DraftsTableRow key={lockup.id} pageIndex={i + 1} row={lockup} token={token} adminControls={adminControls} progressShow={progressShow} opened={false} />
         ))}
       </TableBody>
     </Table>
