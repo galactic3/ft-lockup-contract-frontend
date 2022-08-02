@@ -102,7 +102,7 @@ export default function NewLockupContract() {
   const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setName(value);
-    enqueueAccountIdCheck(nameWithFactoryContractName);
+    enqueueAccountIdCheck(`${value}.${FACTORY_CONTRACT_NAME}`);
   };
 
   const handleChangeLockupOperators = (inputFields: TInputField[]) => {
@@ -304,7 +304,7 @@ export default function NewLockupContract() {
                     <>
                       {name && accountStatuses[nameWithFactoryContractName] === FOUND && (<span className="red">Account already exists</span>)}
                       {name && accountStatuses[nameWithFactoryContractName] === PENDING && (<span className="gray">Checking...</span>)}
-                      {name && accountStatuses[nameWithFactoryContractName] === NOT_FOUND && name && (<span className="green">Account is available</span>)}
+                      {name && accountStatuses[nameWithFactoryContractName] === NOT_FOUND && (<span className="green">Account is available</span>)}
                       {!name && (<span className="red">Required</span>)}
                     </>
                   )}
