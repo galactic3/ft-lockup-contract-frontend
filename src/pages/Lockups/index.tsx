@@ -51,7 +51,6 @@ export default function Lockups({ lockups, token, adminControls }: { lockups: an
 
     return (
       <div>
-        <h1>Lockups</h1>
         {adminControls && (
           <div>
             There are no lockups yet.
