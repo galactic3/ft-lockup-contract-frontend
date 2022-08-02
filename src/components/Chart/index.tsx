@@ -90,6 +90,9 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
           },
           symbol: 'none',
         },
+        emphasis: {
+          disabled: true,
+        },
         data: data.vested,
       },
       {
@@ -103,6 +106,9 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
         areaStyle: {
           opacity: 1,
         },
+        emphasis: {
+          disabled: true,
+        },
         data: data.unlocked,
       },
       {
@@ -115,6 +121,9 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
         color: '#E9AF1C',
         areaStyle: {
           opacity: 1,
+        },
+        emphasis: {
+          disabled: true,
         },
         data: data.claimed,
       },
