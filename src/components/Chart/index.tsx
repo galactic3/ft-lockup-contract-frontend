@@ -19,7 +19,7 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
     title: [
       {
         text: 'Schedule timestamps are in UTC',
-        top: '10px',
+        top: '20px',
         // left: 'center',
         left: '7px',
         // right: '30px',
@@ -44,7 +44,7 @@ export default function Chart({ data, xMax, yMax }: { data: { vested: any[], unl
       icon: 'circle',
     },
     grid: {
-      top: '50px',
+      top: '70px',
       left: '12px',
       right: '12px',
       bottom: '15%',

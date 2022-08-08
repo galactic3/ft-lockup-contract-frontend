@@ -1,6 +1,10 @@
 
-
 .echarts-for-react {
   background: #fff;
   margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(28, 41, 90, 0.05);
+}
+
+.MuiDialogContent-root .echarts-for-react {
+  box-shadow: none;
 }

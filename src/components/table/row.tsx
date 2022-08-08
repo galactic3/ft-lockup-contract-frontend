@@ -112,7 +112,7 @@ export default function Row({
 
   return (
     <>
-      <TableRow className={open ? `expanded exp-row ${(opened ? 'opened' : '')}` : 'exp-row'}>
+      <TableRow className={open ? 'expanded exp-row' : 'exp-row'}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -217,7 +217,7 @@ export default function Row({
           </Tooltip>
         </TableCell>
       </TableRow>
-      <TableRow className={opened ? 'expanded opened' : 'expanded'}>
+      <TableRow className="expanded">
         <TableCell style={{ padding: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             { hasBeenOpen && (
@@ -228,7 +228,7 @@ export default function Row({
                 )}
 
                 <div className="lockup-row-column chart">
-                  <div style={{ height: 300 }}>
+                  <div style={{ height: 320 }}>
                     <Chart data={chartData([row], token.decimals)} />
                   </div>
 

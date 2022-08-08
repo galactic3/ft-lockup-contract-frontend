@@ -116,7 +116,7 @@ export function TerminateModal({
           </IconButton>
         </DialogTitle>
         <DialogContent sx={{ minWidth: '720px' }}>
-          <div style={{ height: 300 }}>
+          <div style={{ height: 320, margin: -10 }}>
             <Chart data={chartData([trimmedLockup], token.decimals)} xMax={xMax} yMax={yMax} />
           </div>
           <div className="vested-amount-info">
@@ -148,21 +148,23 @@ export function TerminateModal({
               <FormControlLabel value="with_timestamp" control={<Radio />} label="at specific timestamp" />
             </RadioGroup>
           </FormControl>
+          {terminationMode === 'with_timestamp' && (
           <FormControl fullWidth sx={{ marginTop: '24px' }}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               {dialog.dateTimePicker && (
-                <UTCDateTimePicker
-                  value={dialog.dateTimePicker.currentState.value}
-                  setValue={(newValue) => {
-                    dialog.dateTimePicker.currentState.setValue(newValue);
-                  }}
-                  label="Custom termination date and time"
-                  minTime={new Date()}
-                  disabled={!(terminationMode === 'with_timestamp')}
-                />
+              <UTCDateTimePicker
+                value={dialog.dateTimePicker.currentState.value}
+                setValue={(newValue) => {
+                  dialog.dateTimePicker.currentState.setValue(newValue);
+                }}
+                label="Custom termination date and time"
+                minTime={new Date()}
+                disabled={!(terminationMode === 'with_timestamp')}
+              />
               )}
             </LocalizationProvider>
           </FormControl>
+          )}
           { dialog?.daoSelector && (
             <DaoSelector
               selectedAddress={dialog.daoSelector.currentState.value}

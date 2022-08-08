@@ -1,7 +1,7 @@
 import {
   Table,
   TableBody,
-  TableCell,
+  TableCell, TableContainer,
   TableHead,
   TableRow,
 } from '@mui/material';
@@ -47,22 +47,24 @@ export default function PageDraft({
         {draftId}
       </h1>
       {draft && (
-      <Table className="main-table" aria-label="collapsible table">
-        <TableHead className="table-head">
-          <TableRow>
-            <TableCell />
-            <TableCell align="left">ID</TableCell>
-            <TableCell align="left">Account ID</TableCell>
-            <TableCell align="right">Start date (UTC)</TableCell>
-            <TableCell align="right">End date (UTC)</TableCell>
-            <TableCell align="right">Total amount</TableCell>
-            {progressShow && <TableCell align="center">Progress</TableCell>}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <DraftsTableRow pageIndex={-1} row={draft} token={token} adminControls={adminControls} progressShow={progressShow} opened={!!draftId} />
-        </TableBody>
-      </Table>
+        <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }}>
+          <Table className="main-table" aria-label="collapsible table">
+            <TableHead className="table-head">
+              <TableRow>
+                <TableCell />
+                <TableCell align="left">ID</TableCell>
+                <TableCell align="left">Account ID</TableCell>
+                <TableCell align="right">Start date (UTC)</TableCell>
+                <TableCell align="right">End date (UTC)</TableCell>
+                <TableCell align="right">Total amount</TableCell>
+                {progressShow && <TableCell align="center">Progress</TableCell>}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <DraftsTableRow pageIndex={-1} row={draft} token={token} adminControls={adminControls} progressShow={progressShow} opened={!!draftId} />
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </div>
   );

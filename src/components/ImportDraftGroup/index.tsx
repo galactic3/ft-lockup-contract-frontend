@@ -1,4 +1,4 @@
-import { TextareaAutosize } from '@mui/material';
+import { TableContainer, TextareaAutosize } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -205,7 +205,9 @@ function ImportDraftGroup({ token, adminControls }: { token: TMetadata, adminCon
             onChange={handleChangeInput}
           />
         </div>
-        <DraftsTable lockups={data} token={token} adminControls={adminControls} progressShow />
+        <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }}>
+          <DraftsTable lockups={data} token={token} adminControls={adminControls} progressShow />
+        </TableContainer>
         <LoadingButton
           disabled={!(data.length >= 1 && parseErrors.length === 0 && !importProgress)}
           onClick={handleClickImport}

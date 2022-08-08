@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Alert } from '@mui/material';
+import { Alert, TableContainer } from '@mui/material';
 import {
   useNavigate, useParams, useLocation, Link,
 } from 'react-router-dom';
@@ -242,7 +242,9 @@ export default function PageDraftGroup({ token, adminControls }: { token: TMetad
       </div>
 
       {(!draftGroup.funded || draftGroup.draft_indices.length > 0) && (
-        <DraftsTable lockups={drafts} token={token} adminControls={adminControls} progressShow />
+        <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }}>
+          <DraftsTable lockups={drafts} token={token} adminControls={adminControls} progressShow />
+        </TableContainer>
       )}
     </div>
   );

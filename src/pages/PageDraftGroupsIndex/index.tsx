@@ -4,7 +4,7 @@ import {
   TableCell,
   TableHead,
   TableBody,
-  TableRow,
+  TableRow, TableContainer,
 } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -87,32 +87,33 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
         )}
 
         {draftGroups.length !== 0 && (
-          <Table className="main-table" aria-label="collapsible table">
-            <TableHead className="table-head">
-              <TableRow>
-                <TableCell align="center">ID</TableCell>
-                <TableCell align="center">Funded</TableCell>
-                <TableCell align="center">Number&nbsp;of&nbsp;lockups</TableCell>
-                <TableCell align="right">Total&nbsp;amount</TableCell>
-                {adminControls && <TableCell align="right" width="0%">Delete</TableCell>}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {draftGroups.map((group) => (
-                <TableRow key={group.id}>
-                  <TableCell align="center">
-                    <Link to={`/${currentContractName}/${adminControls ? 'admin/' : ''}draft_groups/${group.id}`}>{group.id}</Link>
-                  </TableCell>
-                  <TableCell align="center">{group.funded ? 'Yes' : 'No'}</TableCell>
-                  <TableCell align="center">{group.draft_indices.length}</TableCell>
-                  <TableCell align="right">
-                    {formatTokenAmount(group.total_amount, token.decimals)}
+          <TableContainer sx={{ boxShadow: 'unset', margin: '0 0 20px' }}>
+            <Table className="main-table" aria-label="collapsible table">
+              <TableHead className="table-head">
+                <TableRow>
+                  <TableCell align="center">ID</TableCell>
+                  <TableCell align="center">Funded</TableCell>
+                  <TableCell align="center">Number&nbsp;of&nbsp;lockups</TableCell>
+                  <TableCell align="right">Total&nbsp;amount</TableCell>
+                  {adminControls && <TableCell align="right" width="0%">Delete</TableCell>}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {draftGroups.map((group) => (
+                  <TableRow key={group.id}>
+                    <TableCell align="center">
+                      <Link to={`/${currentContractName}/${adminControls ? 'admin/' : ''}draft_groups/${group.id}`}>{group.id}</Link>
+                    </TableCell>
+                    <TableCell align="center">{group.funded ? 'Yes' : 'No'}</TableCell>
+                    <TableCell align="center">{group.draft_indices.length}</TableCell>
+                    <TableCell align="right">
+                      {formatTokenAmount(group.total_amount, token.decimals)}
                   &nbsp;
-                    {token.symbol}
+                      {token.symbol}
                   &nbsp;
-                    <TokenIcon url={token.icon || ''} size={32} />
-                  </TableCell>
-                  {adminControls && (
+                      <TokenIcon url={token.icon || ''} size={32} />
+                    </TableCell>
+                    {adminControls && (
                     <TableCell align="right">
                       {!group.funded && (
                       <DeleteDraftGroupButton
@@ -122,11 +123,12 @@ export default function PageDraftGroupsIndex({ token, adminControls }: { token: 
                       />
                       )}
                     </TableCell>
-                  )}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         )}
 
         {adminControls && (
